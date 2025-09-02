@@ -1,8 +1,8 @@
-package com.coolspiders.API.controller;
+package com.WMS_spiders_wholesale_system.controller;
 
 
-import com.coolspiders.API.entity.Customer;
-import com.coolspiders.API.service.CustomerService;
+import com.WMS_spiders_wholesale_system.entity.Customer;
+import com.WMS_spiders_wholesale_system.service.CustomerService;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;

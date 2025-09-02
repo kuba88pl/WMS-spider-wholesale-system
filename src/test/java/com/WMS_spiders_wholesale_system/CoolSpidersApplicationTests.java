@@ -1,4 +1,4 @@
-package com.coolspiders.API;
+package com.WMS_spiders_wholesale_system;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.coolspiders.API.exception;
+package com.WMS_spiders_wholesale_system.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

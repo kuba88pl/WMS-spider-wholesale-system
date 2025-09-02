@@ -1,6 +1,6 @@
-package com.coolspiders.API.repository;
+package com.WMS_spiders_wholesale_system.repository;
 
-import com.coolspiders.API.entity.Order;
+import com.WMS_spiders_wholesale_system.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

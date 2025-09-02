@@ -1,14 +1,13 @@
-package com.coolspiders.API.service;
+package com.WMS_spiders_wholesale_system.service;
 
-import com.coolspiders.API.entity.Order;
-import com.coolspiders.API.entity.Spider;
-import com.coolspiders.API.repository.CustomerRepository;
-import com.coolspiders.API.repository.OrderRepository;
-import com.coolspiders.API.repository.SpiderRepository;
+import com.WMS_spiders_wholesale_system.entity.Order;
+import com.WMS_spiders_wholesale_system.entity.Spider;
+import com.WMS_spiders_wholesale_system.repository.CustomerRepository;
+import com.WMS_spiders_wholesale_system.repository.OrderRepository;
+import com.WMS_spiders_wholesale_system.repository.SpiderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;

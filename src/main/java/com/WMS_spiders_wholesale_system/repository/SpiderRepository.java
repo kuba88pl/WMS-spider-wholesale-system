@@ -1,10 +1,9 @@
-package com.coolspiders.API.repository;
+package com.WMS_spiders_wholesale_system.repository;
 
-import com.coolspiders.API.entity.Spider;
+import com.WMS_spiders_wholesale_system.entity.Spider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository

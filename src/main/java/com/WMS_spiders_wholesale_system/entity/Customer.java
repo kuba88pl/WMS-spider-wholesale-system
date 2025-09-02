@@ -1,4 +1,4 @@
-package com.coolspiders.API.entity;
+package com.WMS_spiders_wholesale_system.entity;
 
 import jakarta.persistence.*;
 

@@ -1,8 +1,8 @@
-package com.coolspiders.API.service;
+package com.WMS_spiders_wholesale_system.service;
 
-import com.coolspiders.API.entity.Customer;
-import com.coolspiders.API.repository.CustomerRepository;
-import com.coolspiders.API.exception.CustomerNotFoundException;
+import com.WMS_spiders_wholesale_system.entity.Customer;
+import com.WMS_spiders_wholesale_system.repository.CustomerRepository;
+import com.WMS_spiders_wholesale_system.exception.CustomerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
