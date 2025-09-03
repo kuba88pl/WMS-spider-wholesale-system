@@ -38,8 +38,8 @@ public class SpiderService {
         spiderRepository.deleteById(id);
     }
 
-    public void showAllSpiders() {
-        List<Spider> spiders = spiderRepository.findAll();
+    public List<Spider> getAllSpiders() {
+        return spiderRepository.findAll();
     }
 
 
