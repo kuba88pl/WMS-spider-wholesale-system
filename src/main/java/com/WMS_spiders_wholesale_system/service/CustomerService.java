@@ -39,12 +39,8 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
-//    public List<Customer> getAllCustomers() {
-//        return customerRepository.findAll();
-//    }
-
     public Page<Customer> getAllCustomers(int page, int size) {
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(page, size);
         return customerRepository.findAll(pageable);
     }
 
@@ -55,7 +51,7 @@ public class CustomerService {
 
     public List<Customer> getCustomerByLastName(String lastName) throws CustomerNotFoundException {
         List<Customer> customers = customerRepository.getCustomerByLastName(lastName);
-        if(customers.isEmpty()) {
+        if (customers.isEmpty()) {
             throw new CustomerNotFoundException("Customer with last name " + lastName + " not found");
         }
         return customers;
