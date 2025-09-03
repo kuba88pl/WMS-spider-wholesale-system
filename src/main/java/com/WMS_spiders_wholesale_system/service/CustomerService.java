@@ -1,6 +1,7 @@
 package com.WMS_spiders_wholesale_system.service;
 
 import com.WMS_spiders_wholesale_system.entity.Customer;
+import com.WMS_spiders_wholesale_system.exception.CustomerAlreadyExistsException;
 import com.WMS_spiders_wholesale_system.repository.CustomerRepository;
 import com.WMS_spiders_wholesale_system.exception.CustomerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class CustomerService {
     }
 
     public Customer addCustomer(Customer customer) {
+        if(customerRepository.existsByEmail(customer.getEmail())) {
+            throw new CustomerAlreadyExistsException("Customer already exists" + customer);
+        }
         return customerRepository.save(customer);
     }
 
