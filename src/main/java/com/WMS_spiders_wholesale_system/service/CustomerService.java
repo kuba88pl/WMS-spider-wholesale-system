@@ -44,4 +44,12 @@ public class CustomerService {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException("Customer with id " + id + " not found"));
     }
+
+    public List<Customer> getCustomerByLastName(String lastName) throws CustomerNotFoundException {
+        List<Customer> customers = customerRepository.getCustomerByLastName(lastName);
+        if(customers.isEmpty()) {
+            throw new CustomerNotFoundException("Customer with last name " + lastName + " not found");
+        }
+        return customers;
+    }
 }
