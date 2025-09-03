@@ -2,6 +2,7 @@ package com.WMS_spiders_wholesale_system.service;
 
 import com.WMS_spiders_wholesale_system.entity.Customer;
 import com.WMS_spiders_wholesale_system.exception.CustomerAlreadyExistsException;
+import com.WMS_spiders_wholesale_system.exception.InvalidCustomerDataException;
 import com.WMS_spiders_wholesale_system.repository.CustomerRepository;
 import com.WMS_spiders_wholesale_system.exception.CustomerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ public class CustomerService {
     }
 
     public Customer addCustomer(Customer customer) {
-        if(customerRepository.existsByEmail(customer.getEmail())) {
+        validateCustomer(customer);
+        if (customerRepository.existsByEmail(customer.getEmail())) {
             throw new CustomerAlreadyExistsException("Customer already exists" + customer);
         }
         return customerRepository.save(customer);
@@ -63,5 +65,20 @@ public class CustomerService {
             throw new CustomerNotFoundException("Customer with last name " + lastName + " not found");
         }
         return customers;
+    }
+
+    private void validateCustomer(Customer customer) {
+        if (customer == null) {
+            throw new InvalidCustomerDataException("Customer cannot be null");
+        }
+        if (customer.getFirstName() == null && customer.getLastName() == null) {
+            throw new InvalidCustomerDataException("First name or last name cannot be null");
+        }
+        if (customer.getEmail() == null || customer.getEmail().isEmpty()) {
+            throw new InvalidCustomerDataException("Email cannot be empty");
+        }
+        if (customer.getTelephone() == null || customer.getTelephone().isEmpty()) {
+            throw new InvalidCustomerDataException("Telephone cannot be empty");
+        }
     }
 }
