@@ -5,12 +5,14 @@ import com.WMS_spiders_wholesale_system.exception.CustomerAlreadyExistsException
 import com.WMS_spiders_wholesale_system.exception.InvalidCustomerDataException;
 import com.WMS_spiders_wholesale_system.repository.CustomerRepository;
 import com.WMS_spiders_wholesale_system.exception.CustomerNotFoundException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +20,7 @@ import java.util.UUID;
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
     @Autowired
     public CustomerService(CustomerRepository customerRepository) {
@@ -29,6 +32,7 @@ public class CustomerService {
         if (customerRepository.existsByEmail(customer.getEmail())) {
             throw new CustomerAlreadyExistsException("Customer already exists" + customer);
         }
+        logger.info("Created new customer with ID: " + customer.getId());
         return customerRepository.save(customer);
     }
 
@@ -36,6 +40,7 @@ public class CustomerService {
         if (!customerRepository.existsById(customer.getId())) {
             throw new CustomerNotFoundException("Customer with id " + customer.getId() + " not found");
         }
+        logger.info("Updated customer with ID: " + customer.getId());
         return customerRepository.save(customer);
     }
 
@@ -43,6 +48,7 @@ public class CustomerService {
         if (!customerRepository.existsById(id)) {
             throw new CustomerNotFoundException("Customer with id " + id + " not found");
         }
+        logger.info("Deleted customer with ID: " + id);
         customerRepository.deleteById(id);
     }
 
@@ -80,5 +86,6 @@ public class CustomerService {
         if (customer.getTelephone() == null || customer.getTelephone().isEmpty()) {
             throw new InvalidCustomerDataException("Telephone cannot be empty");
         }
+        logger.info("Validating customer with ID: " + customer.getId());
     }
 }
