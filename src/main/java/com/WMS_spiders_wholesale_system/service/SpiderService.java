@@ -42,7 +42,7 @@ public class SpiderService {
         existingSpider.setSize(spider.getSize());
         existingSpider.setPrice(spider.getPrice());
         logger.info("Updated spider " + existingSpider.getId());
-        return spiderRepository.save(spider);
+        return spiderRepository.save(existingSpider);
     }
 
     public Spider getSpiderById(UUID id) {
@@ -58,7 +58,7 @@ public class SpiderService {
     }
 
     public Page<Spider> getAllSpiders(int page, int size, Sort sort) {
-        Pageable pageable = PaginationHelper.createPageable(page, size, sort, "id");
+        Pageable pageable = PaginationHelper.createPageable(page, size, sort, "speciesName");
         return spiderRepository.findAll(pageable);
     }
 
