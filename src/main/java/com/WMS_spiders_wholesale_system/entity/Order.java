@@ -12,8 +12,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID orderId;
+    @Column(name = "price", nullable = false)
+    private double price;
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private OrderStatus status;
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -24,10 +26,20 @@ public class Order {
     public Order() {
     }
 
-    public Order(Customer customer, OrderStatus status) {
+    public Order(Customer customer, OrderStatus status, double price, List<Spider> orderedSpiders) {
         this.customer = customer;
+        this.price = price;
+        this.orderedSpiders = orderedSpiders;
         this.status = status;
 
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public Customer getCustomer() {
