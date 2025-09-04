@@ -4,7 +4,6 @@ import com.WMS_spiders_wholesale_system.entity.Spider;
 import com.WMS_spiders_wholesale_system.exception.InvalidSpiderDataException;
 import com.WMS_spiders_wholesale_system.exception.SpiderNotFoundException;
 import com.WMS_spiders_wholesale_system.service.SpiderService;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +24,6 @@ public class SpiderController {
     public SpiderController(SpiderService spiderService) {
         this.spiderService = spiderService;
     }
-
-//    @GetMapping("/")
-//    public String hello() {
-//        return "WSZYSTKO OK";
-//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Spider> getSpiderById(@PathVariable UUID id) {
