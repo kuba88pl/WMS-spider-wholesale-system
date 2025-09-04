@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "id", columnDefinition = "VARCHAR(36)")
     private UUID orderId;
     @Column(name = "date")
     private LocalDate date;
@@ -21,7 +21,7 @@ public class Order {
     @Column(name = "status", nullable = false)
     private OrderStatus status;
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", columnDefinition = "VARCHAR(36)")
     private Customer customer;
     @OneToMany(mappedBy = "order")
     private List<Spider> orderedSpiders;

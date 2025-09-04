@@ -9,7 +9,7 @@ import java.util.UUID;
 public class Spider {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "id", columnDefinition = "VARCHAR(36)")
     private UUID id;
     @Column(name = "type_name")
     private String typeName;
@@ -24,7 +24,7 @@ public class Spider {
     @Column(name = "is_cites")
     private boolean isCites;
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", columnDefinition = "VARCHAR(36)")
     private Order order;
 
     public Spider() {

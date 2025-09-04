@@ -29,8 +29,13 @@ public class SpiderService {
 
     public Spider addSpider(Spider spider) {
         validateSpider(spider);
-        logger.info("Added spider: " + spider.getId() + " " + spider.getSpeciesName() + " " + spider.getTypeName());
-        return spiderRepository.save(spider);
+        try{
+            logger.info("Adding spider:  " + spider.getSpeciesName() + " " + spider.getTypeName());
+            return spiderRepository.save(spider);
+        } catch (Exception e) {
+            logger.error("An error occured while saving the spider to the database.", e);
+            throw new RuntimeException("Failed to add spider to the database.", e);
+        }
     }
 
     public Spider updateSpider(Spider spider) {

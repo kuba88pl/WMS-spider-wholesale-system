@@ -72,7 +72,7 @@ public class OrderService {
         if (order == null) {
             throw new InvalidOrderDataException("Order cannot be null");
         }
-        if(order.getDate() == null) {
+        if (order.getDate() == null) {
             throw new InvalidOrderDataException("Order date cannot be null");
         }
         if (order.getCustomer() == null) {
@@ -86,6 +86,5 @@ public class OrderService {
         }
         logger.info("Validating order: " + order.getOrderId());
     }
-
 
 }
