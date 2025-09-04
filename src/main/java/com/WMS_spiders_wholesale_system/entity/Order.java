@@ -2,6 +2,7 @@ package com.WMS_spiders_wholesale_system.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID orderId;
+    @Column(name = "date")
+    private LocalDate date;
     @Column(name = "price", nullable = false)
     private double price;
     @Enumerated(EnumType.STRING)
@@ -26,8 +29,9 @@ public class Order {
     public Order() {
     }
 
-    public Order(Customer customer, OrderStatus status, double price, List<Spider> orderedSpiders) {
+    public Order(Customer customer, LocalDate date, OrderStatus status, double price, List<Spider> orderedSpiders) {
         this.customer = customer;
+        this.date = date;
         this.price = price;
         this.orderedSpiders = orderedSpiders;
         this.status = status;
@@ -40,6 +44,14 @@ public class Order {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public Customer getCustomer() {

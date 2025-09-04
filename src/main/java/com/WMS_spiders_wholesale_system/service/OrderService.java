@@ -38,6 +38,7 @@ public class OrderService {
         Order newOrder = new Order();
         validateOrder(order);
         newOrder.setCustomer(order.getCustomer());
+        newOrder.setDate(order.getDate());
         newOrder.setStatus(order.getStatus());
         List<UUID> spiderIds = order.getOrderedSpiders().stream()
                 .map(Spider::getId)
@@ -70,6 +71,9 @@ public class OrderService {
     public void validateOrder(Order order) {
         if (order == null) {
             throw new InvalidOrderDataException("Order cannot be null");
+        }
+        if(order.getDate() == null) {
+            throw new InvalidOrderDataException("Order date cannot be null");
         }
         if (order.getCustomer() == null) {
             throw new InvalidOrderDataException("orderedSpiders cannot be null");
