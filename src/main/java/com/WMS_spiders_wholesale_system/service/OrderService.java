@@ -46,11 +46,19 @@ public class OrderService {
 
     public Order updateStatus(Order order, OrderStatus orderStatus) {
         if (!orderRepository.existsById(order.getOrderId())) {
-            throw new OrderNotFoundException("Order not found" + order.getOrderId());
+            throw new OrderNotFoundException("Order not found: " + order.getOrderId());
         }
         order.setStatus(orderStatus);
         logger.info("Updated order: " + order.getOrderId());
         return orderRepository.save(order);
+    }
+
+    public void deleteOrder(UUID orderId) {
+        if(!orderRepository.existsById(orderId)) {
+            throw new OrderNotFoundException("Order not found: " + orderId);
+        }
+        logger.info("Deleted order: " + orderId);
+        orderRepository.deleteById(orderId);
     }
 
 
