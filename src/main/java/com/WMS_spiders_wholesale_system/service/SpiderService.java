@@ -6,9 +6,12 @@ import com.WMS_spiders_wholesale_system.exception.SpiderNotFoundException;
 import com.WMS_spiders_wholesale_system.repository.SpiderRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -33,6 +36,12 @@ public class SpiderService {
     public Spider updateSpider(Spider spider) {
         Spider existingSpider = spiderRepository.findById(spider.getId())
                 .orElseThrow(() -> new SpiderNotFoundException("Spider with id " + spider.getId() + " not found"));
+        existingSpider.setTypeName(spider.getTypeName());
+        existingSpider.setSpeciesName(spider.getSpeciesName());
+        existingSpider.setQuantity(spider.getQuantity());
+        existingSpider.setSize(spider.getSize());
+        existingSpider.setPrice(spider.getPrice());
+        logger.info("Updated spider " + existingSpider.getId());
         return spiderRepository.save(spider);
     }
 
@@ -48,8 +57,9 @@ public class SpiderService {
         spiderRepository.deleteById(id);
     }
 
-    public List<Spider> getAllSpiders() {
-        return spiderRepository.findAll();
+    public Page<Spider> getAllSpiders(int page, int size, Sort sort) {
+        Pageable pageable = PaginationHelper.createPageable(page, size, sort, "id");
+        return spiderRepository.findAll(pageable);
     }
 
     private void validateSpider(Spider spider) {
@@ -57,13 +67,14 @@ public class SpiderService {
             throw new InvalidSpiderDataException("Spider cannot be null");
         }
 
-        if (spider.getSpeciesName() == null && spider.getTypeName() == null) {
-            throw new InvalidSpiderDataException("Spider species name or type name cannot be null");
+        if ((spider.getSpeciesName() == null) || spider.getSpeciesName().isEmpty()
+                || (spider.getTypeName() == null) || spider.getTypeName().isEmpty()) {
+            throw new InvalidSpiderDataException("Spider species name or type name cannot be null or empty");
         }
         if (spider.getSize() == null) {
             throw new InvalidSpiderDataException("Spider size cannot be null");
         }
-        if (spider.getQuantity() > 1) {
+        if (spider.getQuantity() < 0) {
             throw new InvalidSpiderDataException("Spider quantity cannot smaller than 0");
         }
         logger.info("Validating spider: " + spider.getId());
