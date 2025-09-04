@@ -3,10 +3,12 @@ package com.WMS_spiders_wholesale_system.service;
 import com.WMS_spiders_wholesale_system.entity.Order;
 import com.WMS_spiders_wholesale_system.entity.OrderStatus;
 import com.WMS_spiders_wholesale_system.entity.Spider;
+import com.WMS_spiders_wholesale_system.exception.InvalidOrderDataException;
 import com.WMS_spiders_wholesale_system.exception.OrderNotFoundException;
 import com.WMS_spiders_wholesale_system.repository.CustomerRepository;
 import com.WMS_spiders_wholesale_system.repository.OrderRepository;
 import com.WMS_spiders_wholesale_system.repository.SpiderRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,10 @@ public class OrderService {
         this.customerRepository = customerRepository;
     }
 
+    @Transactional
     public Order createOrder(Order order) {
         Order newOrder = new Order();
+        validateOrder(order);
         newOrder.setCustomer(order.getCustomer());
         newOrder.setStatus(order.getStatus());
         List<UUID> spiderIds = order.getOrderedSpiders().stream()
@@ -44,6 +48,7 @@ public class OrderService {
         return orderRepository.save(newOrder);
     }
 
+    @Transactional
     public Order updateStatus(Order order, OrderStatus orderStatus) {
         if (!orderRepository.existsById(order.getOrderId())) {
             throw new OrderNotFoundException("Order not found: " + order.getOrderId());
@@ -53,12 +58,29 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional
     public void deleteOrder(UUID orderId) {
-        if(!orderRepository.existsById(orderId)) {
+        if (!orderRepository.existsById(orderId)) {
             throw new OrderNotFoundException("Order not found: " + orderId);
         }
         logger.info("Deleted order: " + orderId);
         orderRepository.deleteById(orderId);
+    }
+
+    public void validateOrder(Order order) {
+        if (order == null) {
+            throw new InvalidOrderDataException("Order cannot be null");
+        }
+        if (order.getCustomer() == null) {
+            throw new InvalidOrderDataException("orderedSpiders cannot be null");
+        }
+        if (order.getCustomer().getId() == null) {
+            throw new InvalidOrderDataException("customerId cannot be null");
+        }
+        if (order.getPrice() >= 0) {
+            throw new InvalidOrderDataException("price cannot be negative");
+        }
+        logger.info("Validating order: " + order.getOrderId());
     }
 
 
