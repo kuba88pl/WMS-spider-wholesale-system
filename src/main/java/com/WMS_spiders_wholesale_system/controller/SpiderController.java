@@ -44,7 +44,7 @@ public class SpiderController {
             logger.error("Invalid spider data: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
-            logger.error("An unexpected error occured while adding spider.", e.getMessage());
+            logger.error("An unexpected error occurred while adding spider: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

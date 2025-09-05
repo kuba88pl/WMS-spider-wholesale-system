@@ -68,6 +68,11 @@ public class OrderService {
         orderRepository.deleteById(orderId);
     }
 
+    public Order getOrderById(UUID orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found: " + orderId));
+    }
+
     public void validateOrder(Order order) {
         if (order == null) {
             throw new InvalidOrderDataException("Order cannot be null");
