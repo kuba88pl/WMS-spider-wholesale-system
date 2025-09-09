@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>🕷️ Zarządzanie pająkami</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+<div class="max-w-6xl mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center mb-6">🕷️ Lista pająków</h1>
+
+    <table class="w-full table-auto border border-gray-300 bg-white shadow-sm rounded-lg mb-8">
+        <thead class="bg-gray-200">
+        <tr>
+            <th class="p-2 text-left">ID</th>
+            <th class="p-2 text-left">Typ</th>
+            <th class="p-2 text-left">Gatunek</th>
+            <th class="p-2 text-left">Ilość</th>
+            <th class="p-2 text-left">Rozmiar</th>
+            <th class="p-2 text-left">Cena</th>
+            <th class="p-2 text-left">CITES</th>
+            <th class="p-2 text-left">Akcje</th>
+        </tr>
+        </thead>
+        <tbody id="spiderTableBody"></tbody>
+    </table>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 id="formTitle" class="text-xl font-semibold mb-4">➕ Dodaj pająka</h2>
+        <form id="spiderForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" name="typeName" class="border p-2 rounded" placeholder="Typ (np. Brachypelma)" required>
+            <input type="text" name="speciesName" class="border p-2 rounded" placeholder="Gatunek" required>
+            <input type="number" name="quantity" class="border p-2 rounded" placeholder="Ilość" required>
+            <input type="text" name="size" class="border p-2 rounded" placeholder="Rozmiar" required>
+            <input type="number" name="price" class="border p-2 rounded" placeholder="Cena" required>
+            <div class="flex gap-2 mt-2 md:col-span-2">
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">💾 Zapisz</button>
+                <button type="button" onclick="cancelEdit()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">❌ Anuluj</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const API = "http://localhost:8080/api/spiders";
+    let editingId = null;
+
+    function loadSpiders() {
+        fetch(API)
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById("spiderTableBody");
+                tbody.innerHTML = "";
+                data.content.forEach(spider => {
+                    const tr = document.createElement("tr");
+                    tr.className = "border-t";
+                    tr.innerHTML = `
+          <td class="p-2">${spider.id}</td>
+          <td class="p-2">${spider.typeName}</td>
+          <td class="p-2">${spider.speciesName}</td>
+          <td class="p-2">${spider.quantity}</td>
+          <td class="p-2">${spider.size}</td>
+          <td class="p-2">${spider.price}</td>
+          <td class="p-2">${spider.cites ? "✅" : "❌"}</td>
+          <td class="p-2 flex gap-2">
+            <button onclick="editSpider('${spider.id}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">✏️ Edytuj</button>
+            <button onclick="deleteSpider('${spider.id}')" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">🗑 Usuń</button>
+          </td>
+        `;
+                    tbody.appendChild(tr);
+                });
+            });
+    }
+
+    function deleteSpider(id) {
+        fetch(`${API}/${id}`, { method: "DELETE" })
+            .then(() => loadSpiders());
+    }
+
+    function editSpider(id) {
+        fetch(`${API}/${id}`)
+            .then(res => res.json())
+            .then(spider => {
+                const form = document.getElementById("spiderForm");
+                form.typeName.value = spider.typeName;
+                form.speciesName.value = spider.speciesName;
+                form.quantity.value = spider.quantity;
+                form.size.value = spider.size;
+                form.price.value = spider.price;
+                editingId = spider.id;
+                document.getElementById("formTitle").textContent = "✏️ Edytuj pająka";
+            });
+    }
+
+    function cancelEdit() {
+        document.getElementById("spiderForm").reset();
+        editingId = null;
+        document.getElementById("formTitle").textContent = "➕ Dodaj pająka";
+    }
+
+    document.getElementById("spiderForm").addEventListener("submit", e => {
+        e.preventDefault();
+        const form = e.target;
+        const spider = {
+            id: editingId,
+            typeName: form.typeName.value,
+            speciesName: form.speciesName.value,
+            quantity: parseInt(form.quantity.value),
+            size: form.size.value,
+            price: parseFloat(form.price.value)
+        };
+        const method = editingId ? "PUT" : "POST";
+        fetch(API, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(spider)
+        })
+            .then(() => {
+                form.reset();
+                cancelEdit();
+                loadSpiders();
+            });
+    });
+
+    loadSpiders();
+</script>
+
+</body>
+</html>

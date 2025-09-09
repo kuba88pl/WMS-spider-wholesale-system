@@ -1,0 +1,450 @@
+2025-09-05 14:27:52 [http-nio-8080-exec-6] INFO  c.W.service.OrderService - Validating order: null
+2025-09-05 14:27:52 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 where s1_0.id in (?)
+2025-09-05 14:27:52 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [062d3013-0ae4-410d-b77d-9ac1ded4d85d]
+2025-09-05 14:27:52 [http-nio-8080-exec-6] INFO  c.W.service.OrderService - Created new order: null
+2025-09-05 14:27:52 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - insert into orders (customer_id,date,price,status,id) values (?,?,?,?,?)
+2025-09-05 14:27:52 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:27:52 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:DATE) <- [2025-09-05]
+2025-09-05 14:27:52 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:DOUBLE) <- [0.0]
+2025-09-05 14:27:52 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:ENUM) <- [NEW]
+2025-09-05 14:27:52 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:VARCHAR) <- [c8b1584d-e073-4bd0-aeb2-b89e161d5fc5]
+2025-09-05 14:27:52 [http-nio-8080-exec-6] WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 1265, SQLState: 01000
+2025-09-05 14:27:52 [http-nio-8080-exec-6] ERROR o.h.e.jdbc.spi.SqlExceptionHelper - Data truncated for column 'status' at row 1
+2025-09-05 14:27:52 [http-nio-8080-exec-6] ERROR c.W.controller.OrderController - An unexpected error occurred while creating order : could not execute statement [Data truncated for column 'status' at row 1] [insert into orders (customer_id,date,price,status,id) values (?,?,?,?,?)]
+2025-09-05 14:42:10 [http-nio-8080-exec-7] INFO  c.W.service.OrderService - Validating order: null
+2025-09-05 14:42:10 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 where s1_0.id in (?)
+2025-09-05 14:42:10 [http-nio-8080-exec-7] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [062d3013-0ae4-410d-b77d-9ac1ded4d85d]
+2025-09-05 14:42:10 [http-nio-8080-exec-7] INFO  c.W.service.OrderService - Created new order: null
+2025-09-05 14:42:10 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - insert into orders (customer_id,date,price,status,id) values (?,?,?,?,?)
+2025-09-05 14:42:10 [http-nio-8080-exec-7] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:42:10 [http-nio-8080-exec-7] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:DATE) <- [2025-09-05]
+2025-09-05 14:42:10 [http-nio-8080-exec-7] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:DOUBLE) <- [0.0]
+2025-09-05 14:42:10 [http-nio-8080-exec-7] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:ENUM) <- [NEW]
+2025-09-05 14:42:10 [http-nio-8080-exec-7] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:VARCHAR) <- [800d01a1-3a14-4474-92ed-45affcb59d3c]
+2025-09-05 14:43:04 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 order by o1_0.date limit ?,?
+2025-09-05 14:43:04 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 14:43:04 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 14:43:04 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-05 14:43:04 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:43:04 [http-nio-8080-exec-9] WARN  o.s.d.w.c.SpringDataJacksonConfiguration$PageModule$WarningLoggingModifier - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-09-05 14:43:04 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 14:43:04 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:43:04 [http-nio-8080-exec-9] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 14:43:04 [http-nio-8080-exec-9] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 14:43:35 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-05 14:43:35 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-05 14:43:35 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-05 14:43:35 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-05 14:43:35 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-09-05 14:43:38 [restartedMain] INFO  c.W.CoolSpidersApplication - Starting CoolSpidersApplication using Java 24.0.1 with PID 42567 (/Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system/target/classes started by kuba in /Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system)
+2025-09-05 14:43:38 [restartedMain] INFO  c.W.CoolSpidersApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-05 14:43:38 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-09-05 14:43:38 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-09-05 14:43:38 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-05 14:43:38 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 35 ms. Found 3 JPA repository interfaces.
+2025-09-05 14:43:38 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-09-05 14:43:38 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-09-05 14:43:38 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-05 14:43:38 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-05 14:43:38 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-05 14:43:38 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 609 ms
+2025-09-05 14:43:39 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-05 14:43:39 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.22.Final
+2025-09-05 14:43:39 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-09-05 14:43:39 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-05 14:43:39 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-09-05 14:43:39 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@539b20c8
+2025-09-05 14:43:39 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-09-05 14:43:39 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-09-05 14:43:39 [restartedMain] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 9.4
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-09-05 14:43:39 [restartedMain] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2025-09-05 14:43:39 [restartedMain] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2025-09-05 14:43:39 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-05 14:43:39 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-05 14:43:40 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-09-05 14:43:40 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-05 14:43:40 [restartedMain] WARN  o.s.b.a.t.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-09-05 14:43:40 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-09-05 14:43:40 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-09-05 14:43:40 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-09-05 14:43:40 [restartedMain] INFO  c.W.CoolSpidersApplication - Started CoolSpidersApplication in 2.489 seconds (process running for 3.163)
+2025-09-05 14:43:51 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-09-05 14:43:51 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-09-05 14:43:51 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-09-05 14:43:51 [http-nio-8080-exec-2] ERROR c.W.controller.OrderController - Invalid order data: price cannot be negative
+2025-09-05 14:43:53 [http-nio-8080-exec-4] ERROR c.W.controller.OrderController - Invalid order data: price cannot be negative
+2025-09-05 14:44:16 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 order by o1_0.date limit ?,?
+2025-09-05 14:44:16 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 14:44:16 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 14:44:16 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-05 14:44:16 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:44:16 [http-nio-8080-exec-5] WARN  o.s.d.w.c.SpringDataJacksonConfiguration$PageModule$WarningLoggingModifier - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-09-05 14:44:16 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 14:44:16 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:44:16 [http-nio-8080-exec-5] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 14:44:16 [http-nio-8080-exec-5] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 14:44:40 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 order by o1_0.date limit ?,?
+2025-09-05 14:44:40 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 14:44:40 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 14:44:40 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-05 14:44:40 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:44:40 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 14:44:40 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:44:40 [http-nio-8080-exec-6] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 14:44:40 [http-nio-8080-exec-6] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 14:44:42 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - select o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 order by o1_0.date limit ?,?
+2025-09-05 14:44:42 [http-nio-8080-exec-7] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 14:44:42 [http-nio-8080-exec-7] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 14:44:42 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-05 14:44:42 [http-nio-8080-exec-7] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:44:42 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 14:44:42 [http-nio-8080-exec-7] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:44:42 [http-nio-8080-exec-7] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 14:44:42 [http-nio-8080-exec-7] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 14:44:44 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 order by o1_0.date limit ?,?
+2025-09-05 14:44:44 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 14:44:44 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 14:44:44 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-05 14:44:44 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:44:44 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 14:44:44 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:44:44 [http-nio-8080-exec-8] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 14:44:44 [http-nio-8080-exec-8] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 14:45:03 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 order by o1_0.date limit ?,?
+2025-09-05 14:45:03 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 14:45:03 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 14:45:03 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-05 14:45:03 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:45:03 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 14:45:03 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:45:03 [http-nio-8080-exec-10] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 14:45:03 [http-nio-8080-exec-10] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 14:46:17 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-05 14:46:17 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-05 14:46:17 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-05 14:46:17 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-05 14:46:17 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-09-05 14:46:20 [restartedMain] INFO  c.W.CoolSpidersApplication - Starting CoolSpidersApplication using Java 24.0.1 with PID 43026 (/Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system/target/classes started by kuba in /Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system)
+2025-09-05 14:46:20 [restartedMain] INFO  c.W.CoolSpidersApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-05 14:46:20 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-09-05 14:46:20 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-09-05 14:46:21 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-05 14:46:21 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 32 ms. Found 3 JPA repository interfaces.
+2025-09-05 14:46:21 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-09-05 14:46:21 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-09-05 14:46:21 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-05 14:46:21 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-05 14:46:21 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-05 14:46:21 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 774 ms
+2025-09-05 14:46:21 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-05 14:46:21 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.22.Final
+2025-09-05 14:46:21 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-09-05 14:46:21 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-05 14:46:21 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-09-05 14:46:22 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1c07cc04
+2025-09-05 14:46:22 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-09-05 14:46:22 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-09-05 14:46:22 [restartedMain] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 9.4
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-09-05 14:46:22 [restartedMain] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2025-09-05 14:46:22 [restartedMain] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2025-09-05 14:46:22 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-05 14:46:22 [restartedMain] DEBUG org.hibernate.SQL - alter table spiders modify column price float(53)
+2025-09-05 14:46:22 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-05 14:46:23 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-09-05 14:46:23 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-05 14:46:23 [restartedMain] WARN  o.s.b.a.t.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-09-05 14:46:23 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-09-05 14:46:23 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-09-05 14:46:23 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-09-05 14:46:23 [restartedMain] INFO  c.W.CoolSpidersApplication - Started CoolSpidersApplication in 3.048 seconds (process running for 3.751)
+2025-09-05 14:47:59 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-09-05 14:47:59 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-09-05 14:47:59 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-09-05 14:47:59 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 order by o1_0.date limit ?,?
+2025-09-05 14:47:59 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 14:47:59 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 14:47:59 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-05 14:47:59 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:47:59 [http-nio-8080-exec-1] WARN  o.s.d.w.c.SpringDataJacksonConfiguration$PageModule$WarningLoggingModifier - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-09-05 14:47:59 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 14:47:59 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:48:29 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - select o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 order by o1_0.date limit ?,?
+2025-09-05 14:48:29 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 14:48:29 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 14:48:29 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-05 14:48:29 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:48:29 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 14:48:29 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 14:48:29 [http-nio-8080-exec-3] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 14:48:29 [http-nio-8080-exec-3] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 15:51:42 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 15:51:42 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 15:51:42 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 15:55:02 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 15:55:02 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 15:55:02 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 15:55:25 [http-nio-8080-exec-8] INFO  c.W.service.SpiderService - Validating spider: null
+2025-09-05 15:55:25 [http-nio-8080-exec-8] INFO  c.W.service.SpiderService - Adding spider:  rufilata Poecilotheria
+2025-09-05 15:55:25 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - insert into spiders (is_cites,order_id,price,quantity,size,species_name,type_name,id) values (?,?,?,?,?,?,?,?)
+2025-09-05 15:55:25 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BOOLEAN) <- [true]
+2025-09-05 15:55:25 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:VARCHAR) <- [null]
+2025-09-05 15:55:25 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:DOUBLE) <- [70.0]
+2025-09-05 15:55:25 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:INTEGER) <- [70]
+2025-09-05 15:55:25 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:VARCHAR) <- [L3]
+2025-09-05 15:55:25 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (6:VARCHAR) <- [rufilata]
+2025-09-05 15:55:25 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (7:VARCHAR) <- [Poecilotheria]
+2025-09-05 15:55:25 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (8:VARCHAR) <- [7f3fed0b-d5d6-4944-a81e-73d24faed304]
+2025-09-05 15:55:25 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 15:55:25 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 15:55:25 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 15:56:06 [http-nio-8080-exec-1] INFO  c.W.service.SpiderService - Validating spider: null
+2025-09-05 15:56:06 [http-nio-8080-exec-1] INFO  c.W.service.SpiderService - Adding spider:  Hamorii Braychpelma
+2025-09-05 15:56:06 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - insert into spiders (is_cites,order_id,price,quantity,size,species_name,type_name,id) values (?,?,?,?,?,?,?,?)
+2025-09-05 15:56:06 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BOOLEAN) <- [false]
+2025-09-05 15:56:06 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:VARCHAR) <- [null]
+2025-09-05 15:56:06 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:DOUBLE) <- [200.0]
+2025-09-05 15:56:06 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:INTEGER) <- [3]
+2025-09-05 15:56:06 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:VARCHAR) <- [5DC]
+2025-09-05 15:56:06 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (6:VARCHAR) <- [Hamorii]
+2025-09-05 15:56:06 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (7:VARCHAR) <- [Braychpelma]
+2025-09-05 15:56:06 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (8:VARCHAR) <- [678b567c-40b6-4a04-b591-5156bd4d23fe]
+2025-09-05 15:56:06 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 15:56:06 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 15:56:06 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 15:56:21 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 15:56:21 [http-nio-8080-exec-4] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 15:56:21 [http-nio-8080-exec-4] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 15:57:33 [http-nio-8080-exec-6] INFO  c.W.service.SpiderService - Validating spider: null
+2025-09-05 15:57:33 [http-nio-8080-exec-6] INFO  c.W.service.SpiderService - Adding spider:  Pulchripes Harpactira
+2025-09-05 15:57:33 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - insert into spiders (is_cites,order_id,price,quantity,size,species_name,type_name,id) values (?,?,?,?,?,?,?,?)
+2025-09-05 15:57:33 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BOOLEAN) <- [false]
+2025-09-05 15:57:33 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:VARCHAR) <- [null]
+2025-09-05 15:57:33 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:DOUBLE) <- [250.0]
+2025-09-05 15:57:33 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:INTEGER) <- [2]
+2025-09-05 15:57:33 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:VARCHAR) <- [5DC]
+2025-09-05 15:57:33 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (6:VARCHAR) <- [Pulchripes]
+2025-09-05 15:57:33 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (7:VARCHAR) <- [Harpactira]
+2025-09-05 15:57:33 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (8:VARCHAR) <- [dd6ef59c-f9ef-4829-a091-7961c9a2d1f6]
+2025-09-05 15:57:33 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 15:57:33 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 15:57:33 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 15:57:40 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 15:57:40 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 15:57:40 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:01:48 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 16:01:48 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:01:48 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:02:16 [http-nio-8080-exec-6] INFO  c.W.service.SpiderService - Validating spider: null
+2025-09-05 16:02:16 [http-nio-8080-exec-6] INFO  c.W.service.SpiderService - Adding spider:  metallica Poecilotheria
+2025-09-05 16:02:16 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - insert into spiders (is_cites,order_id,price,quantity,size,species_name,type_name,id) values (?,?,?,?,?,?,?,?)
+2025-09-05 16:02:16 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BOOLEAN) <- [true]
+2025-09-05 16:02:16 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:VARCHAR) <- [null]
+2025-09-05 16:02:16 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:DOUBLE) <- [360.0]
+2025-09-05 16:02:16 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:INTEGER) <- [4]
+2025-09-05 16:02:16 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:VARCHAR) <- [5DC]
+2025-09-05 16:02:16 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (6:VARCHAR) <- [metallica]
+2025-09-05 16:02:16 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (7:VARCHAR) <- [Poecilotheria]
+2025-09-05 16:02:16 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (8:VARCHAR) <- [6ee2487a-558f-47f5-adb2-b35ea79ace91]
+2025-09-05 16:02:16 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 16:02:16 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:02:16 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:02:48 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select count(*) from spiders s1_0 where s1_0.id=?
+2025-09-05 16:02:48 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [dd6ef59c-f9ef-4829-a091-7961c9a2d1f6]
+2025-09-05 16:02:48 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id left join customers c1_0 on c1_0.id=o1_0.customer_id where s1_0.id=?
+2025-09-05 16:02:48 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [dd6ef59c-f9ef-4829-a091-7961c9a2d1f6]
+2025-09-05 16:02:48 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - delete from spiders where id=?
+2025-09-05 16:02:48 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [dd6ef59c-f9ef-4829-a091-7961c9a2d1f6]
+2025-09-05 16:02:48 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 16:02:48 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:02:48 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:05:37 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 16:05:37 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:05:37 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:05:39 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id left join customers c1_0 on c1_0.id=o1_0.customer_id where s1_0.id=?
+2025-09-05 16:05:39 [http-nio-8080-exec-4] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [062d3013-0ae4-410d-b77d-9ac1ded4d85d]
+2025-09-05 16:05:41 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id left join customers c1_0 on c1_0.id=o1_0.customer_id where s1_0.id=?
+2025-09-05 16:05:41 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [678b567c-40b6-4a04-b591-5156bd4d23fe]
+2025-09-05 16:05:42 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id left join customers c1_0 on c1_0.id=o1_0.customer_id where s1_0.id=?
+2025-09-05 16:05:42 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [6ee2487a-558f-47f5-adb2-b35ea79ace91]
+2025-09-05 16:08:14 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m21s592ms).
+2025-09-05 16:18:45 [HikariPool-1:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=10m31s73ms).
+2025-09-05 16:44:12 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:44:12 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:44:12 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:44:12 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 16:44:12 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 16:44:13 [http-nio-8080-exec-3] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 16:44:13 [http-nio-8080-exec-3] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 16:44:23 [http-nio-8080-exec-4] ERROR c.W.controller.CustomerController - Invalid customer data: Telephone cannot be empty
+2025-09-05 16:44:23 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:44:23 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:44:23 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:44:23 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 16:44:23 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 16:44:23 [http-nio-8080-exec-6] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 16:44:23 [http-nio-8080-exec-6] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 16:46:31 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 16:46:31 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:46:31 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:47:59 [http-nio-8080-exec-3] INFO  c.W.service.SpiderService - Validating spider: null
+2025-09-05 16:47:59 [http-nio-8080-exec-3] INFO  c.W.service.SpiderService - Adding spider:  To Chuj Basiak
+2025-09-05 16:47:59 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - insert into spiders (is_cites,order_id,price,quantity,size,species_name,type_name,id) values (?,?,?,?,?,?,?,?)
+2025-09-05 16:47:59 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BOOLEAN) <- [false]
+2025-09-05 16:47:59 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:VARCHAR) <- [null]
+2025-09-05 16:47:59 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:DOUBLE) <- [0.0]
+2025-09-05 16:47:59 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:INTEGER) <- [1]
+2025-09-05 16:47:59 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:VARCHAR) <- [180]
+2025-09-05 16:47:59 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (6:VARCHAR) <- [To Chuj]
+2025-09-05 16:47:59 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (7:VARCHAR) <- [Basiak]
+2025-09-05 16:47:59 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (8:VARCHAR) <- [6b0bcdcd-f03f-4f60-bd51-d09af5bbcabf]
+2025-09-05 16:47:59 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 16:47:59 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:47:59 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:49:24 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-05 16:49:24 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:49:24 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:51:49 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:51:49 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:51:49 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:51:49 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 16:51:49 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 16:51:49 [http-nio-8080-exec-1] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 16:51:49 [http-nio-8080-exec-1] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 16:51:58 [http-nio-8080-exec-5] ERROR c.W.controller.CustomerController - Invalid customer data: Telephone cannot be empty
+2025-09-05 16:51:58 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:51:58 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:51:58 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:51:58 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 16:51:58 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 16:51:58 [http-nio-8080-exec-2] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 16:51:58 [http-nio-8080-exec-2] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 16:52:09 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:52:09 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:52:09 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:52:09 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 16:52:09 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 16:52:09 [http-nio-8080-exec-6] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Ignoring exception, response committed already: org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)
+2025-09-05 16:52:09 [http-nio-8080-exec-6] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON: Document nesting depth (1001) exceeds the maximum allowed (1000, from `StreamWriteConstraints.getMaxNestingDepth()`)]
+2025-09-05 16:52:15 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select count(*) from customers c1_0 where c1_0.id=?
+2025-09-05 16:52:15 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 16:52:15 [http-nio-8080-exec-8] INFO  c.W.service.CustomerService - Deleted customer with ID: ab519541-d214-469b-9769-19fc9c6029c4
+2025-09-05 16:52:15 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-05 16:52:15 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 16:52:15 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select o1_0.customer_id,o1_0.id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.customer_id=?
+2025-09-05 16:52:15 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 16:52:15 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - delete from orders where id=?
+2025-09-05 16:52:15 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [800d01a1-3a14-4474-92ed-45affcb59d3c]
+2025-09-05 16:52:15 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - delete from customers where id=?
+2025-09-05 16:52:15 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [ab519541-d214-469b-9769-19fc9c6029c4]
+2025-09-05 16:52:15 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:52:15 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:52:15 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:52:19 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:52:19 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:52:19 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:53:40 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:53:40 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:53:40 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:53:51 [http-nio-8080-exec-6] ERROR c.W.controller.CustomerController - Invalid customer data: Telephone cannot be empty
+2025-09-05 16:53:51 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:53:51 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:53:51 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:57:57 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+2025-09-05 16:57:57 [Thread-5] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-05 16:57:57 [tomcat-shutdown] INFO  o.a.coyote.http11.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"]
+2025-09-05 16:57:57 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-05 16:57:57 [Thread-5] INFO  o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
+2025-09-05 16:57:57 [Thread-5] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-05 16:57:57 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-05 16:57:57 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-09-05 16:57:57 [restartedMain] INFO  c.W.CoolSpidersApplication - Starting CoolSpidersApplication using Java 24.0.1 with PID 43026 (/Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system/target/classes started by kuba in /Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system)
+2025-09-05 16:57:57 [restartedMain] INFO  c.W.CoolSpidersApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-05 16:57:57 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-05 16:57:57 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 17 ms. Found 3 JPA repository interfaces.
+2025-09-05 16:57:57 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-09-05 16:57:57 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-09-05 16:57:57 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-05 16:57:57 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-05 16:57:57 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-05 16:57:57 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 305 ms
+2025-09-05 16:57:57 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-05 16:57:57 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-09-05 16:57:57 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-05 16:57:57 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+2025-09-05 16:57:58 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6019c9c4
+2025-09-05 16:57:58 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+2025-09-05 16:57:58 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-09-05 16:57:58 [restartedMain] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 9.4
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-09-05 16:57:58 [restartedMain] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2025-09-05 16:57:58 [restartedMain] WARN  org.hibernate.orm.incubating - HHH90006001: Encountered incubating setting [hibernate.type.preferred_uuid_jdbc_type].  See javadoc on corresponding `org.hibernate.cfg.AvailableSettings` constant for details.
+2025-09-05 16:57:58 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-05 16:57:58 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-05 16:57:58 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-05 16:57:58 [restartedMain] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2025-09-05 16:57:58 [restartedMain] WARN  o.s.b.a.t.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-09-05 16:57:58 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-09-05 16:57:58 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-09-05 16:57:58 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-09-05 16:57:58 [restartedMain] INFO  c.W.CoolSpidersApplication - Started CoolSpidersApplication in 0.741 seconds (process running for 7186.047)
+2025-09-05 16:57:58 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2025-09-05 16:59:39 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-09-05 16:59:39 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-09-05 16:59:39 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 7 ms
+2025-09-05 16:59:40 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:59:40 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:59:40 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:59:40 [http-nio-8080-exec-2] WARN  o.s.d.w.c.SpringDataJacksonConfiguration$PageModule$WarningLoggingModifier - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-09-05 16:59:46 [http-nio-8080-exec-5] WARN  o.s.h.c.j.MappingJackson2HttpMessageConverter - Failed to evaluate Jackson deserialization for type [[simple type, class com.WMS_spiders_wholesale_system.entity.Customer]]: com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Cannot handle managed/back reference 'defaultReference': no back reference property found from type `java.util.List<com.WMS_spiders_wholesale_system.entity.Spider>`
+2025-09-05 16:59:46 [http-nio-8080-exec-5] WARN  o.s.h.c.j.MappingJackson2HttpMessageConverter - Failed to evaluate Jackson deserialization for type [[simple type, class com.WMS_spiders_wholesale_system.entity.Customer]]: com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Cannot handle managed/back reference 'defaultReference': no back reference property found from type `java.util.List<com.WMS_spiders_wholesale_system.entity.Spider>`
+2025-09-05 16:59:46 [http-nio-8080-exec-5] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpMediaTypeNotSupportedException: Content-Type 'application/json;charset=UTF-8' is not supported]
+2025-09-05 16:59:46 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:59:46 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:59:46 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 16:59:53 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.id limit ?,?
+2025-09-05 16:59:53 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-05 16:59:53 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-05 18:02:53 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=17m54s621ms).
+2025-09-05 18:28:54 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=26m1s145ms).
+2025-09-05 19:14:46 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=45m51s921ms).
+2025-09-05 19:30:26 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=15m40s307ms).
+2025-09-05 20:02:28 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=32m2s203ms).
+2025-09-05 20:19:36 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=17m7s653ms).
+2025-09-05 20:36:27 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=16m50s805ms).
+2025-09-05 21:31:35 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=55m8s327ms).
+2025-09-05 21:37:07 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=5m31s655ms).
+2025-09-05 22:38:11 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=1h1m4s479ms).
+2025-09-05 23:10:58 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=32m46s391ms).
+2025-09-05 23:39:23 [HikariPool-2:housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Thread starvation or clock leap detected (housekeeper delta=28m25s296ms).

@@ -1,5 +1,6 @@
 package com.WMS_spiders_wholesale_system.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -26,7 +27,11 @@ public class Customer {
     @Column(name = "parcel_locker")
     private String parcelLocker;
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "customer-order")
     private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "customer-spider")
+    private List<Spider> spiders = new ArrayList<>();
 
     public Customer() {
     }
@@ -111,8 +116,8 @@ public class Customer {
 
     public void removeOrder(Order order) {
         orders.remove(order);
-    if(order.getCustomer() == this){
-        order.setCustomer(null);
-    }
+        if (order.getCustomer() == this) {
+            order.setCustomer(null);
+        }
     }
 }

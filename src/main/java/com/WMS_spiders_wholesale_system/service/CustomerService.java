@@ -73,8 +73,8 @@ public class CustomerService {
         if (customer == null) {
             throw new InvalidCustomerDataException("Customer cannot be null");
         }
-        if (customer.getFirstName() == null && customer.getLastName() == null) {
-            throw new InvalidCustomerDataException("First name or last name cannot be null");
+        if (customer.getFirstName() == null && customer.getFirstName().isBlank()) {
+            throw new InvalidCustomerDataException("First name is required");
         }
         if (customer.getEmail() == null || customer.getEmail().isEmpty()) {
             throw new InvalidCustomerDataException("Email cannot be empty");

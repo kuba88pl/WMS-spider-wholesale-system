@@ -1,5 +1,7 @@
 package com.WMS_spiders_wholesale_system.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -22,8 +24,10 @@ public class Order {
     private OrderStatus status;
     @ManyToOne
     @JoinColumn(name = "customer_id", columnDefinition = "VARCHAR(36)")
+    @JsonBackReference(value = "customer-order")
     private Customer customer;
     @OneToMany(mappedBy = "order")
+    @JsonManagedReference(value = "order-spider")
     private List<Spider> orderedSpiders;
 
     public Order() {

@@ -26,6 +26,7 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
+        logger.info("Recived customer: {}", customer);
         try {
             Customer newCustomer = customerService.addCustomer(customer);
             return ResponseEntity.status(HttpStatus.CREATED).body(newCustomer);
