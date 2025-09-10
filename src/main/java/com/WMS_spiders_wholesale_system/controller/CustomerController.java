@@ -86,4 +86,14 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> getCustomerById(@PathVariable UUID id) {
+        try {
+            Customer customer = customerService.getCustomerById(id);
+            return ResponseEntity.ok(customer);
+        } catch (CustomerNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }

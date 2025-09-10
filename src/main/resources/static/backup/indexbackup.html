@@ -9,10 +9,7 @@
         body { background-color: #f8f9fa; }
         .container { max-width: 960px; }
         .table th, .table td { vertical-align: middle; }
-        .table thead th { background-color: #343a40; color: white; }
-        .table-success, .table-success > td {
-            background-color: #d1e7dd !important;
-        }
+        .table thead th { background-color: #343a30; color: white; }
     </style>
 </head>
 <body>
@@ -73,6 +70,7 @@
                     <div class="mb-3"><label for="quantity" class="form-label">Ilość</label><input type="number" class="form-control" id="quantity" required></div>
                     <div class="mb-3"><label for="size" class="form-label">Rozmiar</label><input type="text" class="form-control" id="size" required></div>
                     <div class="mb-3"><label for="price" class="form-label">Cena</label><input type="number" step="0.01" class="form-control" id="price" required></div>
+                    <div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="isCites"><label class="form-check-label" for="isCites">CITES</label></div>
                     <button type="submit" class="btn btn-primary">Zapisz</button>
                 </form>
             </div>
@@ -132,24 +130,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Szczegóły zamówienia</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div id="orderDetailsContent"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-                <button type="button" class="btn btn-warning" id="changeStatusBtn">Zmień status</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const API_URL = 'http://localhost:8080/api';
@@ -158,8 +138,8 @@
     const totalPages = {};
 
     const customersTemplate = `<h2>Lista klientów</h2><button class="btn btn-primary mb-3" onclick="openCustomerModal()">Dodaj nowego klienta</button><div class="input-group mb-3"><input type="text" id="searchLastName" class="form-control" placeholder="Wyszukaj po nazwisku..."><button class="btn btn-outline-secondary" type="button" onclick="searchCustomers()">Szukaj</button></div><table class="table table-striped"><thead><tr><th>Imię</th><th>Nazwisko</th><th>Telefon</th><th>Email</th><th>Akcje</th></tr></thead><tbody id="customersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="customersPagination"></ul></nav>`;
-    const ordersTemplate = `<h2>Lista zamówień <button class="btn btn-success float-end" onclick="openNewOrderModal()">Dodaj nowe zamówienie</button></h2><table class="table table-striped"><thead><tr><th>ID Zamówienia</th><th>Data</th><th>Pająki</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead><tbody id="ordersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="ordersPagination"></ul></nav>`;
-    const spidersTemplate = `<h2>Lista pająków</h2><button class="btn btn-primary mb-3" onclick="openSpiderModal()">Dodaj nowego pająka</button><table class="table table-striped"><thead><tr><th>Typ</th><th>Gatunek</th><th>Ilość na stanie</th><th>Rozmiar</th><th>Cena</th><th>CITES</th><th>Akcje</th></tr></thead><tbody id="spidersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="spidersPagination"></ul></nav>`;
+    const ordersTemplate = `<h2>Lista zamówień <button class="btn btn-success float-end" onclick="openNewOrderModal()">Dodaj nowe zamówienie</button></h2><table class="table table-striped"><thead><tr><th>ID Zamówienia</th><th>Data</th><th>Klient</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead><tbody id="ordersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="ordersPagination"></ul></nav>`;
+    const spidersTemplate = `<h2>Lista pająków</h2><button class="btn btn-primary mb-3" onclick="openSpiderModal()">Dodaj nowego pająka</button><table class="table table-striped"><thead><tr><th>Typ</th><th>Gatunek</th><th>Ilość na stanie</th><th>Rozmiar</th><th>Cena</th><th>CITES</th><th>Klient</th><th>Akcje</th></tr></thead><tbody id="spidersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="spidersPagination"></ul></nav>`;
 
     function showSection(section) {
         document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
@@ -215,7 +195,7 @@
 
         selectedCustomer = customer;
         document.getElementById('selectedCustomerDetails').style.display = 'block';
-        document.getElementById('customerName').innerHTML = `<strong>${customer.firstName} ${customer.lastName}</strong>`;
+        document.getElementById('customerName').innerHTML = `**${customer.firstName} ${customer.lastName}**`;
         document.getElementById('customerContact').innerHTML = `Tel: ${customer.telephone || 'Brak'}, Email: ${customer.email || 'Brak'}`;
         document.getElementById('customerAddress').innerHTML = `Adres: ${customer.address || 'Brak'}, Paczkomat: ${customer.parcelLocker || 'Brak'}`;
     }
@@ -228,23 +208,23 @@
             const row = document.createElement('tr');
             row.innerHTML = `<td>${s.typeName}</td><td>${s.speciesName}</td><td>${s.quantity}</td>
                     <td><input type="number" min="1" max="${s.quantity}" value="1" id="quantity_${s.id}" class="form-control form-control-sm"></td>
-                    <td><button class="btn btn-sm btn-success" onclick="selectSpider('${s.id}', '${s.typeName}', '${s.speciesName}', ${s.price}, ${s.quantity})">Dodaj</button></td>`;
+                    <td><button class="btn btn-sm btn-success" onclick="selectSpider('${s.id}', '${s.typeName}', '${s.speciesName}', ${s.price})">Dodaj</button></td>`;
             tableBody.appendChild(row);
         });
     }
 
-    function selectSpider(id, typeName, speciesName, price, maxQuantity) {
+    function selectSpider(id, typeName, speciesName, price) {
         const quantityInput = document.getElementById(`quantity_${id}`);
         const quantity = parseInt(quantityInput.value, 10);
 
-        if (quantity <= 0 || quantity > maxQuantity) {
+        if (quantity <= 0 || quantity > parseInt(quantityInput.max, 10)) {
             alert('Ilość jest nieprawidłowa lub przekracza stan magazynowy.');
             return;
         }
 
-        const existingSpiderIndex = selectedSpiders.findIndex(s => s.id === id);
-        if (existingSpiderIndex > -1) {
-            selectedSpiders[existingSpiderIndex].quantity += quantity;
+        const existingSpider = selectedSpiders.find(s => s.id === id);
+        if (existingSpider) {
+            existingSpider.quantity += quantity;
         } else {
             selectedSpiders.push({ id, typeName, speciesName, price, quantity });
         }
@@ -275,16 +255,12 @@
         if (!selectedCustomer) { alert('Proszę wybrać klienta.'); return; }
         if (selectedSpiders.length === 0) { alert('Proszę dodać pająki do zamówienia.'); return; }
 
-        const simplifiedSpiders = selectedSpiders.map(s => ({
-            id: s.id,
-            quantity: s.quantity
-        }));
-
         const order = {
             customer: { id: selectedCustomer.id },
-            orderedSpiders: simplifiedSpiders,
+            orderedSpiders: selectedSpiders.map(s => ({ id: s.id, quantity: s.quantity })),
             status: 'NEW',
-            date: new Date().toISOString().slice(0, 10)
+            date: new Date().toISOString().slice(0, 10),
+            price: parseFloat(document.getElementById('orderTotalPrice').innerText.split(' ')[2])
         };
 
         const response = await fetch(`${API_URL}/orders`, {
@@ -302,69 +278,6 @@
         }
     }
 
-    // ################### ORDER DETAILS LOGIC ###################
-
-    async function showOrderDetails(orderId) {
-        const modalBody = document.getElementById('orderDetailsContent');
-        modalBody.innerHTML = '<p class="text-center">Ładowanie...</p>';
-
-        try {
-            const response = await fetch(`${API_URL}/orders/${orderId}`);
-            if (!response.ok) {
-                throw new Error('Nie udało się pobrać szczegółów zamówienia.');
-            }
-            const order = await response.json();
-
-            const customer = order.customer;
-            const spiders = order.orderedSpiders;
-
-            const customerInfo = `
-                <h4>Informacje o kliencie</h4>
-                <p><strong>Imię i nazwisko:</strong> ${customer ? customer.firstName + ' ' + customer.lastName : 'Brak danych'}</p>
-                <p><strong>Email:</strong> ${customer ? customer.email : 'Brak danych'}</p>
-                <p><strong>Telefon:</strong> ${customer ? customer.telephone : 'Brak danych'}</p>
-                <p><strong>Adres:</strong> ${customer ? (customer.address || customer.parcelLocker || 'Brak danych') : 'Brak danych'}</p>
-                <hr>
-            `;
-
-            const spidersList = spiders && spiders.length > 0 ? `
-                <h4>Zamówione pająki</h4>
-                <ul class="list-group">
-                    ${spiders.map(s => `<li class="list-group-item d-flex justify-content-between">
-                        <div>
-                            <strong>${s.typeName} ${s.speciesName}</strong>
-                            <br>
-                            <small>Rozmiar: ${s.size}</small>
-                        </div>
-                        <span class="badge bg-primary rounded-pill">${s.quantity} szt.</span>
-                        <span>${s.price.toFixed(2)} zł/szt.</span>
-                    </li>`).join('')}
-                </ul>
-                <p class="mt-3"><strong>Całkowita cena:</strong> ${order.price.toFixed(2)} zł</p>
-            ` : `<p>Brak pająków w tym zamówieniu.</p>`;
-
-            modalBody.innerHTML = `
-                <h4>Szczegóły zamówienia #${order.orderId.substring(0, 8)}...</h4>
-                <p><strong>Data zamówienia:</strong> ${order.date}</p>
-                <p><strong>Status:</strong> ${order.status}</p>
-                <hr>
-                ${customerInfo}
-                ${spidersList}
-            `;
-
-            document.getElementById('changeStatusBtn').onclick = () => {
-                bootstrap.Modal.getInstance(document.getElementById('orderDetailsModal')).hide();
-                editOrderStatus(order.orderId, order.status);
-            };
-
-            new bootstrap.Modal(document.getElementById('orderDetailsModal')).show();
-        } catch (error) {
-            console.error(error);
-            modalBody.innerHTML = `<p class="text-danger">Wystąpił błąd podczas ładowania szczegółów.</p>`;
-        }
-    }
-
-
     // ################### POZOSTAŁA LOGIKA ###################
     async function fetchCustomers(page = 0, size = 10, sortBy = 'lastName') { const url = `${API_URL}/customers?page=${page}&size=${size}&sortBy=${sortBy}`; const response = await fetch(url); return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 }; }
     async function searchCustomers() { const lastName = document.getElementById('searchLastName').value; const tableBody = document.getElementById('customersTableBody'); tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Ładowanie...</td></tr>'; if (lastName.trim() === '') { loadCustomers(0); return; } try { const response = await fetch(`${API_URL}/customers/lastName/${lastName}`); if (response.status === 404) { tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Nie znaleziono klientów o podanym nazwisku.</td></tr>'; } else { const customers = await response.json(); renderCustomersTable(customers); document.getElementById('customersPagination').innerHTML = ''; } } catch (error) { tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Wystąpił błąd podczas wyszukiwania.</td></tr>'; } }
@@ -376,15 +289,15 @@
     function openCustomerModal() { document.getElementById('customerForm').reset(); document.getElementById('customerId').value = ''; new bootstrap.Modal(document.getElementById('customerModal')).show(); }
     async function fetchOrders(page = 0, size = 10, sortBy = 'date') { const url = `${API_URL}/orders?page=${page}&size=${size}&sortBy=${sortBy}`; const response = await fetch(url); return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 }; }
     function loadOrders(page = 0) { fetchOrders(page).then(data => { currentPage.orders = data.number; totalPages.orders = data.totalPages; renderOrdersTable(data.content); renderPagination(data.number, data.totalPages, 'orders'); }); }
-    function renderOrdersTable(orders) { const tableBody = document.getElementById('ordersTableBody'); tableBody.innerHTML = orders.length === 0 ? '<tr><td colspan="6" class="text-center">Brak zamówień do wyświetlenia.</td></tr>' : orders.map(o => { const rowClass = o.status === 'NEW' ? 'table-success' : ''; return `<tr class="${rowClass}"><td>${o.orderId.substring(0, 8)}...</td><td>${o.date}</td><td>${o.orderedSpiders && o.orderedSpiders.length > 0 ? o.orderedSpiders.map(s => s.typeName + ' ' + s.speciesName + ' (' + s.quantity + ' szt.)').join('<br>') : 'Brak pająków'}</td><td>${o.status}</td><td>${o.price.toFixed(2)} zł</td><td><button class="btn btn-info btn-sm" onclick="showOrderDetails('${o.orderId}')">Szczegóły</button> <button class="btn btn-warning btn-sm" onclick="editOrderStatus('${o.orderId}', '${o.status}')">Zmień status</button> <button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.orderId}')">Usuń</button></td></tr>`; }).join(''); }
+    function renderOrdersTable(orders) { const tableBody = document.getElementById('ordersTableBody'); tableBody.innerHTML = orders.length === 0 ? '<tr><td colspan="6" class="text-center">Brak zamówień do wyświetlenia.</td></tr>' : orders.map(o => `<tr><td>${o.orderId.substring(0, 8)}...</td><td>${o.date}</td><td>${o.customer ? o.customer.firstName + ' ' + o.customer.lastName : 'Brak danych klienta'}</td><td>${o.status}</td><td>${o.price.toFixed(2)} zł</td><td><button class="btn btn-warning btn-sm" onclick="editOrderStatus('${o.orderId}', '${o.status}')">Zmień status</button> <button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.orderId}')">Usuń</button></td></tr>`).join(''); }
     async function updateOrderStatus(event) { event.preventDefault(); const orderId = document.getElementById('orderIdToUpdate').value; const newStatus = document.getElementById('orderStatusSelect').value; const response = await fetch(`${API_URL}/orders/${orderId}/status/${newStatus}`, { method: 'PUT' }); if (response.ok) { loadOrders(currentPage.orders); bootstrap.Modal.getInstance(document.getElementById('orderStatusModal')).hide(); } else { alert('Wystąpił błąd podczas aktualizacji statusu.'); } }
     async function deleteOrder(id) { if (!confirm('Czy na pewno?')) return; const response = await fetch(`${API_URL}/orders/${id}`, { method: 'DELETE' }); if (response.ok) { loadOrders(currentPage.orders); } else { alert('Wystąpił błąd podczas usuwania.'); } }
     function editOrderStatus(orderId, currentStatus) { document.getElementById('orderIdToUpdate').value = orderId; const select = document.getElementById('orderStatusSelect'); select.innerHTML = ['NEW', 'PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map(s => `<option value="${s}" ${s === currentStatus ? 'selected' : ''}>${s}</option>`).join(''); new bootstrap.Modal(document.getElementById('orderStatusModal')).show(); }
     async function fetchSpiders(page = 0, size = 10, sortBy = 'speciesName') { const url = `${API_URL}/spiders?page=${page}&size=${size}&sortBy=${sortBy}`; const response = await fetch(url); return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 }; }
     function loadSpiders(page = 0) { fetchSpiders(page).then(data => { currentPage.spiders = data.number; totalPages.spiders = data.totalPages; renderSpidersTable(data.content); renderPagination(data.number, data.totalPages, 'spiders'); }); }
-    function renderSpidersTable(spiders) { const tableBody = document.getElementById('spidersTableBody'); tableBody.innerHTML = spiders.length === 0 ? '<tr><td colspan="6" class="text-center">Brak pająków do wyświetlenia.</td></tr>' : spiders.map(s => `<tr><td>${s.typeName}</td><td>${s.speciesName}</td><td>${s.quantity}</td><td>${s.size}</td><td>${s.price.toFixed(2)} zł</td><td>${s.isCites ? 'Tak' : 'Nie'}</td><td><button class="btn btn-warning btn-sm" onclick="editSpider('${s.id}')">Edytuj</button> <button class="btn btn-danger btn-sm" onclick="deleteSpider('${s.id}')">Usuń</button></td></tr>`).join(''); }
-    async function addOrUpdateSpider(event) { event.preventDefault(); const spiderId = document.getElementById('spiderId').value; const spider = { id: spiderId || null, typeName: document.getElementById('typeName').value, speciesName: document.getElementById('speciesName').value, quantity: parseInt(document.getElementById('quantity').value, 10), size: document.getElementById('size').value, price: parseFloat(document.getElementById('price').value), isCites: false }; const method = spiderId ? 'PUT' : 'POST'; const response = await fetch(`${API_URL}/spiders`, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(spider) }); if (response.ok) { loadSpiders(currentPage.spiders); bootstrap.Modal.getInstance(document.getElementById('spiderModal')).hide(); } else { alert('Wystąpił błąd podczas zapisu pająka.'); } }
-    async function editSpider(id) { const response = await fetch(`${API_URL}/spiders/${id}`); const spider = await response.json(); document.getElementById('spiderId').value = spider.id; document.getElementById('typeName').value = spider.typeName; document.getElementById('speciesName').value = spider.speciesName; document.getElementById('quantity').value = spider.quantity; document.getElementById('size').value = spider.size; document.getElementById('price').value = spider.price; new bootstrap.Modal(document.getElementById('spiderModal')).show(); }
+    function renderSpidersTable(spiders) { const tableBody = document.getElementById('spidersTableBody'); tableBody.innerHTML = spiders.length === 0 ? '<tr><td colspan="8" class="text-center">Brak pająków do wyświetlenia.</td></tr>' : spiders.map(s => `<tr><td>${s.typeName}</td><td>${s.speciesName}</td><td>${s.quantity}</td><td>${s.size}</td><td>${s.price.toFixed(2)} zł</td><td>${s.cites ? 'Tak' : 'Nie'}</td><td>${s.customer ? s.customer.firstName + ' ' + s.customer.lastName : 'Brak'}</td><td><button class="btn btn-warning btn-sm" onclick="editSpider('${s.id}')">Edytuj</button> <button class="btn btn-danger btn-sm" onclick="deleteSpider('${s.id}')">Usuń</button></td></tr>`).join(''); }
+    async function addOrUpdateSpider(event) { event.preventDefault(); const spiderId = document.getElementById('spiderId').value; const spider = { id: spiderId || null, typeName: document.getElementById('typeName').value, speciesName: document.getElementById('speciesName').value, quantity: parseInt(document.getElementById('quantity').value, 10), size: document.getElementById('size').value, price: parseFloat(document.getElementById('price').value), cites: document.getElementById('isCites').checked }; const method = spiderId ? 'PUT' : 'POST'; const response = await fetch(`${API_URL}/spiders`, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(spider) }); if (response.ok) { loadSpiders(currentPage.spiders); bootstrap.Modal.getInstance(document.getElementById('spiderModal')).hide(); } else { alert('Wystąpił błąd podczas zapisu pająka.'); } }
+    async function editSpider(id) { const response = await fetch(`${API_URL}/spiders/${id}`); const spider = await response.json(); document.getElementById('spiderId').value = spider.id; document.getElementById('typeName').value = spider.typeName; document.getElementById('speciesName').value = spider.speciesName; document.getElementById('quantity').value = spider.quantity; document.getElementById('size').value = spider.size; document.getElementById('price').value = spider.price; document.getElementById('isCites').checked = spider.cites; new bootstrap.Modal(document.getElementById('spiderModal')).show(); }
     async function deleteSpider(id) { if (!confirm('Czy na pewno?')) return; const response = await fetch(`${API_URL}/spiders/${id}`, { method: 'DELETE' }); if (response.ok) { loadSpiders(currentPage.spiders); } else { alert('Wystąpił błąd podczas usuwania.'); } }
     function openSpiderModal() { document.getElementById('spiderForm').reset(); document.getElementById('spiderId').value = ''; new bootstrap.Modal(document.getElementById('spiderModal')).show(); }
     function renderPagination(currentPage, totalPages, resource) { const paginationElement = document.getElementById(`${resource}Pagination`); if (!paginationElement) return; paginationElement.innerHTML = ''; const prevLi = `<li class="page-item ${currentPage === 0 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="load${resource.charAt(0).toUpperCase() + resource.slice(1)}(${currentPage - 1})">Poprzednia</a></li>`; const nextLi = `<li class="page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="load${resource.charAt(0).toUpperCase() + resource.slice(1)}(${currentPage + 1})">Następna</a></li>`; let pagesHtml = ''; for (let i = 0; i < totalPages; i++) { pagesHtml += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="load${resource.charAt(0).toUpperCase() + resource.slice(1)}(${i})">${i + 1}</a></li>`; } paginationElement.innerHTML = prevLi + pagesHtml + nextLi; }

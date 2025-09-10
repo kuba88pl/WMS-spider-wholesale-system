@@ -1,7 +1,9 @@
 package com.WMS_spiders_wholesale_system.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -10,6 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "orderId")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +25,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private OrderStatus status;
-    @ManyToOne(fetch= FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", columnDefinition = "VARCHAR(36)")
     @JsonBackReference(value = "customer-order")
     private Customer customer;
@@ -89,4 +92,7 @@ public class Order {
     public List<Spider> getOrderedSpiders() {
         return orderedSpiders;
     }
+
+
+
 }

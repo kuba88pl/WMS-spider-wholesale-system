@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RequestMapping("/api/orders")
@@ -89,9 +90,20 @@ public class OrderController {
         try {
             Order order = orderService.getOrderById(id);
             return ResponseEntity.ok(order);
-        }catch (OrderNotFoundException e) {
+        } catch (OrderNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("stats")
+    public ResponseEntity<List<Map<String, Object>>> getMonthlyStatistics() {
+        try {
+            List<Map<String, Object>> stats = orderService.getMonthlyOrderStatistics();
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            logger.error("Error fetching monthly order statistics: {}", e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
 }

@@ -1,13 +1,16 @@
 package com.WMS_spiders_wholesale_system.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "spiders")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Spider {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,14 +28,14 @@ public class Spider {
     private double price;
     @Column(name = "is_cites")
     private boolean isCites;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id", columnDefinition = "VARCHAR(36)")
     @JsonBackReference(value = "order-spider")
     private Order order;
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    @JsonBackReference(value = "customer-spider")
-    private Customer customer;
+//    @ManyToOne
+//    @JoinColumn(name = "customer_id")
+//    @JsonBackReference(value = "customer-spider")
+//    private Customer customer;
 
     public Spider() {
     }
@@ -119,11 +122,11 @@ public class Spider {
         isCites = cites;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
+//    public Customer getCustomer() {
+//        return customer;
+//    }
+//
+//    public void setCustomer(Customer customer) {
+//        this.customer = customer;
+//    }
 }
