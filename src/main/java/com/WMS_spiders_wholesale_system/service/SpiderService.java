@@ -71,7 +71,6 @@ public class SpiderService {
         if (spider == null) {
             throw new InvalidSpiderDataException("Spider cannot be null");
         }
-
         if ((spider.getSpeciesName() == null) || spider.getSpeciesName().isEmpty()
                 || (spider.getTypeName() == null) || spider.getTypeName().isEmpty()) {
             throw new InvalidSpiderDataException("Spider species name or type name cannot be null or empty");
@@ -84,5 +83,4 @@ public class SpiderService {
         }
         logger.info("Validating spider: " + spider.getId());
     }
-
 }

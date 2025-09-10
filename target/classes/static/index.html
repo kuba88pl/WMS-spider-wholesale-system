@@ -276,15 +276,13 @@
         if (selectedSpiders.length === 0) { alert('Proszę dodać pająki do zamówienia.'); return; }
 
         const simplifiedSpiders = selectedSpiders.map(s => ({
-            id: s.id,
+            spiderId: s.id,
             quantity: s.quantity
         }));
 
         const order = {
-            customer: { id: selectedCustomer.id },
-            orderedSpiders: simplifiedSpiders,
-            status: 'NEW',
-            date: new Date().toISOString().slice(0, 10)
+            customerId: selectedCustomer.id,
+            orderedSpiders: simplifiedSpiders
         };
 
         const response = await fetch(`${API_URL}/orders`, {
@@ -298,7 +296,9 @@
             loadOrders(currentPage.orders);
             bootstrap.Modal.getInstance(document.getElementById('newOrderModal')).hide();
         } else {
-            alert('Wystąpił błąd podczas tworzenia zamówienia.');
+            const errorText = await response.text();
+            alert('Wystąpił błąd podczas tworzenia zamówienia: ' + errorText);
+            console.error(errorText);
         }
     }
 
@@ -315,7 +315,12 @@
             }
             const order = await response.json();
 
-            const customer = order.customer;
+            let customer = null;
+            if (order.customerId) {
+                const customerResponse = await fetch(`${API_URL}/customers/${order.customerId}`);
+                customer = await customerResponse.json();
+            }
+
             const spiders = order.orderedSpiders;
 
             const customerInfo = `
@@ -330,17 +335,20 @@
             const spidersList = spiders && spiders.length > 0 ? `
                 <h4>Zamówione pająki</h4>
                 <ul class="list-group">
-                    ${spiders.map(s => `<li class="list-group-item d-flex justify-content-between">
-                        <div>
-                            <strong>${s.typeName} ${s.speciesName}</strong>
-                            <br>
-                            <small>Rozmiar: ${s.size}</small>
-                        </div>
-                        <span class="badge bg-primary rounded-pill">${s.quantity} szt.</span>
-                        <span>${s.price.toFixed(2)} zł/szt.</span>
-                    </li>`).join('')}
+                    ${spiders.map(s => {
+                const price = s.price !== undefined && s.price !== null ? s.price : 0;
+                return `<li class="list-group-item d-flex justify-content-between">
+                            <div>
+                                <strong>${s.typeName} ${s.speciesName}</strong>
+                                <br>
+                                <small>Rozmiar: ${s.size}</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">${s.quantity} szt.</span>
+                            <span>${(price * s.quantity).toFixed(2)} zł</span>
+                        </li>`;
+            }).join('')}
                 </ul>
-                <p class="mt-3"><strong>Całkowita cena:</strong> ${order.price.toFixed(2)} zł</p>
+                <p class="mt-3"><strong>Całkowita cena:</strong> ${order.price ? order.price.toFixed(2) : 'Brak danych'} zł</p>
             ` : `<p>Brak pająków w tym zamówieniu.</p>`;
 
             modalBody.innerHTML = `

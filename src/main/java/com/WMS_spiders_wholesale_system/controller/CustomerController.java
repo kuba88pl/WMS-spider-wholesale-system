@@ -77,7 +77,6 @@ public class CustomerController {
     }
 
     @GetMapping("/lastName/{lastName}")
-
     public ResponseEntity<List<Customer>> getCustomerByLastName(@PathVariable String lastName) {
         try {
             List<Customer> customers = customerService.getCustomerByLastName(lastName);

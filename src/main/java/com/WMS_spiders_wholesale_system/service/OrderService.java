@@ -1,5 +1,7 @@
 package com.WMS_spiders_wholesale_system.service;
 
+import com.WMS_spiders_wholesale_system.dto.OrderDTO;
+import com.WMS_spiders_wholesale_system.dto.OrderedSpiderDTO;
 import com.WMS_spiders_wholesale_system.entity.Customer;
 import com.WMS_spiders_wholesale_system.entity.Order;
 import com.WMS_spiders_wholesale_system.entity.OrderStatus;
@@ -44,44 +46,52 @@ public class OrderService {
     }
 
     @Transactional
-    public Order createOrder(Order order) {
-        if (order.getCustomer() == null || order.getCustomer().getId() == null) {
-            throw new InvalidOrderDataException("Customer or customer ID cannot be null");
+    public Order createOrder(OrderDTO orderDTO) {
+        if (orderDTO.getCustomerId() == null) {
+            throw new InvalidOrderDataException("Customer ID cannot be null");
         }
-        Customer customer = customerRepository.findById(order.getCustomer().getId()).orElseThrow(() -> new CustomerNotFoundException("Customer not found!"));
-        order.setCustomer(customer);
+        Customer customer = customerRepository.findById(orderDTO.getCustomerId())
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found!"));
 
-        if (order.getOrderedSpiders() != null && !order.getOrderedSpiders().isEmpty()) {
-            List<Spider> orderedSpidersWithQuantity = new ArrayList<>();
-            double totalPrice = 0.0;
-            for (Spider spiderFromRequest : order.getOrderedSpiders()) {
-                Spider fullSpider = spiderRepository.findById(spiderFromRequest.getId())
-                        .orElseThrow(() -> new SpiderNotFoundException("Spider with ID: " + spiderFromRequest.getId() + " not found!"));
-                fullSpider.setQuantity(spiderFromRequest.getQuantity());
-                fullSpider.setOrder(order);
-                orderedSpidersWithQuantity.add(fullSpider);
-                totalPrice += fullSpider.getPrice() * fullSpider.getQuantity();
-            }
-
-            order.setOrderedSpiders(orderedSpidersWithQuantity);
-            order.setPrice(totalPrice);
-        } else {
-            order.setPrice(0.0);
+        List<OrderedSpiderDTO> orderedSpidersDTO = orderDTO.getOrderedSpiders();
+        if (orderedSpidersDTO == null || orderedSpidersDTO.isEmpty()) {
+            throw new InvalidOrderDataException("Order must contain at least one spider");
         }
-        validateOrder(order);
-        Order savedOrder = orderRepository.save(order);
-        logger.info("Created new order: {}", order.getOrderId());
-        return orderRepository.findById(savedOrder.getOrderId()).orElseThrow(() -> new OrderNotFoundException("Order with ID: " + savedOrder.getOrderId() + " not found!"));
+        List<Spider> spidersToOrder = new ArrayList<>();
+        double totalPrice = 0.0;
+
+        Order newOrder = new Order();
+        newOrder.setCustomer(customer);
+        newOrder.setStatus(OrderStatus.NEW);
+        newOrder.setDate(LocalDate.now());
+
+        Order savedOrder = orderRepository.save(newOrder);
+
+        for (OrderedSpiderDTO spiderDTO : orderedSpidersDTO) {
+            Spider spider = spiderRepository.findById(spiderDTO.getSpiderId())
+                    .orElseThrow(() -> new SpiderNotFoundException("Spider with ID: " + spiderDTO.getSpiderId() + " not found!"));
+            spider.setQuantity(spiderDTO.getQuantity());
+            spider.setOrder(savedOrder);
+            spidersToOrder.add(spider);
+            totalPrice += spider.getPrice() * spider.getQuantity();
+            spiderRepository.save(spider);
+        }
+
+        savedOrder.setOrderedSpiders(spidersToOrder);
+        savedOrder.setPrice(totalPrice);
+        Order finalOrder = orderRepository.save(savedOrder);
+
+        logger.info("Created new order: {}", finalOrder.getOrderId());
+        return finalOrder;
     }
 
     @Transactional
-    public Order updateStatus(Order order, OrderStatus orderStatus) {
-        if (!orderRepository.existsById(order.getOrderId())) {
-            throw new OrderNotFoundException("Order not found: " + order.getOrderId());
-        }
-        order.setStatus(orderStatus);
-        logger.info("Updated order: " + order.getOrderId());
-        return orderRepository.save(order);
+    public Order updateStatus(UUID orderId, OrderStatus orderStatus) {
+        Order existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found: " + orderId));
+        existingOrder.setStatus(orderStatus);
+        logger.info("Updated order: " + existingOrder.getOrderId());
+        return orderRepository.save(existingOrder);
     }
 
     @Transactional
@@ -130,21 +140,5 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         return statsList;
-    }
-
-    public void validateOrder(Order order) {
-        if (order == null) {
-            throw new InvalidOrderDataException("Order cannot be null");
-        }
-        if (order.getDate() == null) {
-            throw new InvalidOrderDataException("Order date cannot be null");
-        }
-        if (order.getCustomer() == null || order.getCustomer().getId() == null) {
-            throw new InvalidOrderDataException("Customer or customer ID cannot be null");
-        }
-        if (order.getOrderedSpiders() == null || order.getOrderedSpiders().isEmpty()) {
-            throw new InvalidOrderDataException("Order must contain at least one spider");
-        }
-        logger.info("Validating order: " + order.getOrderId());
     }
 }

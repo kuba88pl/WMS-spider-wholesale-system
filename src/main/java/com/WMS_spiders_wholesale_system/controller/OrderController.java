@@ -1,5 +1,7 @@
 package com.WMS_spiders_wholesale_system.controller;
 
+import com.WMS_spiders_wholesale_system.dto.OrderDTO;
+import com.WMS_spiders_wholesale_system.dto.OrderMapper;
 import com.WMS_spiders_wholesale_system.entity.Order;
 import com.WMS_spiders_wholesale_system.entity.OrderStatus;
 import com.WMS_spiders_wholesale_system.exception.InvalidOrderDataException;
@@ -29,9 +31,9 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+    public ResponseEntity<Order> createOrder(@RequestBody OrderDTO orderDTO) {
         try {
-            Order createdOrder = orderService.createOrder(order);
+            Order createdOrder = orderService.createOrder(orderDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
         } catch (InvalidOrderDataException e) {
             logger.error("Invalid order data: {}", e.getMessage());
@@ -47,8 +49,7 @@ public class OrderController {
             @PathVariable UUID id,
             @PathVariable OrderStatus status) {
         try {
-            Order existingOrder = orderService.getOrderById(id);
-            Order updateOrder = orderService.updateStatus(existingOrder, status);
+            Order updateOrder = orderService.updateStatus(id, status);
             return ResponseEntity.ok(updateOrder);
         } catch (OrderNotFoundException e) {
             logger.error("Order with id {} not found", id);
@@ -63,7 +64,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Order> deleteOrder(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteOrder(@PathVariable UUID id) {
         try {
             orderService.deleteOrder(id);
             return ResponseEntity.noContent().build();
@@ -86,10 +87,11 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable UUID id) {
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable UUID id) {
         try {
             Order order = orderService.getOrderById(id);
-            return ResponseEntity.ok(order);
+            OrderDTO orderDTO = OrderMapper.toDTO(order);
+            return ResponseEntity.ok(orderDTO);
         } catch (OrderNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -102,8 +104,7 @@ public class OrderController {
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
             logger.error("Error fetching monthly order statistics: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-
 }
