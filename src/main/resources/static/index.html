@@ -337,11 +337,15 @@
                 <ul class="list-group">
                     ${spiders.map(s => {
                 const price = s.price !== undefined && s.price !== null ? s.price : 0;
+                const typeName = s.typeName || 'Brak danych';
+                const speciesName = s.speciesName || 'Brak danych';
+                const size = s.size || 'Brak danych';
+
                 return `<li class="list-group-item d-flex justify-content-between">
                             <div>
-                                <strong>${s.typeName} ${s.speciesName}</strong>
+                                <strong>${typeName} ${speciesName}</strong>
                                 <br>
-                                <small>Rozmiar: ${s.size}</small>
+                                <small>Rozmiar: ${size}</small>
                             </div>
                             <span class="badge bg-primary rounded-pill">${s.quantity} szt.</span>
                             <span>${(price * s.quantity).toFixed(2)} zł</span>

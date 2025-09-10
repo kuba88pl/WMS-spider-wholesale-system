@@ -20,7 +20,11 @@ public class OrderMapper {
                     .map(s -> {
                         OrderedSpiderDTO orderedSpiderDTO = new OrderedSpiderDTO();
                         orderedSpiderDTO.setSpiderId(s.getId());
+                        orderedSpiderDTO.setTypeName(s.getTypeName());
+                        orderedSpiderDTO.setSpeciesName(s.getSpeciesName());
                         orderedSpiderDTO.setQuantity(s.getQuantity());
+                        orderedSpiderDTO.setSize(s.getSize());
+                        orderedSpiderDTO.setPrice(s.getPrice());
                         return orderedSpiderDTO;
                     })
                     .collect(Collectors.toList()));
