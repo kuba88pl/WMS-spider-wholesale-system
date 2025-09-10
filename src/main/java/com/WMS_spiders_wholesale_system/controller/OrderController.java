@@ -84,4 +84,14 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrderById(@PathVariable UUID id) {
+        try {
+            Order order = orderService.getOrderById(id);
+            return ResponseEntity.ok(order);
+        }catch (OrderNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 }

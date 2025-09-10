@@ -1,6 +1,7 @@
 package com.WMS_spiders_wholesale_system.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class Spider {
     private boolean isCites;
     @ManyToOne
     @JoinColumn(name = "order_id", columnDefinition = "VARCHAR(36)")
-    @JsonBackReference(value ="order-spider")
+    @JsonBackReference(value = "order-spider")
     private Order order;
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -114,5 +115,15 @@ public class Spider {
         return isCites;
     }
 
+    public void setCites(boolean cites) {
+        isCites = cites;
+    }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 }

@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -39,18 +38,18 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(Order order) {
-        Order newOrder = new Order();
+        if (order.getOrderedSpiders() != null) {
+            for (Spider spider : order.getOrderedSpiders()) {
+                spider.setOrder(order);
+            }
+            double totalPrice = order.getOrderedSpiders().stream()
+                    .mapToDouble(spider -> spider.getPrice() * spider.getQuantity())
+                    .sum();
+            order.setPrice(totalPrice);
+        }
         validateOrder(order);
-        newOrder.setCustomer(order.getCustomer());
-        newOrder.setDate(order.getDate());
-        newOrder.setStatus(order.getStatus());
-        List<UUID> spiderIds = order.getOrderedSpiders().stream()
-                .map(Spider::getId)
-                .collect(Collectors.toList());
-        List<Spider> orderedSpiders = spiderRepository.findAllById(spiderIds);
-        newOrder.setOrderedSpiders(orderedSpiders);
-        logger.info("Created new order: " + order.getOrderId());
-        return orderRepository.save(newOrder);
+        logger.info("Created new order: {}", order.getOrderId());
+        return orderRepository.save(order);
     }
 
     @Transactional
@@ -89,16 +88,12 @@ public class OrderService {
         if (order.getDate() == null) {
             throw new InvalidOrderDataException("Order date cannot be null");
         }
-        if (order.getCustomer() == null) {
+        if (order.getCustomer() == null || order.getCustomer().getId() == null) {
             throw new InvalidOrderDataException("orderedSpiders cannot be null");
         }
         if (order.getCustomer().getId() == null) {
             throw new InvalidOrderDataException("customerId cannot be null");
         }
-        if (order.getPrice() >= 0) {
-            throw new InvalidOrderDataException("price cannot be negative");
-        }
         logger.info("Validating order: " + order.getOrderId());
     }
-
 }

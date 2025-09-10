@@ -22,11 +22,11 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private OrderStatus status;
-    @ManyToOne
+    @ManyToOne(fetch= FetchType.EAGER)
     @JoinColumn(name = "customer_id", columnDefinition = "VARCHAR(36)")
     @JsonBackReference(value = "customer-order")
     private Customer customer;
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade =CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference(value = "order-spider")
     private List<Spider> orderedSpiders;
 
