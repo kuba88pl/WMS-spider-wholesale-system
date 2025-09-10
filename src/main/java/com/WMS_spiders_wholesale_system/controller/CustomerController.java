@@ -1,6 +1,7 @@
 package com.WMS_spiders_wholesale_system.controller;
 
 import com.WMS_spiders_wholesale_system.entity.Customer;
+import com.WMS_spiders_wholesale_system.exception.CustomerAlreadyExistsException;
 import com.WMS_spiders_wholesale_system.exception.CustomerNotFoundException;
 import com.WMS_spiders_wholesale_system.exception.InvalidCustomerDataException;
 import com.WMS_spiders_wholesale_system.service.CustomerService;
@@ -26,13 +27,16 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
-        logger.info("Recived customer: {}", customer);
+        logger.info("Received customer: {}", customer);
         try {
             Customer newCustomer = customerService.addCustomer(customer);
             return ResponseEntity.status(HttpStatus.CREATED).body(newCustomer);
         } catch (InvalidCustomerDataException e) {
             logger.error("Invalid customer data: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (CustomerAlreadyExistsException e) {
+            logger.error("Customer already exists: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } catch (Exception e) {
             logger.error("An unexpected error occurred while adding customer", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -50,6 +54,9 @@ public class CustomerController {
         } catch (InvalidCustomerDataException e) {
             logger.error("Invalid customer data: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (CustomerAlreadyExistsException e) {
+            logger.error("Customer already exists: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } catch (Exception e) {
             logger.error("An unexpected error occurred while updating customer", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
