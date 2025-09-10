@@ -91,9 +91,6 @@ public class OrderService {
         if (order.getCustomer() == null || order.getCustomer().getId() == null) {
             throw new InvalidOrderDataException("orderedSpiders cannot be null");
         }
-        if (order.getCustomer().getId() == null) {
-            throw new InvalidOrderDataException("customerId cannot be null");
-        }
         logger.info("Validating order: " + order.getOrderId());
     }
 }
