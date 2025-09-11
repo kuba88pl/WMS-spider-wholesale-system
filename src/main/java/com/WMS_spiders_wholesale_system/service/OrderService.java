@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -90,5 +91,9 @@ public class OrderService {
 
     public Page<Order> getAllOrders(int page, int size, Sort sort) {
         return orderRepository.findAll(PageRequest.of(page, size, sort));
+    }
+
+    public Optional<Order> findById(UUID id) {
+        return orderRepository.findById(id);
     }
 }

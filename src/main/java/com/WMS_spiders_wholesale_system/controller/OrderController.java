@@ -5,6 +5,8 @@ import com.WMS_spiders_wholesale_system.dto.OrderMapper;
 import com.WMS_spiders_wholesale_system.entity.Order;
 import com.WMS_spiders_wholesale_system.exception.OrderNotFoundException;
 import com.WMS_spiders_wholesale_system.service.OrderService;
+
+import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,5 +58,12 @@ public class OrderController {
     public ResponseEntity<Page<OrderDTO>> getAllOrders(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "date") String sortBy) {
         Page<Order> orderPage = this.orderService.getAllOrders(page, size, Sort.by(new String[]{sortBy}));
         return ResponseEntity.ok(OrderMapper.toDTOPage(orderPage));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrderById(@PathVariable UUID id) {
+        Optional<Order> order = orderService.findById(id);
+        return order.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
