@@ -10,9 +10,39 @@
         .container { max-width: 960px; }
         .table th, .table td { vertical-align: middle; }
         .table thead th { background-color: #343a30; color: white; }
-        .table-new-order { background-color: #d1e7dd; }
-        .table-cancelled-order { background-color: #f8d7da; }
+        .table-new-order { background-color: #d1e7dd; } /* Zielony */
+        .table-cancelled-order { background-color: #f8d7da; } /* Czerwony */
+        .table-shipped-order { background-color: #cfe2ff; } /* Niebieski */
         .modal-xl { --bs-modal-width: 90%; }
+
+        /* Nowe, poprawione reguły CSS do drukowania */
+        @media print {
+            .navbar, .container, .modal-backdrop {
+                display: none !important;
+            }
+            #orderDetailsModal {
+                position: static !important;
+                display: block !important;
+                visibility: visible !important;
+                top: auto !important;
+                left: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+            #orderDetailsModal .modal-footer, #orderDetailsModal .modal-header .btn-close {
+                display: none !important;
+            }
+            #orderDetailsModal .modal-content {
+                border: none !important;
+                box-shadow: none !important;
+            }
+            #orderDetailsModal .modal-dialog {
+                width: 100% !important;
+                max-width: none !important;
+                margin: 0 !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -146,6 +176,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                <button type="button" class="btn btn-primary" onclick="printOrderDetails()">Drukuj</button>
             </div>
         </div>
     </div>
@@ -169,6 +200,16 @@
         <table class="table table-striped">
             <thead><tr><th>ID</th><th>Data</th><th>Klient</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead>
             <tbody id="inProgressOrdersTableBody"></tbody>
+        </table>
+        <h4 class="mt-4">Zamówienia wysłane</h4>
+        <table class="table table-striped">
+            <thead><tr><th>ID</th><th>Data</th><th>Klient</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead>
+            <tbody id="shippedOrdersTableBody"></tbody>
+        </table>
+        <h4 class="mt-4">Zamówienia zrealizowane</h4>
+        <table class="table table-striped">
+            <thead><tr><th>ID</th><th>Data</th><th>Klient</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead>
+            <tbody id="completedOrdersTableBody"></tbody>
         </table>
         <h4 class="mt-4">Zamówienia anulowane</h4>
         <table class="table table-striped">
@@ -308,7 +349,8 @@
             orderedSpiders: Array.from(selectedSpiders.values()).map(s => ({
                 spiderId: s.id,
                 quantity: s.quantity
-            }))
+            })),
+            status: 'NEW'
         };
 
         try {
@@ -345,18 +387,46 @@
     async function loadOrders() {
         try {
             const data = await fetchOrders(0, 1000, 'date');
+            console.log("Fetched orders:", data.content);
             const newOrdersBody = document.getElementById('newOrdersTableBody');
             const inProgressOrdersBody = document.getElementById('inProgressOrdersTableBody');
+            const shippedOrdersBody = document.getElementById('shippedOrdersTableBody');
+            const completedOrdersBody = document.getElementById('completedOrdersTableBody');
             const cancelledOrdersBody = document.getElementById('cancelledOrdersTableBody');
             newOrdersBody.innerHTML = '';
             inProgressOrdersBody.innerHTML = '';
+            shippedOrdersBody.innerHTML = '';
+            completedOrdersBody.innerHTML = '';
             cancelledOrdersBody.innerHTML = '';
 
             data.content.forEach(order => {
                 const row = document.createElement('tr');
                 const customerName = order.customer ? `${order.customer.firstName} ${order.customer.lastName}` : 'N/A';
-                const rowClass = order.status === 'CANCELLED' ? 'table-cancelled-order' : (order.status === 'PENDING' ? 'table-new-order' : '');
+
+                let rowClass = '';
+                if (order.status === 'NEW') {
+                    rowClass = 'table-new-order';
+                } else if (order.status === 'CANCELLED') {
+                    rowClass = 'table-cancelled-order';
+                } else if (order.status === 'SHIPPED') {
+                    rowClass = 'table-shipped-order';
+                }
+
                 row.className = rowClass;
+
+                let actionButtons = '';
+                if (order.status === 'NEW' || order.status === 'PENDING' || order.status === 'IN_PROGRESS' || order.status === 'SHIPPED') {
+                    actionButtons = `
+                        <button class="btn btn-sm btn-info" onclick="showOrderDetails('${order.id}')">Szczegóły</button>
+                        <button class="btn btn-sm btn-warning" onclick="openStatusModal('${order.id}', '${order.status}')">Status</button>
+                        <button class="btn btn-sm btn-danger" onclick="cancelOrder('${order.id}')">Anuluj</button>
+                    `;
+                } else if (order.status === 'COMPLETED' || order.status === 'CANCELLED') {
+                    actionButtons = `
+                        <button class="btn btn-sm btn-info" onclick="showOrderDetails('${order.id}')">Szczegóły</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteOrder('${order.id}')">Usuń</button>
+                    `;
+                }
 
                 row.innerHTML = `
                     <td>${order.id.substring(0, 8)}</td>
@@ -364,17 +434,17 @@
                     <td>${customerName}</td>
                     <td>${order.status}</td>
                     <td>${order.price.toFixed(2)} zł</td>
-                    <td>
-                        <button class="btn btn-sm btn-info" onclick="showOrderDetails('${order.id}')">Szczegóły</button>
-                        <button class="btn btn-sm btn-warning" onclick="openStatusModal('${order.id}', '${order.status}')">Status</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteOrder('${order.id}')">Usuń</button>
-                    </td>
+                    <td>${actionButtons}</td>
                 `;
 
-                if (order.status === 'PENDING') {
+                if (order.status === 'NEW') {
                     newOrdersBody.appendChild(row);
-                } else if (order.status === 'IN_PROGRESS' || order.status === 'SHIPPED') {
+                } else if (order.status === 'PENDING' || order.status === 'IN_PROGRESS') {
                     inProgressOrdersBody.appendChild(row);
+                } else if (order.status === 'SHIPPED') {
+                    shippedOrdersBody.appendChild(row);
+                } else if (order.status === 'COMPLETED') {
+                    completedOrdersBody.appendChild(row);
                 } else if (order.status === 'CANCELLED') {
                     cancelledOrdersBody.appendChild(row);
                 }
@@ -393,13 +463,25 @@
             }
             const order = await response.json();
             const detailsContent = document.getElementById('orderDetailsContent');
+            const customer = order.customer;
             detailsContent.innerHTML = `
-                <h5>Szczegóły zamówienia</h5>
-                <p><strong>ID:</strong> ${order.id}</p>
-                <p><strong>Data:</strong> ${order.date}</p>
-                <p><strong>Klient:</strong> ${order.customer ? `${order.customer.firstName} ${order.customer.lastName}` : 'N/A'}</p>
-                <p><strong>Status:</strong> ${order.status}</p>
-                <p><strong>Cena:</strong> ${order.price.toFixed(2)} zł</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Szczegóły zamówienia</h5>
+                        <p><strong>ID:</strong> ${order.id}</p>
+                        <p><strong>Data:</strong> ${order.date}</p>
+                        <p><strong>Status:</strong> ${order.status}</p>
+                        <p><strong>Cena:</strong> ${order.price.toFixed(2)} zł</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Dane Klienta</h5>
+                        <p><strong>Imię i Nazwisko:</strong> ${customer ? `${customer.firstName} ${customer.lastName}` : 'N/A'}</p>
+                        <p><strong>Telefon:</strong> ${customer.telephone || 'Brak'}</p>
+                        <p><strong>Email:</strong> ${customer.email || 'Brak'}</p>
+                        <p><strong>Adres:</strong> ${customer.address || 'Brak'}</p>
+                        <p><strong>Paczkomat:</strong> ${customer.parcelLocker || 'Brak'}</p>
+                    </div>
+                </div>
                 <hr>
                 <h6>Zamówione pająki:</h6>
                 <table class="table table-sm table-striped">
@@ -444,26 +526,48 @@
     }
 
     async function deleteOrder(id) { if (!confirm('Czy na pewno chcesz usunąć to zamówienie?')) return; try { const response = await fetch(`${API_URL}/orders/${id}`, { method: 'DELETE' }); if (response.ok) { alert('Zamówienie usunięte pomyślnie!'); loadOrders(); } else { throw new Error('Błąd podczas usuwania zamówienia'); } } catch (error) { console.error('Błąd:', error); alert('Wystąpił błąd podczas usuwania zamówienia.'); } }
-    async function openStatusModal(orderId, currentStatus) { const modal = new bootstrap.Modal(document.getElementById('orderStatusModal')); const form = document.getElementById('statusForm'); form.onsubmit = (e) => updateOrderStatus(e); document.getElementById('orderIdToUpdate').value = orderId; const select = document.getElementById('orderStatusSelect'); select.innerHTML = ''; ['PENDING', 'IN_PROGRESS', 'SHIPPED', 'COMPLETED', 'CANCELLED'].forEach(status => { const option = document.createElement('option'); option.value = status; option.text = status; if (status === currentStatus) option.selected = true; select.appendChild(option); }); modal.show(); }
+    async function cancelOrder(id) {
+        if (!confirm('Czy na pewno chcesz anulować to zamówienie?')) return;
+        try {
+            const response = await fetch(`${API_URL}/orders/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'CANCELLED' })
+            });
 
-    // ZMIENIONA FUNKCJA updateOrderStatus
+            if (response.ok) {
+                alert('Zamówienie zostało anulowane!');
+                loadOrders();
+            } else {
+                const errorData = await response.json();
+                alert(`Błąd podczas anulowania zamówienia: ${errorData.message || response.statusText}`);
+            }
+        } catch (error) {
+            console.error('Błąd:', error);
+            alert('Wystąpił błąd podczas anulowania zamówienia.');
+        }
+    }
+    async function openStatusModal(orderId, currentStatus) { const modal = new bootstrap.Modal(document.getElementById('orderStatusModal')); const form = document.getElementById('statusForm'); form.onsubmit = (e) => updateOrderStatus(e); document.getElementById('orderIdToUpdate').value = orderId; const select = document.getElementById('orderStatusSelect'); select.innerHTML = ''; ['NEW', 'PENDING', 'IN_PROGRESS', 'SHIPPED', 'COMPLETED', 'CANCELLED'].forEach(status => { const option = document.createElement('option'); option.value = status; option.text = status; if (status === currentStatus) option.selected = true; select.appendChild(option); }); modal.show(); }
+
     async function updateOrderStatus(e) {
         e.preventDefault();
         const orderId = document.getElementById('orderIdToUpdate').value;
         const newStatus = document.getElementById('orderStatusSelect').value;
+
         try {
             const response = await fetch(`${API_URL}/orders/${orderId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus })
             });
+
             if (response.ok) {
                 alert('Status zamówienia został zaktualizowany!');
                 bootstrap.Modal.getInstance(document.getElementById('orderStatusModal')).hide();
                 loadOrders();
             } else {
                 const errorData = await response.json();
-                alert(`Błąd podczas aktualizacji statusu: ${errorData.message || response.statusText}`);
+                throw new Error(`Błąd podczas aktualizacji statusu: ${errorData.message || response.statusText}`);
             }
         } catch (error) {
             console.error('Błąd:', error);
@@ -478,6 +582,10 @@
     async function saveSpider(e) { e.preventDefault(); const id = document.getElementById('spiderId').value; const spider = { id: id || null, typeName: document.getElementById('typeName').value, speciesName: document.getElementById('speciesName').value, quantity: document.getElementById('quantity').value, size: document.getElementById('size').value, price: document.getElementById('price').value, isCites: document.getElementById('isCites').checked }; const method = id ? 'PUT' : 'POST'; try { const response = await fetch(`${API_URL}/spiders`, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(spider) }); if (response.ok) { alert(`Pająk został ${id ? 'zaktualizowany' : 'dodany'} pomyślnie!`); bootstrap.Modal.getInstance(document.getElementById('spiderModal')).hide(); loadSpiders(currentPage.spiders); } else { throw new Error(`HTTP error! status: ${response.status}`); } } catch (error) { console.error('Error saving spider:', error); alert('Wystąpił błąd podczas zapisywania pająka.'); } }
     async function deleteSpider(id) { if (!confirm('Czy na pewno chcesz usunąć tego pająka?')) return; try { const response = await fetch(`${API_URL}/spiders/${id}`, { method: 'DELETE' }); if (response.ok) { alert('Pająk usunięty pomyślnie!'); loadSpiders(currentPage.spiders); } else if (response.status === 404) { alert('Pająk nie istnieje.'); } else { throw new Error(`HTTP error! status: ${response.status}`); } } catch (error) { console.error('Error deleting spider:', error); alert('Wystąpił błąd podczas usuwania pająka.'); } }
     function createPagination(section, totalPages, currentPage, loadFunction) { const pagination = document.getElementById(`${section}Pagination`); pagination.innerHTML = ''; for (let i = 0; i < totalPages; i++) { const li = document.createElement('li'); li.className = `page-item ${i === currentPage ? 'active' : ''}`; li.innerHTML = `<a class="page-link" href="#" onclick="loadFunction(${i})">${i + 1}</a>`; pagination.appendChild(li); } }
+
+    function printOrderDetails() {
+        window.print();
+    }
 
     // Initial load
     showSection('welcome-section');

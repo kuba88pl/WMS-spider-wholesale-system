@@ -38,7 +38,7 @@ public class Order implements Serializable {
 
     public Order() {
         this.date = LocalDate.now();
-        this.status = OrderStatus.PENDING;
+        this.status = OrderStatus.NEW;
     }
 
     // Getters and Setters

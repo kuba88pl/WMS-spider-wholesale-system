@@ -46,7 +46,7 @@ public class OrderService {
         Order newOrder = new Order();
         newOrder.setCustomer(customer);
         newOrder.setDate(LocalDate.now());
-        newOrder.setStatus(OrderStatus.PENDING);
+        newOrder.setStatus(OrderStatus.NEW);
 
         List<OrderedSpider> orderedSpiders = orderDTO.getOrderedSpiders().stream()
                 .map(itemDTO -> {
