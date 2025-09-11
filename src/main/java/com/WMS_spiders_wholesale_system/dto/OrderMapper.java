@@ -1,11 +1,16 @@
 package com.WMS_spiders_wholesale_system.dto;
 
 import com.WMS_spiders_wholesale_system.entity.Order;
-import com.WMS_spiders_wholesale_system.entity.Spider;
+import com.WMS_spiders_wholesale_system.entity.OrderedSpider;
+import com.WMS_spiders_wholesale_system.service.SpiderService;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderMapper {
+
+    // Przebudowana metoda toDTO
     public static OrderDTO toDTO(Order order) {
         OrderDTO dto = new OrderDTO();
         dto.setOrderId(order.getOrderId());
@@ -15,19 +20,13 @@ public class OrderMapper {
         if (order.getCustomer() != null) {
             dto.setCustomerId(order.getCustomer().getId());
         }
+
+        // Zmieniona logika mapowania OrderedSpider
         if (order.getOrderedSpiders() != null) {
-            dto.setOrderedSpiders(order.getOrderedSpiders().stream()
-                    .map(s -> {
-                        OrderedSpiderDTO orderedSpiderDTO = new OrderedSpiderDTO();
-                        orderedSpiderDTO.setSpiderId(s.getId());
-                        orderedSpiderDTO.setTypeName(s.getTypeName());
-                        orderedSpiderDTO.setSpeciesName(s.getSpeciesName());
-                        orderedSpiderDTO.setQuantity(s.getQuantity());
-                        orderedSpiderDTO.setSize(s.getSize());
-                        orderedSpiderDTO.setPrice(s.getPrice());
-                        return orderedSpiderDTO;
-                    })
-                    .collect(Collectors.toList()));
+            List<OrderedSpiderDTO> orderedSpiders = order.getOrderedSpiders().stream()
+                    .map(OrderedSpiderMapper::toDTO)
+                    .collect(Collectors.toList());
+            dto.setOrderedSpiders(orderedSpiders);
         }
         return dto;
     }

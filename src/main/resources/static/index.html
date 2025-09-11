@@ -3,151 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WMS - System zarządzania hurtownią pająków</title>
+    <title>WMS - Spider Wholesale System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .container { max-width: 960px; }
-        .table th, .table td { vertical-align: middle; }
-        .table thead th { background-color: #343a40; color: white; }
-        .table-success, .table-success > td {
-            background-color: #d1e7dd !important;
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
         }
-        .table-danger, .table-danger > td {
-            background-color: #f8d7da !important;
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .container-fluid {
+            padding: 20px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        .table {
+            background-color: #fff;
+        }
+        .table thead th {
+            background-color: #e9ecef;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .modal-content {
+            border-radius: 10px;
+        }
+        .modal-header, .modal-footer {
+            border: none;
+        }
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">WMS</a>
+        <a class="navbar-brand" href="#">WMS System</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#" data-section="customers">Klienci</a></li>
-                <li class="nav-item"><a class="nav-link" href="#" data-section="orders">Zamówienia</a></li>
-                <li class="nav-item"><a class="nav-link" href="#" data-section="spiders">Pająki</a></li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#" onclick="showSection('customers')">Klienci</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('spiders')">Pająki</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('orders')">Zamówienia</a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
 
-<div class="container mt-5">
-    <div id="content">
-        <div id="welcome-section" class="text-center">
-            <h1>Witaj w systemie WMS</h1>
-            <p class="lead">Zarządzaj klientami, zamówieniami i pająkami.</p>
-            <p>
-                <button class="btn btn-primary btn-lg m-2" onclick="showSection('customers')">Przejdź do klientów</button>
-                <button class="btn btn-secondary btn-lg m-2" onclick="showSection('orders')">Przejdź do zamówień</button>
-                <button class="btn btn-success btn-lg m-2" onclick="showSection('spiders')">Przejdź do pająków</button>
-            </p>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="customerModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Dodaj/Edytuj klienta</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <form id="customerForm"><input type="hidden" id="customerId">
-                    <div class="mb-3"><label for="firstName" class="form-label">Imię</label><input type="text" class="form-control" id="firstName" required></div>
-                    <div class="mb-3"><label for="lastName" class="form-label">Nazwisko</label><input type="text" class="form-control" id="lastName" required></div>
-                    <div class="mb-3"><label for="telephone" class="form-label">Telefon</label><input type="text" class="form-control" id="telephone"></div>
-                    <div class="mb-3"><label for="email" class="form-label">Email</label><input type="email" class="form-control" id="email"></div>
-                    <div class="mb-3"><label for="address" class="form-label">Adres</label><input type="text" class="form-control" id="address"></div>
-                    <div class="mb-3"><label for="parcelLocker" class="form-label">Paczkomat</label><input type="text" class="form-control" id="parcelLocker"></div>
-                    <button type="submit" class="btn btn-primary">Zapisz</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="spiderModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Dodaj/Edytuj pająka</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <form id="spiderForm"><input type="hidden" id="spiderId">
-                    <div class="mb-3"><label for="typeName" class="form-label">Typ</label><input type="text" class="form-control" id="typeName" required></div>
-                    <div class="mb-3"><label for="speciesName" class="form-label">Gatunek</label><input type="text" class="form-control" id="speciesName" required></div>
-                    <div class="mb-3"><label for="quantity" class="form-label">Ilość</label><input type="number" class="form-control" id="quantity" required></div>
-                    <div class="mb-3"><label for="size" class="form-label">Rozmiar</label><input type="text" class="form-control" id="size" required></div>
-                    <div class="mb-3"><label for="price" class="form-label">Cena</label><input type="number" step="0.01" class="form-control" id="price" required></div>
-                    <button type="submit" class="btn btn-primary">Zapisz</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="orderStatusModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Zmień status zamówienia</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <form id="statusForm"><input type="hidden" id="orderIdToUpdate">
-                    <div class="mb-3"><label for="orderStatusSelect" class="form-label">Nowy status</label><select class="form-select" id="orderStatusSelect" required></select></div>
-                    <button type="submit" class="btn btn-primary">Zapisz</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="newOrderModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title">Stwórz nowe zamówienie</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4>Wybierz klienta</h4>
-                        <table class="table table-sm table-hover">
-                            <thead><tr><th>Imię</th><th>Nazwisko</th><th>Akcja</th></tr></thead>
-                            <tbody id="orderCustomerList"></tbody>
-                        </table>
-                        <div id="selectedCustomerDetails" class="alert alert-info mt-3" style="display: none;">
-                            <strong>Wybrano klienta:</strong>
-                            <p id="customerName"></p>
-                            <p id="customerContact"></p>
-                            <p id="customerAddress"></p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <h4>Wybierz pająki</h4>
-                        <table class="table table-sm table-hover">
-                            <thead><tr><th>Typ</th><th>Gatunek</th><th>Ilość na stanie</th><th>Ilość do zamówienia</th><th>Akcja</th></tr></thead>
-                            <tbody id="orderSpiderList"></tbody>
-                        </table>
-                        <hr>
-                        <h5>Wybrane pająki:</h5>
-                        <ul id="selectedSpidersList" class="list-group list-group-flush"></ul>
-                        <hr>
-                        <h5 id="orderTotalPrice">Całkowita cena: 0.00 zł</h5>
-                    </div>
+<main class="container-fluid mt-4">
+    <section id="customersSection" class="active-section">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">Zarządzanie klientami</h2>
+                <button class="btn btn-primary mb-3" onclick="showCustomerModal()">Dodaj nowego klienta</button>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>Imię</th>
+                            <th>Nazwisko</th>
+                            <th>Telefon</th>
+                            <th>E-mail</th>
+                            <th>Adres</th>
+                            <th>Paczkomat</th>
+                            <th>Akcje</th>
+                        </tr>
+                        </thead>
+                        <tbody id="customersTableBody">
+                        <tr><td colspan="7" class="text-center">Ładowanie danych...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                <button class="btn btn-success mt-3" onclick="createOrder()">Utwórz zamówienie</button>
+                <nav>
+                    <ul id="customersPagination" class="pagination justify-content-center"></ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+
+    <section id="spidersSection" style="display: none;">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">Zarządzanie pająkami</h2>
+                <button class="btn btn-primary mb-3" onclick="showSpiderModal()">Dodaj nowego pająka</button>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>Typ</th>
+                            <th>Gatunek</th>
+                            <th>Ilość</th>
+                            <th>Wielkość</th>
+                            <th>Cena</th>
+                            <th>CITES</th>
+                            <th>Akcje</th>
+                        </tr>
+                        </thead>
+                        <tbody id="spidersTableBody">
+                        <tr><td colspan="7" class="text-center">Ładowanie danych...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav>
+                    <ul id="spidersPagination" class="pagination justify-content-center"></ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+
+    <section id="ordersSection" style="display: none;">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">Zarządzanie zamówieniami</h2>
+                <button class="btn btn-primary mb-3" onclick="showOrderModal()">Dodaj nowe zamówienie</button>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>ID Zamówienia</th>
+                            <th>Data</th>
+                            <th>Cena</th>
+                            <th>Status</th>
+                            <th>Akcje</th>
+                        </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                        <tr><td colspan="5" class="text-center">Ładowanie danych...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav>
+                    <ul id="ordersPagination" class="pagination justify-content-center"></ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customerModalLabel">Klient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="customerForm" onsubmit="addOrUpdateCustomer(event)">
+                    <input type="hidden" id="customerId">
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">Imię</label>
+                        <input type="text" class="form-control" id="firstName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Nazwisko</label>
+                        <input type="text" class="form-control" id="lastName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telephone" class="form-label">Telefon</label>
+                        <input type="tel" class="form-control" id="telephone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Adres</label>
+                        <input type="text" class="form-control" id="address">
+                    </div>
+                    <div class="mb-3">
+                        <label for="parcelLocker" class="form-label">Paczkomat</label>
+                        <input type="text" class="form-control" id="parcelLocker">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Zapisz</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="spiderModal" tabindex="-1" aria-labelledby="spiderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="spiderModalLabel">Pająk</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="spiderForm" onsubmit="addOrUpdateSpider(event)">
+                    <input type="hidden" id="spiderId">
+                    <div class="mb-3">
+                        <label for="typeName" class="form-label">Typ</label>
+                        <input type="text" class="form-control" id="typeName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="speciesName" class="form-label">Gatunek</label>
+                        <input type="text" class="form-control" id="speciesName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Ilość</label>
+                        <input type="number" class="form-control" id="quantity" required min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="size" class="form-label">Wielkość</label>
+                        <input type="text" class="form-control" id="size">
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Cena</label>
+                        <input type="number" class="form-control" id="price" step="0.01" required min="0">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isCites">
+                        <label class="form-check-label" for="isCites">CITES</label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Zapisz</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Szczegóły zamówienia</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="orderModalLabel">Dodaj nowe zamówienie</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div id="orderDetailsContent"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-                <button type="button" class="btn btn-warning" id="changeStatusBtn">Zmień status</button>
+                <form id="orderForm" onsubmit="createOrder(event)">
+                    <div class="mb-3">
+                        <label for="orderCustomer" class="form-label">Wybierz Klienta</label>
+                        <select class="form-select" id="orderCustomer" required>
+                            <option value="">-- Wybierz klienta --</option>
+                        </select>
+                    </div>
+                    <h6 class="mt-4">Dodaj pająki do zamówienia</h6>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="spiderSelector" class="form-label">Pająk</label>
+                            <select class="form-select" id="spiderSelector">
+                                <option value="">-- Wybierz pająka --</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="spiderQuantity" class="form-label">Ilość</label>
+                            <input type="number" class="form-control" id="spiderQuantity" value="1" min="1">
+                        </div>
+                        <div class="col-auto d-flex align-items-end">
+                            <button type="button" class="btn btn-outline-secondary" onclick="addSpiderToOrder()">Dodaj</button>
+                        </div>
+                    </div>
+                    <ul id="orderedSpidersList" class="list-group"></ul>
+                    <div class="modal-footer mt-4">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary">Utwórz zamówienie</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -156,251 +306,90 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const API_URL = 'http://localhost:8080/api';
-    const contentDiv = document.getElementById('content');
-    let currentPage = {};
-    const totalPages = {};
 
-    const customersTemplate = `<h2>Lista klientów</h2><button class="btn btn-primary mb-3" onclick="openCustomerModal()">Dodaj nowego klienta</button><div class="input-group mb-3"><input type="text" id="searchLastName" class="form-control" placeholder="Wyszukaj po nazwisku..."><button class="btn btn-outline-secondary" type="button" onclick="searchCustomers()">Szukaj</button></div><table class="table table-striped"><thead><tr><th>Imię</th><th>Nazwisko</th><th>Telefon</th><th>Email</th><th>Akcje</th></tr></thead><tbody id="customersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="customersPagination"></ul></nav>`;
-    const ordersTemplate = `<h2>Nowe zamówienia</h2><table class="table table-striped"><thead><tr><th>ID Zamówienia</th><th>Data</th><th>Klient</th><th>Pająki</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead><tbody id="newOrdersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="newOrdersPagination"></ul></nav><h2 class="mt-5">Aktywne zamówienia <button class="btn btn-success float-end" onclick="openNewOrderModal()">Dodaj nowe zamówienie</button></h2><table class="table table-striped"><thead><tr><th>ID Zamówienia</th><th>Data</th><th>Klient</th><th>Pająki</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead><tbody id="activeOrdersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="activeOrdersPagination"></ul></nav><h2 class="mt-5">Ukończone zamówienia</h2><table class="table table-striped"><thead><tr><th>ID Zamówienia</th><th>Data</th><th>Klient</th><th>Pająki</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead><tbody id="completedOrdersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="completedOrdersPagination"></ul></nav><h2 class="mt-5">Anulowane zamówienia</h2><table class="table table-striped"><thead><tr><th>ID Zamówienia</th><th>Data</th><th>Klient</th><th>Pająki</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead><tbody id="cancelledOrdersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="cancelledOrdersPagination"></ul></nav>`;
-    const spidersTemplate = `<h2>Lista pająków</h2><button class="btn btn-primary mb-3" onclick="openSpiderModal()">Dodaj nowego pająka</button><table class="table table-striped"><thead><tr><th>Typ</th><th>Gatunek</th><th>Ilość na stanie</th><th>Rozmiar</th><th>Cena</th><th>CITES</th><th>Akcje</th></tr></thead><tbody id="spidersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="spidersPagination"></ul></nav>`;
+    const currentPage = {
+        customers: 0,
+        spiders: 0,
+        orders: 0
+    };
 
-    function showSection(section) {
+    const currentSection = 'customers';
+    const orderedSpiders = [];
+
+    async function showSection(section) {
+        document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+        document.getElementById(section + 'Section').style.display = 'block';
         document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        const activeLink = document.querySelector(`[data-section="${section}"]`);
-        if(activeLink) activeLink.classList.add('active');
+        document.querySelector(`[onclick="showSection('${section}')"]`).classList.add('active');
 
-        contentDiv.innerHTML = '';
-
-        switch (section) {
-            case 'customers': contentDiv.innerHTML = customersTemplate; loadCustomers(currentPage.customers || 0); break;
-            case 'orders': contentDiv.innerHTML = ordersTemplate; loadOrders(); break;
-            case 'spiders': contentDiv.innerHTML = spidersTemplate; loadSpiders(currentPage.spiders || 0); break;
-            default:
-                contentDiv.innerHTML = `<div id="welcome-section" class="text-center"><h1>Witaj w systemie WMS</h1><p class="lead">Zarządzaj klientami, zamówieniami i pająkami.</p><p><button class="btn btn-primary btn-lg m-2" onclick="showSection('customers')">Przejdź do klientów</button><button class="btn btn-secondary btn-lg m-2" onclick="showSection('orders')">Przejdź do zamówień</button><button class="btn btn-success btn-lg m-2" onclick="showSection('spiders')">Przejdź do pająków</button></p></div>`;
+        if (section === 'customers') {
+            loadCustomers(currentPage.customers);
+        } else if (section === 'spiders') {
+            loadSpiders(currentPage.spiders);
+        } else if (section === 'orders') {
+            loadOrders(currentPage.orders);
         }
     }
 
-    document.querySelectorAll('[data-section]').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            showSection(e.target.dataset.section);
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+        showSection(currentSection);
     });
 
-    document.getElementById('welcome-section')?.addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON') {
-            const section = e.target.onclick.toString().match(/showSection\('(\w+)'\)/)[1];
-            showSection(section);
-        }
-    });
-
-    // ################### ORDER CREATION LOGIC ###################
-    let selectedCustomer = null;
-    let selectedSpiders = [];
-
-    function openNewOrderModal() {
-        selectedCustomer = null;
-        selectedSpiders = [];
-        document.getElementById('selectedCustomerDetails').style.display = 'none';
-        updateOrderSummary();
-        new bootstrap.Modal(document.getElementById('newOrderModal')).show();
-        loadAllCustomersForOrder();
-        loadAllSpidersForOrder();
+    // --- CUSTOMER LOGIC ---
+    async function fetchCustomers(page = 0, size = 10, sortBy = 'lastName') {
+        const url = `${API_URL}/customers?page=${page}&size=${size}&sortBy=${sortBy}`;
+        const response = await fetch(url);
+        return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 };
     }
 
-    async function loadAllCustomersForOrder() {
-        const tableBody = document.getElementById('orderCustomerList');
-        tableBody.innerHTML = '<tr><td colspan="3" class="text-center">Ładowanie...</td></tr>';
-        const data = await fetchCustomers(0, 1000);
-        tableBody.innerHTML = data.content.map(c => `<tr><td>${c.firstName}</td><td>${c.lastName}</td><td><button class="btn btn-sm btn-primary" onclick="selectCustomerAndDisplayDetails('${c.id}')">Wybierz</button></td></tr>`).join('');
-    }
-
-    async function selectCustomerAndDisplayDetails(id) {
-        const response = await fetch(`${API_URL}/customers/${id}`);
-        const customer = await response.json();
-
-        selectedCustomer = customer;
-        document.getElementById('selectedCustomerDetails').style.display = 'block';
-        document.getElementById('customerName').innerHTML = `<strong>${customer.firstName} ${customer.lastName}</strong>`;
-        document.getElementById('customerContact').innerHTML = `Tel: ${customer.telephone || 'Brak'}, Email: ${customer.email || 'Brak'}`;
-        document.getElementById('customerAddress').innerHTML = `Adres: ${customer.address || 'Brak'}, Paczkomat: ${customer.parcelLocker || 'Brak'}`;
-    }
-
-    async function loadAllSpidersForOrder() {
-        const tableBody = document.getElementById('orderSpiderList');
-        tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Ładowanie...</td></tr>';
-        const data = await fetchSpiders(0, 1000);
-        tableBody.innerHTML = data.content.map(s => `
-            <tr>
-                <td>${s.typeName}</td>
-                <td>${s.speciesName}</td>
-                <td>${s.quantity}</td>
-                <td><input type="number" min="1" max="${s.quantity}" value="1" id="quantity_${s.id}" class="form-control form-control-sm"></td>
-                <td><button class="btn btn-sm btn-success" onclick="selectSpider('${s.id}', '${s.typeName}', '${s.speciesName}', ${s.price}, ${s.quantity}, '${s.size}')">Dodaj</button></td>
-            </tr>
-        `).join('');
-    }
-
-    function selectSpider(id, typeName, speciesName, price, maxQuantity, size) {
-        const quantityInput = document.getElementById(`quantity_${id}`);
-        const quantity = parseInt(quantityInput.value, 10);
-
-        if (quantity <= 0 || quantity > maxQuantity) {
-            alert('Ilość jest nieprawidłowa lub przekracza stan magazynowy.');
+    function renderCustomersTable(customers) {
+        const tableBody = document.getElementById('customersTableBody');
+        if (customers.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Brak klientów do wyświetlenia.</td></tr>';
             return;
         }
-
-        const existingSpiderIndex = selectedSpiders.findIndex(s => s.id === id);
-        if (existingSpiderIndex > -1) {
-            selectedSpiders[existingSpiderIndex].quantity += quantity;
-        } else {
-            selectedSpiders.push({ id, typeName, speciesName, price, quantity, size });
-        }
-
-        updateOrderSummary();
+        tableBody.innerHTML = customers.map(c => `
+                <tr>
+                    <td>${c.firstName}</td>
+                    <td>${c.lastName}</td>
+                    <td>${c.telephone || '-'}</td>
+                    <td>${c.email}</td>
+                    <td>${c.address || '-'}</td>
+                    <td>${c.parcelLocker || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="editCustomer('${c.id}')">Edytuj</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCustomer('${c.id}')">Usuń</button>
+                    </td>
+                </tr>
+            `).join('');
     }
 
-    function removeSpider(index) {
-        selectedSpiders.splice(index, 1);
-        updateOrderSummary();
+    async function loadCustomers(page) {
+        const data = await fetchCustomers(page);
+        renderCustomersTable(data.content);
+        renderPagination('customers', data.totalPages, data.number);
+        currentPage.customers = data.number;
     }
 
-    function updateOrderSummary() {
-        const list = document.getElementById('selectedSpidersList');
-        list.innerHTML = selectedSpiders.map((spider, index) => `
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                ${spider.typeName} ${spider.speciesName} (${spider.quantity} szt.) - ${(spider.price * spider.quantity).toFixed(2)} zł
-                <button class="btn btn-danger btn-sm" onclick="removeSpider(${index})">Usuń</button>
-            </li>
-        `).join('');
-        const totalPrice = selectedSpiders.reduce((sum, spider) => sum + spider.price * spider.quantity, 0);
-        document.getElementById('orderTotalPrice').innerText = `Całkowita cena: ${totalPrice.toFixed(2)} zł`;
+    function showCustomerModal(customer = {}) {
+        document.getElementById('customerId').value = customer.id || '';
+        document.getElementById('firstName').value = customer.firstName || '';
+        document.getElementById('lastName').value = customer.lastName || '';
+        document.getElementById('telephone').value = customer.telephone || '';
+        document.getElementById('email').value = customer.email || '';
+        document.getElementById('address').value = customer.address || '';
+        document.getElementById('parcelLocker').value = customer.parcelLocker || '';
+        const modal = new bootstrap.Modal(document.getElementById('customerModal'));
+        modal.show();
     }
 
-    async function createOrder() {
-        if (!selectedCustomer) { alert('Proszę wybrać klienta.'); return; }
-        if (selectedSpiders.length === 0) { alert('Proszę dodać pająki do zamówienia.'); return; }
-
-        const simplifiedSpiders = selectedSpiders.map(s => ({
-            spiderId: s.id,
-            quantity: s.quantity
-        }));
-
-        const order = {
-            customerId: selectedCustomer.id,
-            orderedSpiders: simplifiedSpiders
-        };
-
-        const response = await fetch(`${API_URL}/orders`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(order)
-        });
-
+    async function editCustomer(id) {
+        const response = await fetch(`${API_URL}/customers/${id}`);
         if (response.ok) {
-            alert('Zamówienie zostało pomyślnie utworzone!');
-            bootstrap.Modal.getInstance(document.getElementById('newOrderModal')).hide();
-            loadOrders();
-            loadSpiders(currentPage.spiders);
-        } else {
-            const errorText = await response.text();
-            alert('Wystąpił błąd podczas tworzenia zamówienia: ' + errorText);
-            console.error(errorText);
+            const customer = await response.json();
+            showCustomerModal(customer);
         }
     }
-
-    // ################### ORDER DETAILS LOGIC ###################
-    async function showOrderDetails(orderId) {
-        const modalBody = document.getElementById('orderDetailsContent');
-        modalBody.innerHTML = '<p class="text-center">Ładowanie...</p>';
-
-        try {
-            const orderResponse = await fetch(`${API_URL}/orders/${orderId}`);
-            if (!orderResponse.ok) {
-                throw new Error('Nie udało się pobrać szczegółów zamówienia.');
-            }
-            const order = await orderResponse.json();
-
-            let customer = null;
-            if (order.customerId) {
-                const customerResponse = await fetch(`${API_URL}/customers/${order.customerId}`);
-                customer = await customerResponse.json();
-            }
-
-            const orderedSpidersPromises = order.orderedSpiders.map(async orderedSpider => {
-                try {
-                    const spiderResponse = await fetch(`${API_URL}/spiders/${orderedSpider.spiderId}`);
-                    const spiderDetails = await spiderResponse.json();
-                    return { ...spiderDetails, quantity: orderedSpider.quantity };
-                } catch (error) {
-                    console.error('Błąd podczas pobierania danych pająka:', error);
-                    return { id: orderedSpider.spiderId, typeName: 'Brak danych', speciesName: 'Brak danych', quantity: orderedSpider.quantity, size: 'Brak danych', price: 0 };
-                }
-            });
-
-            const spiders = await Promise.all(orderedSpidersPromises);
-
-            const customerInfo = `
-                <h4>Informacje o kliencie</h4>
-                <p><strong>Imię i nazwisko:</strong> ${customer ? customer.firstName + ' ' + customer.lastName : 'Brak danych'}</p>
-                <p><strong>Email:</strong> ${customer ? customer.email : 'Brak danych'}</p>
-                <p><strong>Telefon:</strong> ${customer ? customer.telephone : 'Brak danych'}</p>
-                <p><strong>Adres:</strong> ${customer ? (customer.address || 'Brak danych') : 'Brak danych'}</p>
-                <p><strong>Paczkomat:</strong> ${customer ? (customer.parcelLocker || 'Brak danych') : 'Brak danych'}</p>
-                <hr>
-            `;
-
-            const spidersList = spiders && spiders.length > 0 ? `
-                <h4>Zamówione pająki</h4>
-                <ul class="list-group">
-                    ${spiders.map(s => {
-                const price = s.price !== undefined && s.price !== null ? s.price : 0;
-                const typeName = s.typeName || 'Brak danych';
-                const speciesName = s.speciesName || 'Brak danych';
-                const size = s.size || 'Brak danych';
-
-                return `<li class="list-group-item d-flex justify-content-between">
-                            <div>
-                                <strong>${typeName} ${speciesName}</strong>
-                                <br>
-                                <small>Rozmiar: ${size}</small>
-                            </div>
-                            <span>${s.quantity} szt.</span>
-                            <span>${(price * s.quantity).toFixed(2)} zł</span>
-                        </li>`;
-            }).join('')}
-                </ul>
-                <p class="mt-3"><strong>Całkowita cena:</strong> ${order.price ? order.price.toFixed(2) : 'Brak danych'} zł</p>
-            ` : `<p>Brak pająków w tym zamówieniu.</p>`;
-
-            modalBody.innerHTML = `
-                <h4>Szczegóły zamówienia #${order.orderId.substring(0, 8)}...</h4>
-                <p><strong>Data zamówienia:</strong> ${order.date}</p>
-                <p><strong>Status:</strong> ${order.status}</p>
-                <hr>
-                ${customerInfo}
-                ${spidersList}
-            `;
-
-            document.getElementById('changeStatusBtn').onclick = () => {
-                bootstrap.Modal.getInstance(document.getElementById('orderDetailsModal')).hide();
-                editOrderStatus(order.orderId, order.status);
-            };
-
-            new bootstrap.Modal(document.getElementById('orderDetailsModal')).show();
-        } catch (error) {
-            console.error(error);
-            modalBody.innerHTML = `<p class="text-danger">Wystąpił błąd podczas ładowania szczegółów.</p>`;
-        }
-    }
-
-    // ################### POZOSTAŁA LOGIKA ###################
-    async function fetchCustomers(page = 0, size = 10, sortBy = 'lastName') { const url = `${API_URL}/customers?page=${page}&size=${size}&sortBy=${sortBy}`; const response = await fetch(url); return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 }; }
-    async function searchCustomers() { const lastName = document.getElementById('searchLastName').value; const tableBody = document.getElementById('customersTableBody'); tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Ładowanie...</td></tr>'; if (lastName.trim() === '') { loadCustomers(0); return; } try { const response = await fetch(`${API_URL}/customers/lastName/${lastName}`); if (response.status === 404) { tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Nie znaleziono klientów o podanym nazwisku.</td></tr>'; } else { const customers = await response.json(); renderCustomersTable(customers); document.getElementById('customersPagination').innerHTML = ''; } } catch (error) { tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Wystąpił błąd podczas wyszukiwania.</td></tr>'; } }
-    function loadCustomers(page = 0) { fetchCustomers(page).then(data => { currentPage.customers = data.number; totalPages.customers = data.totalPages; renderCustomersTable(data.content); renderPagination(data.number, data.totalPages, 'customers'); }); }
-    function renderCustomersTable(customers) { const tableBody = document.getElementById('customersTableBody'); tableBody.innerHTML = customers.length === 0 ? '<tr><td colspan="5" class="text-center">Brak klientów do wyświetlenia.</td></tr>' : customers.map(c => `<tr><td>${c.firstName}</td><td>${c.lastName}</td><td>${c.telephone || ''}</td><td>${c.email || ''}</td><td><button class="btn btn-warning btn-sm" onclick="editCustomer('${c.id}')">Edytuj</button> <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${c.id}')">Usuń</button></td></tr>`).join(''); }
 
     async function addOrUpdateCustomer(event) {
         event.preventDefault();
@@ -415,9 +404,10 @@
             parcelLocker: document.getElementById('parcelLocker').value
         };
         const method = customerId ? 'PUT' : 'POST';
+        const url = `${API_URL}/customers`;
 
         try {
-            const response = await fetch(`${API_URL}/customers`, {
+            const response = await fetch(url, {
                 method,
                 headers: {
                     'Content-Type': 'application/json'
@@ -441,101 +431,350 @@
         }
     }
 
-    async function editCustomer(id) { const response = await fetch(`${API_URL}/customers/${id}`); const customer = await response.json(); document.getElementById('customerId').value = customer.id; document.getElementById('firstName').value = customer.firstName; document.getElementById('lastName').value = customer.lastName; document.getElementById('telephone').value = customer.telephone; document.getElementById('email').value = customer.email; document.getElementById('address').value = customer.address; document.getElementById('parcelLocker').value = customer.parcelLocker; new bootstrap.Modal(document.getElementById('customerModal')).show(); }
-    async function deleteCustomer(id) { if (!confirm('Czy na pewno?')) return; const response = await fetch(`${API_URL}/customers/${id}`, { method: 'DELETE' }); if (response.ok) { loadCustomers(currentPage.customers); } else { alert('Wystąpił błąd podczas usuwania.'); } }
-    function openCustomerModal() { document.getElementById('customerForm').reset(); document.getElementById('customerId').value = ''; new bootstrap.Modal(document.getElementById('customerModal')).show(); }
-
-    async function loadOrders() {
-        const data = await fetchOrders(0, 1000);
-        const newOrders = data.content.filter(o => o.status === 'NEW');
-        const activeOrders = data.content.filter(o => o.status === 'PENDING' || o.status === 'IN_PROGRESS');
-        const completedOrders = data.content.filter(o => o.status === 'COMPLETED');
-        const cancelledOrders = data.content.filter(o => o.status === 'CANCELLED');
-
-        renderOrdersTableByStatus(newOrders, 'newOrdersTableBody');
-        renderOrdersTableByStatus(activeOrders, 'activeOrdersTableBody');
-        renderOrdersTableByStatus(completedOrders, 'completedOrdersTableBody');
-        renderOrdersTableByStatus(cancelledOrders, 'cancelledOrdersTableBody');
-        renderPagination(0, 1, 'newOrders');
-        renderPagination(0, 1, 'activeOrders');
-        renderPagination(0, 1, 'completedOrders');
-        renderPagination(0, 1, 'cancelledOrders');
+    async function deleteCustomer(id) {
+        if (confirm('Czy na pewno chcesz usunąć tego klienta?')) {
+            try {
+                const response = await fetch(`${API_URL}/customers/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    alert('Klient usunięty pomyślnie.');
+                    loadCustomers(currentPage.customers);
+                } else {
+                    alert('Nie udało się usunąć klienta. Sprawdź, czy nie ma powiązanych zamówień.');
+                }
+            } catch (error) {
+                alert('Błąd połączenia z serwerem.');
+                console.error('Błąd:', error);
+            }
+        }
     }
+
+    // --- SPIDER LOGIC ---
+    async function fetchSpiders(page = 0, size = 10, sortBy = 'speciesName') {
+        const url = `${API_URL}/spiders?page=${page}&size=${size}&sortBy=${sortBy}`;
+        const response = await fetch(url);
+        return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 };
+    }
+
+    function renderSpidersTable(spiders) {
+        const tableBody = document.getElementById('spidersTableBody');
+        if (spiders.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Brak pająków do wyświetlenia.</td></tr>';
+            return;
+        }
+        tableBody.innerHTML = spiders.map(s => `
+                <tr>
+                    <td>${s.typeName}</td>
+                    <td>${s.speciesName}</td>
+                    <td>${s.quantity}</td>
+                    <td>${s.size}</td>
+                    <td>${s.price} zł</td>
+                    <td>${s.cites ? 'Tak' : 'Nie'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="editSpider('${s.id}')">Edytuj</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteSpider('${s.id}')">Usuń</button>
+                    </td>
+                </tr>
+            `).join('');
+    }
+
+    async function loadSpiders(page) {
+        const data = await fetchSpiders(page);
+        renderSpidersTable(data.content);
+        renderPagination('spiders', data.totalPages, data.number);
+        currentPage.spiders = data.number;
+    }
+
+    function showSpiderModal(spider = {}) {
+        document.getElementById('spiderId').value = spider.id || '';
+        document.getElementById('typeName').value = spider.typeName || '';
+        document.getElementById('speciesName').value = spider.speciesName || '';
+        document.getElementById('quantity').value = spider.quantity || 0;
+        document.getElementById('size').value = spider.size || '';
+        document.getElementById('price').value = spider.price || 0.0;
+        document.getElementById('isCites').checked = spider.isCites || false;
+        const modal = new bootstrap.Modal(document.getElementById('spiderModal'));
+        modal.show();
+    }
+
+    async function editSpider(id) {
+        const response = await fetch(`${API_URL}/spiders/${id}`);
+        if (response.ok) {
+            const spider = await response.json();
+            showSpiderModal(spider);
+        }
+    }
+
+    async function addOrUpdateSpider(event) {
+        event.preventDefault();
+        const spiderId = document.getElementById('spiderId').value;
+        const spider = {
+            id: spiderId || null,
+            typeName: document.getElementById('typeName').value,
+            speciesName: document.getElementById('speciesName').value,
+            quantity: parseInt(document.getElementById('quantity').value, 10),
+            size: document.getElementById('size').value,
+            price: parseFloat(document.getElementById('price').value),
+            isCites: document.getElementById('isCites').checked
+        };
+        const method = spiderId ? 'PUT' : 'POST';
+        const url = `${API_URL}/spiders`;
+
+        try {
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(spider)
+            });
+            if (response.ok) {
+                loadSpiders(currentPage.spiders);
+                bootstrap.Modal.getInstance(document.getElementById('spiderModal')).hide();
+                alert('Pająk został zapisany pomyślnie!');
+            } else {
+                const errorText = await response.text();
+                alert('Wystąpił błąd podczas zapisu pająka: ' + errorText);
+            }
+        } catch (error) {
+            alert('Błąd połączenia z serwerem.');
+            console.error('Błąd:', error);
+        }
+    }
+
+    async function deleteSpider(id) {
+        if (confirm('Czy na pewno chcesz usunąć tego pająka?')) {
+            try {
+                const response = await fetch(`${API_URL}/spiders/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    alert('Pająk usunięty pomyślnie.');
+                    loadSpiders(currentPage.spiders);
+                } else {
+                    alert('Nie udało się usunąć pająka. Sprawdź, czy nie ma powiązanych zamówień.');
+                }
+            } catch (error) {
+                alert('Błąd połączenia z serwerem.');
+                console.error('Błąd:', error);
+            }
+        }
+    }
+
+    // --- ORDER LOGIC ---
     async function fetchOrders(page = 0, size = 10, sortBy = 'date') {
         const url = `${API_URL}/orders?page=${page}&size=${size}&sortBy=${sortBy}`;
         const response = await fetch(url);
         return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 };
     }
-    function renderOrdersTableByStatus(orders, tableBodyId) {
-        const tableBody = document.getElementById(tableBodyId);
-        tableBody.innerHTML = orders.length === 0 ? '<tr><td colspan="7" class="text-center">Brak zamówień do wyświetlenia.</td></tr>' : orders.map(o => {
-            let rowClass = '';
-            if (o.status === 'NEW') {
-                rowClass = 'table-success';
-            } else if (o.status === 'CANCELLED') {
-                rowClass = 'table-danger';
-            }
-            const actionButtons = `
-                <button class="btn btn-info btn-sm" onclick="showOrderDetails('${o.orderId}')">Szczegóły</button>
-                <button class="btn btn-warning btn-sm" onclick="editOrderStatus('${o.orderId}', '${o.status}')">Zmień status</button>
-                ${o.status !== 'CANCELLED' && o.status !== 'COMPLETED' ? `<button class="btn btn-danger btn-sm" onclick="editOrderStatus('${o.orderId}', null, 'CANCELLED')">Anuluj</button>` : ''}
-            `;
-            const customerName = o.customer ? `${o.customer.firstName} ${o.customer.lastName}` : 'Brak danych';
-            const spiderList = o.orderedSpiders && o.orderedSpiders.length > 0
-                ? o.orderedSpiders.map(s => `${s.speciesName} (${s.quantity})`).join('<br>')
-                : 'Brak pająków';
 
-            return `<tr class="${rowClass}">
-                        <td>${o.orderId.substring(0, 8)}...</td>
-                        <td>${o.date}</td>
-                        <td>${customerName}</td>
-                        <td>${spiderList}</td>
-                        <td>${o.status}</td>
-                        <td>${o.price.toFixed(2)} zł</td>
-                        <td>${actionButtons}</td>
-                    </tr>`;
-        }).join('');
+    function renderOrdersTable(orders) {
+        const tableBody = document.getElementById('ordersTableBody');
+        if (orders.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Brak zamówień do wyświetlenia.</td></tr>';
+            return;
+        }
+        tableBody.innerHTML = orders.map(o => `
+                <tr>
+                    <td>${o.orderId}</td>
+                    <td>${o.date}</td>
+                    <td>${o.price} zł</td>
+                    <td>${o.status}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteOrder('${o.orderId}')">Usuń</button>
+                    </td>
+                </tr>
+            `).join('');
     }
 
-    async function updateOrderStatus(event) { event.preventDefault(); const orderId = document.getElementById('orderIdToUpdate').value; const newStatus = document.getElementById('orderStatusSelect').value; const response = await fetch(`${API_URL}/orders/${orderId}/status/${newStatus}`, { method: 'PUT' }); if (response.ok) { loadOrders(); bootstrap.Modal.getInstance(document.getElementById('orderStatusModal')).hide(); } else { alert('Wystąpił błąd podczas aktualizacji statusu.'); } }
+    async function loadOrders(page) {
+        const data = await fetchOrders(page);
+        renderOrdersTable(data.content);
+        renderPagination('orders', data.totalPages, data.number);
+        currentPage.orders = data.number;
+    }
 
-    async function editOrderStatus(orderId, currentStatus, newStatus = null) {
-        let targetStatus;
-        if (newStatus) {
-            targetStatus = newStatus;
-        } else {
-            document.getElementById('orderIdToUpdate').value = orderId;
-            const select = document.getElementById('orderStatusSelect');
-            select.innerHTML = ['NEW', 'PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map(s => `<option value="${s}" ${s === currentStatus ? 'selected' : ''}>${s}</option>`).join('');
-            new bootstrap.Modal(document.getElementById('orderStatusModal')).show();
+    async function showOrderModal() {
+        orderedSpiders.length = 0;
+        document.getElementById('orderedSpidersList').innerHTML = '';
+        document.getElementById('orderForm').reset();
+
+        const customers = await fetchCustomers(0, 1000);
+        const customersSelect = document.getElementById('orderCustomer');
+        customersSelect.innerHTML = '<option value="">-- Wybierz klienta --</option>';
+        customers.content.forEach(c => {
+            const option = document.createElement('option');
+            option.value = c.id;
+            option.textContent = `${c.firstName} ${c.lastName}`;
+            customersSelect.appendChild(option);
+        });
+
+        const spiders = await fetchSpiders(0, 1000);
+        const spidersSelect = document.getElementById('spiderSelector');
+        spidersSelect.innerHTML = '<option value="">-- Wybierz pająka --</option>';
+        spiders.content.forEach(s => {
+            const option = document.createElement('option');
+            option.value = s.id;
+            option.textContent = `${s.speciesName} (${s.quantity} szt. na stanie)`;
+            option.dataset.price = s.price;
+            option.dataset.quantity = s.quantity;
+            spidersSelect.appendChild(option);
+        });
+
+        const modal = new bootstrap.Modal(document.getElementById('orderModal'));
+        modal.show();
+    }
+
+    function addSpiderToOrder() {
+        const spiderSelect = document.getElementById('spiderSelector');
+        const quantityInput = document.getElementById('spiderQuantity');
+
+        if (!spiderSelect.value || !quantityInput.value) {
+            alert('Wybierz pająka i podaj ilość.');
             return;
         }
 
-        const response = await fetch(`${API_URL}/orders/${orderId}/status/${targetStatus}`, {
-            method: 'PUT'
-        });
-        if (response.ok) {
-            loadOrders();
-            alert('Status zamówienia został zaktualizowany.');
+        const spiderId = spiderSelect.value;
+        const spiderName = spiderSelect.options[spiderSelect.selectedIndex].text;
+        const quantity = parseInt(quantityInput.value, 10);
+        const availableQuantity = parseInt(spiderSelect.options[spiderSelect.selectedIndex].dataset.quantity, 10);
+
+        if (quantity <= 0) {
+            alert('Ilość musi być większa od zera.');
+            return;
+        }
+
+        if (quantity > availableQuantity) {
+            alert(`Nie można dodać ${quantity} sztuk. Dostępna ilość: ${availableQuantity}`);
+            return;
+        }
+
+        const existingSpider = orderedSpiders.find(s => s.spiderId === spiderId);
+        if (existingSpider) {
+            if ((existingSpider.quantity + quantity) > availableQuantity) {
+                alert(`Całkowita ilość (${existingSpider.quantity + quantity}) przekracza stan magazynowy (${availableQuantity}).`);
+                return;
+            }
+            existingSpider.quantity += quantity;
         } else {
-            alert('Wystąpił błąd podczas aktualizacji statusu.');
+            orderedSpiders.push({ spiderId, quantity, name: spiderName });
+        }
+
+        renderOrderedSpidersList();
+        quantityInput.value = 1;
+    }
+
+    function removeSpiderFromOrder(spiderId) {
+        const index = orderedSpiders.findIndex(s => s.spiderId === spiderId);
+        if (index > -1) {
+            orderedSpiders.splice(index, 1);
+        }
+        renderOrderedSpidersList();
+    }
+
+    function renderOrderedSpidersList() {
+        const listContainer = document.getElementById('orderedSpidersList');
+        listContainer.innerHTML = orderedSpiders.map(s => `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${s.name} - Ilość: ${s.quantity}
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeSpiderFromOrder('${s.spiderId}')">Usuń</button>
+                </li>
+            `).join('');
+    }
+
+    async function createOrder(event) {
+        event.preventDefault();
+        const customerId = document.getElementById('orderCustomer').value;
+        if (!customerId || orderedSpiders.length === 0) {
+            alert('Wybierz klienta i dodaj pająki do zamówienia.');
+            return;
+        }
+
+        const order = {
+            customerId: customerId,
+            orderedSpiders: orderedSpiders.map(s => ({
+                spiderId: s.spiderId,
+                quantity: s.quantity
+            }))
+        };
+
+        try {
+            const response = await fetch(`${API_URL}/orders`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(order)
+            });
+
+            if (response.ok) {
+                alert('Zamówienie utworzono pomyślnie!');
+                bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
+                loadOrders(currentPage.orders);
+            } else {
+                const errorText = await response.text();
+                alert('Błąd podczas tworzenia zamówienia: ' + errorText);
+            }
+        } catch (error) {
+            alert('Błąd połączenia z serwerem.');
+            console.error('Błąd:', error);
         }
     }
-    async function fetchSpiders(page = 0, size = 10, sortBy = 'speciesName') { const url = `${API_URL}/spiders?page=${page}&size=${size}&sortBy=${sortBy}`; const response = await fetch(url); return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 }; }
-    function loadSpiders(page = 0) { fetchSpiders(page).then(data => { currentPage.spiders = data.number; totalPages.spiders = data.totalPages; renderSpidersTable(data.content); renderPagination(data.number, data.totalPages, 'spiders'); }); }
-    function renderSpidersTable(spiders) { const tableBody = document.getElementById('spidersTableBody'); tableBody.innerHTML = spiders.length === 0 ? '<tr><td colspan="6" class="text-center">Brak pająków do wyświetlenia.</td></tr>' : spiders.map(s => `<tr><td>${s.typeName}</td><td>${s.speciesName}</td><td>${s.quantity}</td><td>${s.size}</td><td>${s.price.toFixed(2)} zł</td><td>${s.isCites ? 'Tak' : 'Nie'}</td><td><button class="btn btn-warning btn-sm" onclick="editSpider('${s.id}')">Edytuj</button> <button class="btn btn-danger btn-sm" onclick="deleteSpider('${s.id}')">Usuń</button></td></tr>`).join(''); }
-    async function addOrUpdateSpider(event) { event.preventDefault(); const spiderId = document.getElementById('spiderId').value; const spider = { id: spiderId || null, typeName: document.getElementById('typeName').value, speciesName: document.getElementById('speciesName').value, quantity: document.getElementById('quantity').value, size: document.getElementById('size').value, price: document.getElementById('price').value, isCites: false }; const method = spiderId ? 'PUT' : 'POST'; const url = spiderId ? `${API_URL}/spiders/${spiderId}` : `${API_URL}/spiders`; const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(spider) }); if (response.ok) { loadSpiders(currentPage.spiders); bootstrap.Modal.getInstance(document.getElementById('spiderModal')).hide(); } else { alert('Wystąpił błąd podczas zapisu pająka.'); } }
-    async function editSpider(id) { const response = await fetch(`${API_URL}/spiders/${id}`); const spider = await response.json(); document.getElementById('spiderId').value = spider.id; document.getElementById('typeName').value = spider.typeName; document.getElementById('speciesName').value = spider.speciesName; document.getElementById('quantity').value = spider.quantity; document.getElementById('size').value = spider.size; document.getElementById('price').value = spider.price; new bootstrap.Modal(document.getElementById('spiderModal')).show(); }
-    async function deleteSpider(id) { if (!confirm('Czy na pewno?')) return; const response = await fetch(`${API_URL}/spiders/${id}`, { method: 'DELETE' }); if (response.ok) { loadSpiders(currentPage.spiders); } else { alert('Wystąpił błąd podczas usuwania.'); } }
-    function openSpiderModal() { document.getElementById('spiderForm').reset(); document.getElementById('spiderId').value = ''; new bootstrap.Modal(document.getElementById('spiderModal')).show(); }
 
-    function renderPagination(currentPage, totalPages, section) { const paginationUl = document.getElementById(`${section}Pagination`); if (!paginationUl) return; paginationUl.innerHTML = ''; if (totalPages <= 1) return; const createPageItem = (page, text, isDisabled = false, isActive = false) => `<li class="page-item ${isDisabled ? 'disabled' : ''} ${isActive ? 'active' : ''}"><a class="page-link" href="#" onclick="load${section.charAt(0).toUpperCase() + section.slice(1)}(${page})">${text}</a></li>`; paginationUl.innerHTML += createPageItem(currentPage - 1, 'Poprzednia', currentPage === 0); for (let i = 0; i < totalPages; i++) { paginationUl.innerHTML += createPageItem(i, i + 1, false, i === currentPage); } paginationUl.innerHTML += createPageItem(currentPage + 1, 'Następna', currentPage === totalPages - 1); }
+    async function deleteOrder(id) {
+        if (confirm('Czy na pewno chcesz usunąć to zamówienie?')) {
+            try {
+                const response = await fetch(`${API_URL}/orders/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    alert('Zamówienie usunięte pomyślnie.');
+                    loadOrders(currentPage.orders);
+                } else {
+                    alert('Nie udało się usunąć zamówienia.');
+                }
+            } catch (error) {
+                alert('Błąd połączenia z serwerem.');
+                console.error('Błąd:', error);
+            }
+        }
+    }
 
-    document.getElementById('customerForm')?.addEventListener('submit', addOrUpdateCustomer);
-    document.getElementById('spiderForm')?.addEventListener('submit', addOrUpdateSpider);
-    document.getElementById('statusForm')?.addEventListener('submit', updateOrderStatus);
+    // --- PAGINATION LOGIC ---
+    function renderPagination(section, totalPages, currentPageNum) {
+        const paginationContainer = document.getElementById(`${section}Pagination`);
+        paginationContainer.innerHTML = '';
 
-    document.addEventListener('DOMContentLoaded', () => { showSection('customers'); });
+        const createPageItem = (text, page, isActive = false, isDisabled = false) => {
+            const li = document.createElement('li');
+            li.className = `page-item ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`;
+            const a = document.createElement('a');
+            a.className = 'page-link';
+            a.href = '#';
+            a.textContent = text;
+            a.onclick = () => {
+                if (!isDisabled) {
+                    window[`load${section.charAt(0).toUpperCase() + section.slice(1)}`](page);
+                }
+            };
+            li.appendChild(a);
+            return li;
+        };
+
+        // Previous button
+        paginationContainer.appendChild(createPageItem('Poprzednia', currentPageNum - 1, false, currentPageNum === 0));
+
+        // Page numbers
+        for (let i = 0; i < totalPages; i++) {
+            paginationContainer.appendChild(createPageItem(i + 1, i, i === currentPageNum));
+        }
+
+        // Next button
+        paginationContainer.appendChild(createPageItem('Następna', currentPageNum + 1, false, currentPageNum === totalPages - 1));
+    }
+
 </script>
+
 </body>
 </html>

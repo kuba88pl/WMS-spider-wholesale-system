@@ -1,5 +1,7 @@
 package com.WMS_spiders_wholesale_system.controller;
 
+import com.WMS_spiders_wholesale_system.dto.CustomerDTO;
+import com.WMS_spiders_wholesale_system.dto.CustomerMapper;
 import com.WMS_spiders_wholesale_system.entity.Customer;
 import com.WMS_spiders_wholesale_system.exception.CustomerAlreadyExistsException;
 import com.WMS_spiders_wholesale_system.exception.CustomerNotFoundException;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/customers")
@@ -26,11 +29,11 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
-        logger.info("Received customer: {}", customer);
+    public ResponseEntity<CustomerDTO> addCustomer(@RequestBody CustomerDTO customerDTO) {
+        logger.info("Received customer DTO: {}", customerDTO);
         try {
-            Customer newCustomer = customerService.addCustomer(customer);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newCustomer);
+            Customer newCustomer = customerService.addCustomer(CustomerMapper.toEntity(customerDTO));
+            return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.toDTO(newCustomer));
         } catch (InvalidCustomerDataException e) {
             logger.error("Invalid customer data: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -74,30 +77,33 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Customer>> getAllCustomers(
+    public ResponseEntity<Page<CustomerDTO>> getAllCustomers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy) {
 
         var customersPage = customerService.getAllCustomers(page, size, org.springframework.data.domain.Sort.by(sortBy));
-        return ResponseEntity.ok(customersPage);
+        return ResponseEntity.ok(CustomerMapper.toDTOPage(customersPage));
     }
 
     @GetMapping("/lastName/{lastName}")
-    public ResponseEntity<List<Customer>> getCustomerByLastName(@PathVariable String lastName) {
+    public ResponseEntity<List<CustomerDTO>> getCustomerByLastName(@PathVariable String lastName) {
         try {
             List<Customer> customers = customerService.getCustomerByLastName(lastName);
-            return ResponseEntity.ok(customers);
+            List<CustomerDTO> customerDTOs = customers.stream()
+                    .map(CustomerMapper::toDTO)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(customerDTOs);
         } catch (CustomerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable UUID id) {
+    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable UUID id) {
         try {
             Customer customer = customerService.getCustomerById(id);
-            return ResponseEntity.ok(customer);
+            return ResponseEntity.ok(CustomerMapper.toDTO(customer));
         } catch (CustomerNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

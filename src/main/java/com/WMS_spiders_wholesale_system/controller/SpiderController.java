@@ -1,5 +1,7 @@
 package com.WMS_spiders_wholesale_system.controller;
 
+import com.WMS_spiders_wholesale_system.dto.SpiderDTO;
+import com.WMS_spiders_wholesale_system.dto.SpiderMapper;
 import com.WMS_spiders_wholesale_system.entity.Spider;
 import com.WMS_spiders_wholesale_system.exception.InvalidSpiderDataException;
 import com.WMS_spiders_wholesale_system.exception.SpiderNotFoundException;
@@ -7,12 +9,12 @@ import com.WMS_spiders_wholesale_system.service.SpiderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-
 
 @RestController
 @RequestMapping("api/spiders")
@@ -26,10 +28,10 @@ public class SpiderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Spider> getSpiderById(@PathVariable UUID id) {
+    public ResponseEntity<SpiderDTO> getSpiderById(@PathVariable UUID id) {
         try {
             Spider spider = spiderService.getSpiderById(id);
-            return ResponseEntity.ok(spider);
+            return ResponseEntity.ok(SpiderMapper.toDTO(spider));
         } catch (SpiderNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -60,7 +62,7 @@ public class SpiderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Spider> deleteSpider(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteSpider(@PathVariable UUID id) {
         try {
             spiderService.removeSpider(id);
             return ResponseEntity.noContent().build();
@@ -70,19 +72,15 @@ public class SpiderController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllSpiders(
+    public ResponseEntity<Page<SpiderDTO>> getAllSpiders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "speciesName") String sortBy) {
         try {
             var spiderSPage = spiderService.getAllSpiders(page, size, org.springframework.data.domain.Sort.by(sortBy));
-            return ResponseEntity.ok(spiderSPage);
+            return ResponseEntity.ok(SpiderMapper.toDTOPage(spiderSPage));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
     }
 }
-
-
-

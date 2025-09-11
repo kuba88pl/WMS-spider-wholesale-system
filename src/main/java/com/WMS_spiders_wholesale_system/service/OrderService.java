@@ -2,10 +2,7 @@ package com.WMS_spiders_wholesale_system.service;
 
 import com.WMS_spiders_wholesale_system.dto.OrderDTO;
 import com.WMS_spiders_wholesale_system.dto.OrderedSpiderDTO;
-import com.WMS_spiders_wholesale_system.entity.Customer;
-import com.WMS_spiders_wholesale_system.entity.Order;
-import com.WMS_spiders_wholesale_system.entity.OrderStatus;
-import com.WMS_spiders_wholesale_system.entity.Spider;
+import com.WMS_spiders_wholesale_system.entity.*;
 import com.WMS_spiders_wholesale_system.exception.CustomerNotFoundException;
 import com.WMS_spiders_wholesale_system.exception.InvalidOrderDataException;
 import com.WMS_spiders_wholesale_system.exception.OrderNotFoundException;
@@ -57,33 +54,49 @@ public class OrderService {
         if (orderedSpidersDTO == null || orderedSpidersDTO.isEmpty()) {
             throw new InvalidOrderDataException("Order must contain at least one spider");
         }
-        List<Spider> spidersToOrder = new ArrayList<>();
+
+        List<OrderedSpider> orderedSpidersList = new ArrayList<>();
         double totalPrice = 0.0;
-
-        Order newOrder = new Order();
-        newOrder.setCustomer(customer);
-        newOrder.setStatus(OrderStatus.NEW);
-        newOrder.setDate(LocalDate.now());
-
-        Order savedOrder = orderRepository.save(newOrder);
 
         for (OrderedSpiderDTO spiderDTO : orderedSpidersDTO) {
             Spider spider = spiderRepository.findById(spiderDTO.getSpiderId())
                     .orElseThrow(() -> new SpiderNotFoundException("Spider with ID: " + spiderDTO.getSpiderId() + " not found!"));
-            spider.setQuantity(spiderDTO.getQuantity());
-            spider.setOrder(savedOrder);
-            spidersToOrder.add(spider);
-            totalPrice += spider.getPrice() * spider.getQuantity();
-            spiderRepository.save(spider);
+
+            if (spiderDTO.getQuantity() > spider.getQuantity()) {
+                throw new InvalidOrderDataException("Not enough spiders in stock for species: " + spider.getSpeciesName());
+            }
+
+            int newQuantity = spider.getQuantity() - spiderDTO.getQuantity();
+            spider.setQuantity(newQuantity);
+
+            OrderedSpider orderedSpider = new OrderedSpider();
+            orderedSpider.setSpider(spider);
+            orderedSpider.setQuantity(spiderDTO.getQuantity());
+
+            orderedSpidersList.add(orderedSpider);
+            totalPrice += spider.getPrice() * spiderDTO.getQuantity();
         }
 
-        savedOrder.setOrderedSpiders(spidersToOrder);
-        savedOrder.setPrice(totalPrice);
-        Order finalOrder = orderRepository.save(savedOrder);
+        Order newOrder = new Order();
+        newOrder.setCustomer(customer);
+        newOrder.setDate(LocalDate.now());
+        newOrder.setStatus(OrderStatus.NEW);
+        newOrder.setPrice(totalPrice);
+        newOrder.setOrderedSpiders(orderedSpidersList);
+
+        orderedSpidersList.forEach(os -> os.setOrder(newOrder));
+
+        Order finalOrder = orderRepository.save(newOrder);
+
+        spiderRepository.saveAll(orderedSpidersList.stream()
+                .map(OrderedSpider::getSpider)
+                .collect(Collectors.toList()));
 
         logger.info("Created new order: {}", finalOrder.getOrderId());
         return finalOrder;
     }
+
+
 
     @Transactional
     public Order updateStatus(UUID orderId, OrderStatus orderStatus) {

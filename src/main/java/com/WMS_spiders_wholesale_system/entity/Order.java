@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", columnDefinition = "VARCHAR(36)")
+    @Column(name = "order_id", columnDefinition = "VARCHAR(36)")
     private UUID orderId;
     @Column(name = "date")
     private LocalDate date;
@@ -31,12 +31,12 @@ public class Order {
     private Customer customer;
     @OneToMany(mappedBy = "order", cascade =CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference(value = "order-spider")
-    private List<Spider> orderedSpiders;
+    private List<OrderedSpider> orderedSpiders;
 
     public Order() {
     }
 
-    public Order(Customer customer, LocalDate date, OrderStatus status, double price, List<Spider> orderedSpiders) {
+    public Order(Customer customer, LocalDate date, OrderStatus status, double price, List<OrderedSpider> orderedSpiders) {
         this.customer = customer;
         this.date = date;
         this.price = price;
@@ -85,14 +85,11 @@ public class Order {
         this.status = status;
     }
 
-    public void setOrderedSpiders(List<Spider> orderedSpiders) {
+    public void setOrderedSpiders(List<OrderedSpider> orderedSpiders) {
         this.orderedSpiders = orderedSpiders;
     }
 
-    public List<Spider> getOrderedSpiders() {
+    public List<OrderedSpider> getOrderedSpiders() {
         return orderedSpiders;
     }
-
-
-
 }
