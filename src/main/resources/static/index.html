@@ -12,6 +12,7 @@
         .table thead th { background-color: #343a30; color: white; }
         .table-new-order { background-color: #d1e7dd; } /* Zielony dla nowych zamówień */
         .table-cancelled-order { background-color: #f8d7da; } /* Czerwony dla anulowanych */
+        .modal-xl { --bs-modal-width: 90%; }
     </style>
 </head>
 <body>
@@ -374,11 +375,12 @@
 
         orders.forEach(o => {
             const row = document.createElement('tr');
-            row.classList.add(`table-${o.status.toLowerCase()}-order`);
+            row.classList.add(`table-${o.status.toLowerCase().replace('_', '-')}-order`);
+            const customerName = o.customer ? `${o.customer.firstName} ${o.customer.lastName}` : 'Brak danych klienta';
             row.innerHTML = `
                 <td>${o.id ? o.id.substring(0, 8) + '...' : ''}</td>
                 <td>${o.date}</td>
-                <td>${o.customer ? o.customer.firstName + ' ' + o.customer.lastName : 'Brak danych klienta'}</td>
+                <td>${customerName}</td>
                 <td>${o.status}</td>
                 <td>${o.price.toFixed(2)} zł</td>
                 <td>
@@ -456,9 +458,7 @@
     document.getElementById('spiderForm').addEventListener('submit', addOrUpdateSpider);
     document.getElementById('statusForm').addEventListener('submit', updateOrderStatus);
 
-    document.addEventListener('DOMContentLoaded', () => {
-        showSection('orders');
-    });
+    window.onload = () => showSection('welcome-section');
 </script>
 </body>
 </html>

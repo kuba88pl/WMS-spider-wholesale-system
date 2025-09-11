@@ -4,11 +4,17 @@ import java.util.UUID;
 
 public class OrderedSpiderDTO {
     private UUID spiderId;
-    private String typeName;
-    private String speciesName;
     private int quantity;
-    private double price;
-    private String size;
+    private SpiderDTO spider; // Dodane pole
+
+    public OrderedSpiderDTO() {
+    }
+
+    public OrderedSpiderDTO(UUID spiderId, int quantity, SpiderDTO spider) {
+        this.spiderId = spiderId;
+        this.quantity = quantity;
+        this.spider = spider;
+    }
 
     public UUID getSpiderId() {
         return spiderId;
@@ -16,22 +22,6 @@ public class OrderedSpiderDTO {
 
     public void setSpiderId(UUID spiderId) {
         this.spiderId = spiderId;
-    }
-
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-    public String getSpeciesName() {
-        return speciesName;
-    }
-
-    public void setSpeciesName(String speciesName) {
-        this.speciesName = speciesName;
     }
 
     public int getQuantity() {
@@ -42,19 +32,11 @@ public class OrderedSpiderDTO {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
-        return price;
+    public SpiderDTO getSpider() {
+        return spider;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
+    public void setSpider(SpiderDTO spider) {
+        this.spider = spider;
     }
 }
