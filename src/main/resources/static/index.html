@@ -190,7 +190,10 @@
     const totalPages = {};
 
     const ordersTemplate = `
-        <h2>Lista zamówień <button class="btn btn-success float-end" onclick="openNewOrderModal()">Dodaj nowe zamówienie</button></h2>
+        <h2>Lista zamówień
+            <button class="btn btn-success float-end" onclick="openNewOrderModal()">Dodaj nowe zamówienie</button>
+            <button class="btn btn-danger float-end me-2" onclick="clearAllOrders()">Wyczyść wszystkie zamówienia</button>
+        </h2>
         <h4 class="mt-4">Nowe zamówienia</h4>
         <table class="table table-striped">
             <thead><tr><th>ID</th><th>Data</th><th>Klient</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead>
@@ -218,8 +221,8 @@
         </table>
     `;
 
-    const customersTemplate = `<h2>Lista klientów</h2><button class="btn btn-primary mb-3" onclick="openCustomerModal()">Dodaj nowego klienta</button><div class="input-group mb-3"><input type="text" id="searchLastName" class="form-control" placeholder="Wyszukaj po nazwisku..."><button class="btn btn-outline-secondary" type="button" onclick="searchCustomers()">Szukaj</button></div><table class="table table-striped"><thead><tr><th>Imię</th><th>Nazwisko</th><th>Telefon</th><th>Email</th><th>Akcje</th></tr></thead><tbody id="customersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="customersPagination"></ul></nav>`;
-    const spidersTemplate = `<h2>Lista pająków</h2><button class="btn btn-primary mb-3" onclick="openSpiderModal()">Dodaj nowego pająka</button><table class="table table-striped"><thead><tr><th>Typ</th><th>Gatunek</th><th>Ilość na stanie</th><th>Rozmiar</th><th>Cena</th><th>CITES</th><th>Akcje</th></tr></thead><tbody id="spidersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="spidersPagination"></ul></nav>`;
+    const customersTemplate = `<h2>Lista klientów <button class="btn btn-primary mb-3" onclick="openCustomerModal()">Dodaj nowego klienta</button> <button class="btn btn-danger mb-3" onclick="clearAllCustomers()">Wyczyść wszystkich klientów</button></h2><div class="input-group mb-3"><input type="text" id="searchLastName" class="form-control" placeholder="Wyszukaj po nazwisku..."><button class="btn btn-outline-secondary" type="button" onclick="searchCustomers()">Szukaj</button></div><table class="table table-striped"><thead><tr><th>Imię</th><th>Nazwisko</th><th>Telefon</th><th>Email</th><th>Akcje</th></tr></thead><tbody id="customersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="customersPagination"></ul></nav>`;
+    const spidersTemplate = `<h2>Lista pająków <button class="btn btn-primary mb-3" onclick="openSpiderModal()">Dodaj nowego pająka</button> <button class="btn btn-danger mb-3" onclick="clearAllSpiders()">Wyczyść wszystkie pająki</button></h2><table class="table table-striped"><thead><tr><th>Typ</th><th>Gatunek</th><th>Ilość na stanie</th><th>Rozmiar</th><th>Cena</th><th>CITES</th><th>Akcje</th></tr></thead><tbody id="spidersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="spidersPagination"></ul></nav>`;
 
     function showSection(section) {
         document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
@@ -585,6 +588,60 @@
 
     function printOrderDetails() {
         window.print();
+    }
+
+    async function clearAllOrders() {
+        if (!confirm('Czy na pewno chcesz USUNĄĆ WSZYSTKIE ZAMÓWIENIA? Tej operacji nie można cofnąć.')) return;
+        try {
+            const response = await fetch(`${API_URL}/orders`);
+            const orders = (await response.json()).content;
+
+            for (const order of orders) {
+                await fetch(`${API_URL}/orders/${order.id}`, { method: 'DELETE' });
+            }
+
+            alert('Wszystkie zamówienia zostały pomyślnie usunięte!');
+            loadOrders();
+        } catch (error) {
+            console.error('Błąd podczas usuwania zamówień:', error);
+            alert('Wystąpił błąd podczas usuwania zamówień.');
+        }
+    }
+
+    async function clearAllCustomers() {
+        if (!confirm('Czy na pewno chcesz USUNĄĆ WSZYSTKICH KLIENTÓW? Upewnij się, że nie mają oni żadnych aktywnych zamówień.')) return;
+        try {
+            const response = await fetch(`${API_URL}/customers`);
+            const customers = (await response.json()).content;
+
+            for (const customer of customers) {
+                await fetch(`${API_URL}/customers/${customer.id}`, { method: 'DELETE' });
+            }
+
+            alert('Wszyscy klienci zostali pomyślnie usunięci!');
+            loadCustomers();
+        } catch (error) {
+            console.error('Błąd podczas usuwania klientów:', error);
+            alert('Wystąpił błąd podczas usuwania klientów. Upewnij się, że nie mają oni aktywnych zamówień.');
+        }
+    }
+
+    async function clearAllSpiders() {
+        if (!confirm('Czy na pewno chcesz USUNĄĆ WSZYSTKIE PAJĄKI?')) return;
+        try {
+            const response = await fetch(`${API_URL}/spiders`);
+            const spiders = (await response.json()).content;
+
+            for (const spider of spiders) {
+                await fetch(`${API_URL}/spiders/${spider.id}`, { method: 'DELETE' });
+            }
+
+            alert('Wszystkie pająki zostały pomyślnie usunięte!');
+            loadSpiders();
+        } catch (error) {
+            console.error('Błąd podczas usuwania pająków:', error);
+            alert('Wystąpił błąd podczas usuwania pająków.');
+        }
     }
 
     // Initial load
