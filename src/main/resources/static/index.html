@@ -10,6 +10,8 @@
         .container { max-width: 960px; }
         .table th, .table td { vertical-align: middle; }
         .table thead th { background-color: #343a30; color: white; }
+        .table-new-order { background-color: #d1e7dd; } /* Zielony dla nowych zamówień */
+        .table-cancelled-order { background-color: #f8d7da; } /* Czerwony dla anulowanych */
     </style>
 </head>
 <body>
@@ -154,8 +156,26 @@
     let currentPage = {};
     const totalPages = {};
 
+    const ordersTemplate = `
+        <h2>Lista zamówień <button class="btn btn-success float-end" onclick="openNewOrderModal()">Dodaj nowe zamówienie</button></h2>
+        <h4 class="mt-4">Nowe zamówienia</h4>
+        <table class="table table-striped">
+            <thead><tr><th>ID</th><th>Data</th><th>Klient</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead>
+            <tbody id="newOrdersTableBody"></tbody>
+        </table>
+        <h4 class="mt-4">Zamówienia w trakcie realizacji</h4>
+        <table class="table table-striped">
+            <thead><tr><th>ID</th><th>Data</th><th>Klient</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead>
+            <tbody id="inProgressOrdersTableBody"></tbody>
+        </table>
+        <h4 class="mt-4">Zamówienia anulowane</h4>
+        <table class="table table-striped">
+            <thead><tr><th>ID</th><th>Data</th><th>Klient</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead>
+            <tbody id="cancelledOrdersTableBody"></tbody>
+        </table>
+    `;
+
     const customersTemplate = `<h2>Lista klientów</h2><button class="btn btn-primary mb-3" onclick="openCustomerModal()">Dodaj nowego klienta</button><div class="input-group mb-3"><input type="text" id="searchLastName" class="form-control" placeholder="Wyszukaj po nazwisku..."><button class="btn btn-outline-secondary" type="button" onclick="searchCustomers()">Szukaj</button></div><table class="table table-striped"><thead><tr><th>Imię</th><th>Nazwisko</th><th>Telefon</th><th>Email</th><th>Akcje</th></tr></thead><tbody id="customersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="customersPagination"></ul></nav>`;
-    const ordersTemplate = `<h2>Lista zamówień <button class="btn btn-success float-end" onclick="openNewOrderModal()">Dodaj nowe zamówienie</button></h2><table class="table table-striped"><thead><tr><th>ID Zamówienia</th><th>Data</th><th>Klient</th><th>Status</th><th>Cena</th><th>Akcje</th></tr></thead><tbody id="ordersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="ordersPagination"></ul></nav>`;
     const spidersTemplate = `<h2>Lista pająków</h2><button class="btn btn-primary mb-3" onclick="openSpiderModal()">Dodaj nowego pająka</button><table class="table table-striped"><thead><tr><th>Typ</th><th>Gatunek</th><th>Ilość na stanie</th><th>Rozmiar</th><th>Cena</th><th>CITES</th><th>Akcje</th></tr></thead><tbody id="spidersTableBody"></tbody></table><nav><ul class="pagination justify-content-center" id="spidersPagination"></ul></nav>`;
 
     function showSection(section) {
@@ -167,7 +187,7 @@
 
         switch (section) {
             case 'customers': contentDiv.innerHTML = customersTemplate; loadCustomers(currentPage.customers || 0); break;
-            case 'orders': contentDiv.innerHTML = ordersTemplate; loadOrders(currentPage.orders || 0); break;
+            case 'orders': contentDiv.innerHTML = ordersTemplate; loadOrders(); break;
             case 'spiders': contentDiv.innerHTML = spidersTemplate; loadSpiders(currentPage.spiders || 0); break;
             default:
                 contentDiv.innerHTML = `<div id="welcome-section" class="text-center"><h1>Witaj w systemie WMS</h1><p class="lead">Zarządzaj klientami, zamówieniami i pająkami.</p><p><button class="btn btn-primary btn-lg m-2" onclick="showSection('customers')">Przejdź do klientów</button><button class="btn btn-secondary btn-lg m-2" onclick="showSection('orders')">Przejdź do zamówień</button><button class="btn btn-success btn-lg m-2" onclick="showSection('spiders')">Przejdź do pająków</button></p></div>`;
@@ -298,7 +318,7 @@
 
             if (response.ok) {
                 alert('Zamówienie zostało pomyślnie utworzone!');
-                loadOrders(currentPage.orders);
+                loadOrders();
                 showSection('orders');
                 bootstrap.Modal.getInstance(document.getElementById('newOrderModal')).hide();
             } else {
@@ -320,11 +340,75 @@
     async function editCustomer(id) { const response = await fetch(`${API_URL}/customers/${id}`); const customer = await response.json(); document.getElementById('customerId').value = customer.id; document.getElementById('firstName').value = customer.firstName; document.getElementById('lastName').value = customer.lastName; document.getElementById('telephone').value = customer.telephone; document.getElementById('email').value = customer.email; document.getElementById('address').value = customer.address; document.getElementById('parcelLocker').value = customer.parcelLocker; new bootstrap.Modal(document.getElementById('customerModal')).show(); }
     async function deleteCustomer(id) { if (!confirm('Czy na pewno?')) return; const response = await fetch(`${API_URL}/customers/${id}`, { method: 'DELETE' }); if (response.ok) { loadCustomers(currentPage.customers); } else { alert('Wystąpił błąd podczas usuwania.'); } }
     function openCustomerModal() { document.getElementById('customerForm').reset(); document.getElementById('customerId').value = ''; new bootstrap.Modal(document.getElementById('customerModal')).show(); }
-    async function fetchOrders(page = 0, size = 10, sortBy = 'date') { const url = `${API_URL}/orders?page=${page}&size=${size}&sortBy=${sortBy}`; const response = await fetch(url); return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 }; }
-    function loadOrders(page = 0) { fetchOrders(page).then(data => { currentPage.orders = data.number; totalPages.orders = data.totalPages; renderOrdersTable(data.content); renderPagination(data.number, data.totalPages, 'orders'); }); }
-    function renderOrdersTable(orders) { const tableBody = document.getElementById('ordersTableBody'); tableBody.innerHTML = orders.length === 0 ? '<tr><td colspan="6" class="text-center">Brak zamówień do wyświetlenia.</td></tr>' : orders.map(o => `<tr><td>${o.orderId ? o.orderId.substring(0, 8) + '...' : o.id.substring(0, 8) + '...'}</td><td>${o.date}</td><td>${o.customer ? o.customer.firstName + ' ' + o.customer.lastName : 'Brak danych klienta'}</td><td>${o.status}</td><td>${o.price.toFixed(2)} zł</td><td><button class="btn btn-info btn-sm" onclick="showOrderDetails('${o.id}')">Szczegóły</button> <button class="btn btn-warning btn-sm" onclick="editOrderStatus('${o.id}', '${o.status}')">Zmień status</button> <button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">Usuń</button></td></tr>`).join(''); }
-    async function updateOrderStatus(event) { event.preventDefault(); const orderId = document.getElementById('orderIdToUpdate').value; const newStatus = document.getElementById('orderStatusSelect').value; const response = await fetch(`${API_URL}/orders/${orderId}/status/${newStatus}`, { method: 'PUT' }); if (response.ok) { loadOrders(currentPage.orders); bootstrap.Modal.getInstance(document.getElementById('orderStatusModal')).hide(); } else { alert('Wystąpił błąd podczas aktualizacji statusu.'); } }
-    async function deleteOrder(id) { if (!confirm('Czy na pewno?')) return; const response = await fetch(`${API_URL}/orders/${id}`, { method: 'DELETE' }); if (response.ok) { loadOrders(currentPage.orders); } else { alert('Wystąpił błąd podczas usuwania.'); } }
+
+    async function fetchOrders() {
+        const url = `${API_URL}/orders?page=0&size=1000`;
+        const response = await fetch(url);
+        if (!response.ok) {
+            console.error('Failed to fetch orders:', response.statusText);
+            return [];
+        }
+        const data = await response.json();
+        return data.content || [];
+    }
+
+    function loadOrders() {
+        fetchOrders().then(orders => {
+            const newOrders = orders.filter(o => o.status === 'NEW');
+            const inProgressOrders = orders.filter(o => o.status !== 'NEW' && o.status !== 'CANCELLED');
+            const cancelledOrders = orders.filter(o => o.status === 'CANCELLED');
+
+            renderOrdersTable(newOrders, 'newOrdersTableBody');
+            renderOrdersTable(inProgressOrders, 'inProgressOrdersTableBody');
+            renderOrdersTable(cancelledOrders, 'cancelledOrdersTableBody');
+        });
+    }
+
+    function renderOrdersTable(orders, tableId) {
+        const tableBody = document.getElementById(tableId);
+        tableBody.innerHTML = '';
+        if (orders.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="6" class="text-center">Brak zamówień.</td></tr>`;
+            return;
+        }
+
+        orders.forEach(o => {
+            const row = document.createElement('tr');
+            row.classList.add(`table-${o.status.toLowerCase()}-order`);
+            row.innerHTML = `
+                <td>${o.id ? o.id.substring(0, 8) + '...' : ''}</td>
+                <td>${o.date}</td>
+                <td>${o.customer ? o.customer.firstName + ' ' + o.customer.lastName : 'Brak danych klienta'}</td>
+                <td>${o.status}</td>
+                <td>${o.price.toFixed(2)} zł</td>
+                <td>
+                    <button class="btn btn-info btn-sm" onclick="showOrderDetails('${o.id}')">Szczegóły</button>
+                    ${o.status !== 'CANCELLED' ? `<button class="btn btn-danger btn-sm" onclick="cancelOrder('${o.id}')">Anuluj</button>` : ''}
+                    ${o.status === 'NEW' || o.status === 'PENDING' ? `<button class="btn btn-warning btn-sm" onclick="editOrderStatus('${o.id}', '${o.status}')">Zmień status</button>` : ''}
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    async function cancelOrder(orderId) {
+        if (!confirm('Czy na pewno chcesz anulować to zamówienie?')) return;
+        try {
+            const response = await fetch(`${API_URL}/orders/${orderId}/status/CANCELLED`, { method: 'PUT' });
+            if (response.ok) {
+                alert('Zamówienie zostało anulowane.');
+                loadOrders(); // Odświeżenie tabel po zmianie statusu
+            } else {
+                const errorData = await response.json();
+                alert(`Wystąpił błąd podczas anulowania zamówienia: ${errorData.message || response.statusText}`);
+            }
+        } catch (error) {
+            console.error('Błąd:', error);
+            alert('Wystąpił błąd podczas anulowania zamówienia.');
+        }
+    }
+
+    async function updateOrderStatus(event) { event.preventDefault(); const orderId = document.getElementById('orderIdToUpdate').value; const newStatus = document.getElementById('orderStatusSelect').value; const response = await fetch(`${API_URL}/orders/${orderId}/status/${newStatus}`, { method: 'PUT' }); if (response.ok) { loadOrders(); bootstrap.Modal.getInstance(document.getElementById('orderStatusModal')).hide(); } else { alert('Wystąpił błąd podczas aktualizacji statusu.'); } }
     function editOrderStatus(orderId, currentStatus) { document.getElementById('orderIdToUpdate').value = orderId; const select = document.getElementById('orderStatusSelect'); select.innerHTML = ['NEW', 'PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map(s => `<option value="${s}" ${s === currentStatus ? 'selected' : ''}>${s}</option>`).join(''); new bootstrap.Modal(document.getElementById('orderStatusModal')).show(); }
     async function fetchSpiders(page = 0, size = 10, sortBy = 'speciesName') { const url = `${API_URL}/spiders?page=${page}&size=${size}&sortBy=${sortBy}`; const response = await fetch(url); return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 }; }
     function loadSpiders(page = 0) { fetchSpiders(page).then(data => { currentPage.spiders = data.number; totalPages.spiders = data.totalPages; renderSpidersTable(data.content); renderPagination(data.number, data.totalPages, 'spiders'); }); }
@@ -334,7 +418,6 @@
     async function deleteSpider(id) { if (!confirm('Czy na pewno?')) return; const response = await fetch(`${API_URL}/spiders/${id}`, { method: 'DELETE' }); if (response.ok) { loadSpiders(currentPage.spiders); } else { alert('Wystąpił błąd podczas usuwania.'); } }
     function openSpiderModal() { document.getElementById('spiderForm').reset(); document.getElementById('spiderId').value = ''; new bootstrap.Modal(document.getElementById('spiderModal')).show(); }
     function renderPagination(currentPage, totalPages, resource) { const paginationElement = document.getElementById(`${resource}Pagination`); if (!paginationElement) return; paginationElement.innerHTML = ''; const prevLi = `<li class="page-item ${currentPage === 0 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="load${resource.charAt(0).toUpperCase() + resource.slice(1)}(${currentPage - 1})">Poprzednia</a></li>`; const nextLi = `<li class="page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="load${resource.charAt(0).toUpperCase() + resource.slice(1)}(${currentPage + 1})">Następna</a></li>`; let pagesHtml = ''; for (let i = 0; i < totalPages; i++) { pagesHtml += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="load${resource.charAt(0).toUpperCase() + resource.slice(1)}(${i})">${i + 1}</a></li>`; } paginationElement.innerHTML = prevLi + pagesHtml + nextLi; }
-
     async function showOrderDetails(orderId) {
         try {
             const response = await fetch(`${API_URL}/orders/${orderId}`);
@@ -372,6 +455,10 @@
     document.getElementById('customerForm').addEventListener('submit', addOrUpdateCustomer);
     document.getElementById('spiderForm').addEventListener('submit', addOrUpdateSpider);
     document.getElementById('statusForm').addEventListener('submit', updateOrderStatus);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showSection('orders');
+    });
 </script>
 </body>
 </html>
