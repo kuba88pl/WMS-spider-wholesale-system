@@ -1,25 +1,33 @@
 package com.WMS_spiders_wholesale_system.dto;
 
 import com.WMS_spiders_wholesale_system.entity.OrderStatus;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 public class OrderDTO {
-    private UUID orderId;
+    private UUID id;
+    private UUID customerId;
     private LocalDate date;
     private double price;
     private OrderStatus status;
-    private UUID customerId;
     private List<OrderedSpiderDTO> orderedSpiders;
 
-    public UUID getOrderId() {
-        return orderId;
+    // Getters and Setters
+    public UUID getId() {
+        return id;
     }
 
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(UUID customerId) {
+        this.customerId = customerId;
     }
 
     public LocalDate getDate() {
@@ -44,14 +52,6 @@ public class OrderDTO {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
-    }
-
-    public UUID getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(UUID customerId) {
-        this.customerId = customerId;
     }
 
     public List<OrderedSpiderDTO> getOrderedSpiders() {

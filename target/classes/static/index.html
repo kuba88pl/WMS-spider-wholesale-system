@@ -2,779 +2,297 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WMS - Spider Wholesale System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            line-height: 1.6;
-        }
-        .navbar {
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .container-fluid {
-            padding: 20px;
-        }
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-            border-color: #dc3545;
-        }
-        .btn-danger:hover {
-            background-color: #c82333;
-            border-color: #bd2130;
-        }
-        .table {
-            background-color: #fff;
-        }
-        .table thead th {
-            background-color: #e9ecef;
-            border-bottom: 2px solid #dee2e6;
-        }
-        .modal-content {
-            border-radius: 10px;
-        }
-        .modal-header, .modal-footer {
-            border: none;
-        }
-        .list-group-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    </style>
+    <title>🕷️ WMS Spiders Wholesale</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
-<body>
+<body class="bg-light">
+<div class="container py-4">
+    <h1 class="mb-4 text-center">🕷️ System Hurtowy Pająków</h1>
 
-<nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">WMS System</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#" onclick="showSection('customers')">Klienci</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showSection('spiders')">Pająki</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="showSection('orders')">Zamówienia</a>
-                </li>
-            </ul>
+    <div class="card mb-4">
+        <div class="card-header">➕ Dodaj klienta</div>
+        <div class="card-body">
+            <form id="addCustomerForm">
+                <div class="row g-2">
+                    <div class="col-md-6"><input type="text" class="form-control" placeholder="Imię" id="firstName" required></div>
+                    <div class="col-md-6"><input type="text" class="form-control" placeholder="Nazwisko" id="lastName" required></div>
+                    <div class="col-12"><input type="email" class="form-control" placeholder="Email" id="email" required></div>
+                </div>
+                <button type="submit" class="btn btn-success mt-3">Dodaj klienta</button>
+            </form>
         </div>
     </div>
-</nav>
 
-<main class="container-fluid mt-4">
-    <section id="customersSection" class="active-section">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title">Zarządzanie klientami</h2>
-                <button class="btn btn-primary mb-3" onclick="showCustomerModal()">Dodaj nowego klienta</button>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+    <div class="card mb-4">
+        <div class="card-header">➕ Dodaj pająka</div>
+        <div class="card-body">
+            <form id="addSpiderForm">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="Gatunek" id="speciesName" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="Typ" id="typeName">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number" class="form-control" placeholder="Cena" id="price" step="0.01" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number" class="form-control" placeholder="Ilość" id="quantity" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="Rozmiar" id="size" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success mt-3">Dodaj pająka</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">📦 Utwórz zamówienie</div>
+        <div class="card-body">
+            <form id="orderForm">
+                <div class="mb-3">
+                    <label for="customerSelect" class="form-label">Wybierz klienta</label>
+                    <select class="form-select" id="customerSelect" required></select>
+                </div>
+                <div class="mb-3">
+                    <label for="spiderSelect" class="form-label">Wybierz pająka</label>
+                    <select class="form-select" id="spiderSelect" required></select>
+                </div>
+                <div class="mb-3">
+                    <label for="spiderQuantity" class="form-label">Ilość</label>
+                    <input type="number" class="form-control" id="spiderQuantity" min="1" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Utwórz zamówienie</button>
+            </form>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">📋 Lista klientów</div>
+                <div class="card-body">
+                    <table class="table table-striped" id="customersTable">
                         <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Imię</th>
                             <th>Nazwisko</th>
-                            <th>Telefon</th>
-                            <th>E-mail</th>
-                            <th>Adres</th>
-                            <th>Paczkomat</th>
-                            <th>Akcje</th>
+                            <th>Email</th>
                         </tr>
                         </thead>
-                        <tbody id="customersTableBody">
-                        <tr><td colspan="7" class="text-center">Ładowanie danych...</td></tr>
+                        <tbody>
                         </tbody>
                     </table>
                 </div>
-                <nav>
-                    <ul id="customersPagination" class="pagination justify-content-center"></ul>
-                </nav>
             </div>
         </div>
-    </section>
-
-    <section id="spidersSection" style="display: none;">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title">Zarządzanie pająkami</h2>
-                <button class="btn btn-primary mb-3" onclick="showSpiderModal()">Dodaj nowego pająka</button>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">📋 Lista pająków</div>
+                <div class="card-body">
+                    <table class="table table-striped" id="spidersTable">
                         <thead>
                         <tr>
-                            <th>Typ</th>
+                            <th>ID</th>
                             <th>Gatunek</th>
+                            <th>Cena</th>
                             <th>Ilość</th>
-                            <th>Wielkość</th>
-                            <th>Cena</th>
-                            <th>CITES</th>
-                            <th>Akcje</th>
                         </tr>
                         </thead>
-                        <tbody id="spidersTableBody">
-                        <tr><td colspan="7" class="text-center">Ładowanie danych...</td></tr>
+                        <tbody>
                         </tbody>
                     </table>
                 </div>
-                <nav>
-                    <ul id="spidersPagination" class="pagination justify-content-center"></ul>
-                </nav>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section id="ordersSection" style="display: none;">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title">Zarządzanie zamówieniami</h2>
-                <button class="btn btn-primary mb-3" onclick="showOrderModal()">Dodaj nowe zamówienie</button>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                        <tr>
-                            <th>ID Zamówienia</th>
-                            <th>Data</th>
-                            <th>Cena</th>
-                            <th>Status</th>
-                            <th>Akcje</th>
-                        </tr>
-                        </thead>
-                        <tbody id="ordersTableBody">
-                        <tr><td colspan="5" class="text-center">Ładowanie danych...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <nav>
-                    <ul id="ordersPagination" class="pagination justify-content-center"></ul>
-                </nav>
-            </div>
-        </div>
-    </section>
-</main>
+    <hr>
 
-<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="customerModalLabel">Klient</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="customerForm" onsubmit="addOrUpdateCustomer(event)">
-                    <input type="hidden" id="customerId">
-                    <div class="mb-3">
-                        <label for="firstName" class="form-label">Imię</label>
-                        <input type="text" class="form-control" id="firstName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="lastName" class="form-label">Nazwisko</label>
-                        <input type="text" class="form-control" id="lastName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="telephone" class="form-label">Telefon</label>
-                        <input type="tel" class="form-control" id="telephone">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">E-mail</label>
-                        <input type="email" class="form-control" id="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Adres</label>
-                        <input type="text" class="form-control" id="address">
-                    </div>
-                    <div class="mb-3">
-                        <label for="parcelLocker" class="form-label">Paczkomat</label>
-                        <input type="text" class="form-control" id="parcelLocker">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-                        <button type="submit" class="btn btn-primary">Zapisz</button>
-                    </div>
-                </form>
-            </div>
+    <div class="card">
+        <div class="card-header">📋 Lista zamówień</div>
+        <div class="card-body">
+            <table class="table table-striped" id="ordersTable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Klient</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th>Cena</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="spiderModal" tabindex="-1" aria-labelledby="spiderModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="spiderModalLabel">Pająk</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="spiderForm" onsubmit="addOrUpdateSpider(event)">
-                    <input type="hidden" id="spiderId">
-                    <div class="mb-3">
-                        <label for="typeName" class="form-label">Typ</label>
-                        <input type="text" class="form-control" id="typeName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="speciesName" class="form-label">Gatunek</label>
-                        <input type="text" class="form-control" id="speciesName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Ilość</label>
-                        <input type="number" class="form-control" id="quantity" required min="0">
-                    </div>
-                    <div class="mb-3">
-                        <label for="size" class="form-label">Wielkość</label>
-                        <input type="text" class="form-control" id="size">
-                    </div>
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Cena</label>
-                        <input type="number" class="form-control" id="price" step="0.01" required min="0">
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="isCites">
-                        <label class="form-check-label" for="isCites">CITES</label>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-                        <button type="submit" class="btn btn-primary">Zapisz</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="orderModalLabel">Dodaj nowe zamówienie</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="orderForm" onsubmit="createOrder(event)">
-                    <div class="mb-3">
-                        <label for="orderCustomer" class="form-label">Wybierz Klienta</label>
-                        <select class="form-select" id="orderCustomer" required>
-                            <option value="">-- Wybierz klienta --</option>
-                        </select>
-                    </div>
-                    <h6 class="mt-4">Dodaj pająki do zamówienia</h6>
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label for="spiderSelector" class="form-label">Pająk</label>
-                            <select class="form-select" id="spiderSelector">
-                                <option value="">-- Wybierz pająka --</option>
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="spiderQuantity" class="form-label">Ilość</label>
-                            <input type="number" class="form-control" id="spiderQuantity" value="1" min="1">
-                        </div>
-                        <div class="col-auto d-flex align-items-end">
-                            <button type="button" class="btn btn-outline-secondary" onclick="addSpiderToOrder()">Dodaj</button>
-                        </div>
-                    </div>
-                    <ul id="orderedSpidersList" class="list-group"></ul>
-                    <div class="modal-footer mt-4">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-                        <button type="submit" class="btn btn-primary">Utwórz zamówienie</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const API_URL = 'http://localhost:8080/api';
-
-    const currentPage = {
-        customers: 0,
-        spiders: 0,
-        orders: 0
+    const API = {
+        customers: '/api/customers',
+        spiders: '/api/spiders',
+        orders: '/api/orders'
     };
 
-    const currentSection = 'customers';
-    const orderedSpiders = [];
+    // Funkcje do pobierania i wyświetlania danych
+    async function fetchAndPopulateCustomers() {
+        try {
+            const response = await axios.get(API.customers);
+            const customers = response.data.content;
+            const tableBody = document.querySelector('#customersTable tbody');
+            const select = document.getElementById('customerSelect');
 
-    async function showSection(section) {
-        document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-        document.getElementById(section + 'Section').style.display = 'block';
-        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        document.querySelector(`[onclick="showSection('${section}')"]`).classList.add('active');
+            tableBody.innerHTML = '';
+            select.innerHTML = '<option value="">-- wybierz klienta --</option>';
 
-        if (section === 'customers') {
-            loadCustomers(currentPage.customers);
-        } else if (section === 'spiders') {
-            loadSpiders(currentPage.spiders);
-        } else if (section === 'orders') {
-            loadOrders(currentPage.orders);
+            customers.forEach(customer => {
+                tableBody.innerHTML += `
+                        <tr>
+                            <td>${customer.id}</td>
+                            <td>${customer.firstName}</td>
+                            <td>${customer.lastName}</td>
+                            <td>${customer.email}</td>
+                        </tr>
+                    `;
+                select.innerHTML += `<option value="${customer.id}">${customer.firstName} ${customer.lastName}</option>`;
+            });
+        } catch (error) {
+            console.error('Błąd podczas pobierania klientów:', error);
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        showSection(currentSection);
-    });
+    async function fetchAndPopulateSpiders() {
+        try {
+            const response = await axios.get(API.spiders);
+            const spiders = response.data.content;
+            const tableBody = document.querySelector('#spidersTable tbody');
+            const select = document.getElementById('spiderSelect');
 
-    // --- CUSTOMER LOGIC ---
-    async function fetchCustomers(page = 0, size = 10, sortBy = 'lastName') {
-        const url = `${API_URL}/customers?page=${page}&size=${size}&sortBy=${sortBy}`;
-        const response = await fetch(url);
-        return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 };
-    }
+            tableBody.innerHTML = '';
+            select.innerHTML = '<option value="">-- wybierz pająka --</option>';
 
-    function renderCustomersTable(customers) {
-        const tableBody = document.getElementById('customersTableBody');
-        if (customers.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Brak klientów do wyświetlenia.</td></tr>';
-            return;
-        }
-        tableBody.innerHTML = customers.map(c => `
-                <tr>
-                    <td>${c.firstName}</td>
-                    <td>${c.lastName}</td>
-                    <td>${c.telephone || '-'}</td>
-                    <td>${c.email}</td>
-                    <td>${c.address || '-'}</td>
-                    <td>${c.parcelLocker || '-'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-info" onclick="editCustomer('${c.id}')">Edytuj</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteCustomer('${c.id}')">Usuń</button>
-                    </td>
-                </tr>
-            `).join('');
-    }
-
-    async function loadCustomers(page) {
-        const data = await fetchCustomers(page);
-        renderCustomersTable(data.content);
-        renderPagination('customers', data.totalPages, data.number);
-        currentPage.customers = data.number;
-    }
-
-    function showCustomerModal(customer = {}) {
-        document.getElementById('customerId').value = customer.id || '';
-        document.getElementById('firstName').value = customer.firstName || '';
-        document.getElementById('lastName').value = customer.lastName || '';
-        document.getElementById('telephone').value = customer.telephone || '';
-        document.getElementById('email').value = customer.email || '';
-        document.getElementById('address').value = customer.address || '';
-        document.getElementById('parcelLocker').value = customer.parcelLocker || '';
-        const modal = new bootstrap.Modal(document.getElementById('customerModal'));
-        modal.show();
-    }
-
-    async function editCustomer(id) {
-        const response = await fetch(`${API_URL}/customers/${id}`);
-        if (response.ok) {
-            const customer = await response.json();
-            showCustomerModal(customer);
+            spiders.forEach(spider => {
+                tableBody.innerHTML += `
+                        <tr>
+                            <td>${spider.id}</td>
+                            <td>${spider.speciesName}</td>
+                            <td>${spider.price.toFixed(2)} zł</td>
+                            <td>${spider.quantity}</td>
+                        </tr>
+                    `;
+                select.innerHTML += `<option value="${spider.id}">${spider.speciesName}</option>`;
+            });
+        } catch (error) {
+            console.error('Błąd podczas pobierania pająków:', error);
         }
     }
 
-    async function addOrUpdateCustomer(event) {
-        event.preventDefault();
-        const customerId = document.getElementById('customerId').value;
+    async function fetchAndPopulateOrders() {
+        try {
+            const response = await axios.get(API.orders);
+            const orders = response.data.content;
+            const tableBody = document.querySelector('#ordersTable tbody');
+
+            tableBody.innerHTML = '';
+
+            orders.forEach(order => {
+                tableBody.innerHTML += `
+                        <tr>
+                            <td>${order.id}</td>
+                            <td>${order.customerId}</td>
+                            <td>${order.date}</td>
+                            <td>${order.status}</td>
+                            <td>${order.price.toFixed(2)} zł</td>
+                        </tr>
+                    `;
+            });
+        } catch (error) {
+            console.error('Błąd podczas pobierania zamówień:', error);
+        }
+    }
+
+    // Obsługa formularzy
+    document.getElementById('addCustomerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
         const customer = {
-            id: customerId || null,
             firstName: document.getElementById('firstName').value,
             lastName: document.getElementById('lastName').value,
-            telephone: document.getElementById('telephone').value,
             email: document.getElementById('email').value,
-            address: document.getElementById('address').value,
-            parcelLocker: document.getElementById('parcelLocker').value
         };
-        const method = customerId ? 'PUT' : 'POST';
-        const url = `${API_URL}/customers`;
-
         try {
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(customer)
-            });
-
-            if (response.ok) {
-                loadCustomers(currentPage.customers);
-                bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
-                alert('Klient został zapisany pomyślnie!');
-            } else if (response.status === 409) {
-                alert('Wystąpił błąd: Klient z podanym adresem e-mail już istnieje.');
-            } else {
-                const errorText = await response.text();
-                alert('Wystąpił nieznany błąd podczas zapisu klienta: ' + errorText);
-            }
+            await axios.post(API.customers, customer);
+            alert('Klient dodany pomyślnie!');
+            e.target.reset();
+            fetchAndPopulateCustomers();
         } catch (error) {
-            alert('Wystąpił błąd połączenia z serwerem.');
-            console.error('Błąd:', error);
+            alert('Błąd podczas dodawania klienta!');
+            console.error('Błąd:', error.response.data);
         }
-    }
+    });
 
-    async function deleteCustomer(id) {
-        if (confirm('Czy na pewno chcesz usunąć tego klienta?')) {
-            try {
-                const response = await fetch(`${API_URL}/customers/${id}`, {
-                    method: 'DELETE'
-                });
-                if (response.ok) {
-                    alert('Klient usunięty pomyślnie.');
-                    loadCustomers(currentPage.customers);
-                } else {
-                    alert('Nie udało się usunąć klienta. Sprawdź, czy nie ma powiązanych zamówień.');
-                }
-            } catch (error) {
-                alert('Błąd połączenia z serwerem.');
-                console.error('Błąd:', error);
-            }
-        }
-    }
-
-    // --- SPIDER LOGIC ---
-    async function fetchSpiders(page = 0, size = 10, sortBy = 'speciesName') {
-        const url = `${API_URL}/spiders?page=${page}&size=${size}&sortBy=${sortBy}`;
-        const response = await fetch(url);
-        return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 };
-    }
-
-    function renderSpidersTable(spiders) {
-        const tableBody = document.getElementById('spidersTableBody');
-        if (spiders.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Brak pająków do wyświetlenia.</td></tr>';
-            return;
-        }
-        tableBody.innerHTML = spiders.map(s => `
-                <tr>
-                    <td>${s.typeName}</td>
-                    <td>${s.speciesName}</td>
-                    <td>${s.quantity}</td>
-                    <td>${s.size}</td>
-                    <td>${s.price} zł</td>
-                    <td>${s.cites ? 'Tak' : 'Nie'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-info" onclick="editSpider('${s.id}')">Edytuj</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteSpider('${s.id}')">Usuń</button>
-                    </td>
-                </tr>
-            `).join('');
-    }
-
-    async function loadSpiders(page) {
-        const data = await fetchSpiders(page);
-        renderSpidersTable(data.content);
-        renderPagination('spiders', data.totalPages, data.number);
-        currentPage.spiders = data.number;
-    }
-
-    function showSpiderModal(spider = {}) {
-        document.getElementById('spiderId').value = spider.id || '';
-        document.getElementById('typeName').value = spider.typeName || '';
-        document.getElementById('speciesName').value = spider.speciesName || '';
-        document.getElementById('quantity').value = spider.quantity || 0;
-        document.getElementById('size').value = spider.size || '';
-        document.getElementById('price').value = spider.price || 0.0;
-        document.getElementById('isCites').checked = spider.isCites || false;
-        const modal = new bootstrap.Modal(document.getElementById('spiderModal'));
-        modal.show();
-    }
-
-    async function editSpider(id) {
-        const response = await fetch(`${API_URL}/spiders/${id}`);
-        if (response.ok) {
-            const spider = await response.json();
-            showSpiderModal(spider);
-        }
-    }
-
-    async function addOrUpdateSpider(event) {
-        event.preventDefault();
-        const spiderId = document.getElementById('spiderId').value;
+    document.getElementById('addSpiderForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
         const spider = {
-            id: spiderId || null,
-            typeName: document.getElementById('typeName').value,
             speciesName: document.getElementById('speciesName').value,
-            quantity: parseInt(document.getElementById('quantity').value, 10),
-            size: document.getElementById('size').value,
+            typeName: document.getElementById('typeName').value,
             price: parseFloat(document.getElementById('price').value),
-            isCites: document.getElementById('isCites').checked
+            quantity: parseInt(document.getElementById('quantity').value),
+            size: document.getElementById('size').value,
+            isCites: false
         };
-        const method = spiderId ? 'PUT' : 'POST';
-        const url = `${API_URL}/spiders`;
-
         try {
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(spider)
-            });
-            if (response.ok) {
-                loadSpiders(currentPage.spiders);
-                bootstrap.Modal.getInstance(document.getElementById('spiderModal')).hide();
-                alert('Pająk został zapisany pomyślnie!');
-            } else {
-                const errorText = await response.text();
-                alert('Wystąpił błąd podczas zapisu pająka: ' + errorText);
-            }
+            await axios.post(API.spiders, spider);
+            alert('Pająk dodany pomyślnie!');
+            e.target.reset();
+            fetchAndPopulateSpiders();
         } catch (error) {
-            alert('Błąd połączenia z serwerem.');
-            console.error('Błąd:', error);
+            alert('Błąd podczas dodawania pająka!');
+            console.error('Błąd:', error.response.data);
         }
-    }
+    });
 
-    async function deleteSpider(id) {
-        if (confirm('Czy na pewno chcesz usunąć tego pająka?')) {
-            try {
-                const response = await fetch(`${API_URL}/spiders/${id}`, {
-                    method: 'DELETE'
-                });
-                if (response.ok) {
-                    alert('Pająk usunięty pomyślnie.');
-                    loadSpiders(currentPage.spiders);
-                } else {
-                    alert('Nie udało się usunąć pająka. Sprawdź, czy nie ma powiązanych zamówień.');
-                }
-            } catch (error) {
-                alert('Błąd połączenia z serwerem.');
-                console.error('Błąd:', error);
-            }
-        }
-    }
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const customerId = document.getElementById('customerSelect').value;
+        const spiderId = document.getElementById('spiderSelect').value;
+        const quantity = parseInt(document.getElementById('spiderQuantity').value);
 
-    // --- ORDER LOGIC ---
-    async function fetchOrders(page = 0, size = 10, sortBy = 'date') {
-        const url = `${API_URL}/orders?page=${page}&size=${size}&sortBy=${sortBy}`;
-        const response = await fetch(url);
-        return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 };
-    }
-
-    function renderOrdersTable(orders) {
-        const tableBody = document.getElementById('ordersTableBody');
-        if (orders.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Brak zamówień do wyświetlenia.</td></tr>';
-            return;
-        }
-        tableBody.innerHTML = orders.map(o => `
-                <tr>
-                    <td>${o.orderId}</td>
-                    <td>${o.date}</td>
-                    <td>${o.price} zł</td>
-                    <td>${o.status}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger" onclick="deleteOrder('${o.orderId}')">Usuń</button>
-                    </td>
-                </tr>
-            `).join('');
-    }
-
-    async function loadOrders(page) {
-        const data = await fetchOrders(page);
-        renderOrdersTable(data.content);
-        renderPagination('orders', data.totalPages, data.number);
-        currentPage.orders = data.number;
-    }
-
-    async function showOrderModal() {
-        orderedSpiders.length = 0;
-        document.getElementById('orderedSpidersList').innerHTML = '';
-        document.getElementById('orderForm').reset();
-
-        const customers = await fetchCustomers(0, 1000);
-        const customersSelect = document.getElementById('orderCustomer');
-        customersSelect.innerHTML = '<option value="">-- Wybierz klienta --</option>';
-        customers.content.forEach(c => {
-            const option = document.createElement('option');
-            option.value = c.id;
-            option.textContent = `${c.firstName} ${c.lastName}`;
-            customersSelect.appendChild(option);
-        });
-
-        const spiders = await fetchSpiders(0, 1000);
-        const spidersSelect = document.getElementById('spiderSelector');
-        spidersSelect.innerHTML = '<option value="">-- Wybierz pająka --</option>';
-        spiders.content.forEach(s => {
-            const option = document.createElement('option');
-            option.value = s.id;
-            option.textContent = `${s.speciesName} (${s.quantity} szt. na stanie)`;
-            option.dataset.price = s.price;
-            option.dataset.quantity = s.quantity;
-            spidersSelect.appendChild(option);
-        });
-
-        const modal = new bootstrap.Modal(document.getElementById('orderModal'));
-        modal.show();
-    }
-
-    function addSpiderToOrder() {
-        const spiderSelect = document.getElementById('spiderSelector');
-        const quantityInput = document.getElementById('spiderQuantity');
-
-        if (!spiderSelect.value || !quantityInput.value) {
-            alert('Wybierz pająka i podaj ilość.');
-            return;
-        }
-
-        const spiderId = spiderSelect.value;
-        const spiderName = spiderSelect.options[spiderSelect.selectedIndex].text;
-        const quantity = parseInt(quantityInput.value, 10);
-        const availableQuantity = parseInt(spiderSelect.options[spiderSelect.selectedIndex].dataset.quantity, 10);
-
-        if (quantity <= 0) {
-            alert('Ilość musi być większa od zera.');
-            return;
-        }
-
-        if (quantity > availableQuantity) {
-            alert(`Nie można dodać ${quantity} sztuk. Dostępna ilość: ${availableQuantity}`);
-            return;
-        }
-
-        const existingSpider = orderedSpiders.find(s => s.spiderId === spiderId);
-        if (existingSpider) {
-            if ((existingSpider.quantity + quantity) > availableQuantity) {
-                alert(`Całkowita ilość (${existingSpider.quantity + quantity}) przekracza stan magazynowy (${availableQuantity}).`);
-                return;
-            }
-            existingSpider.quantity += quantity;
-        } else {
-            orderedSpiders.push({ spiderId, quantity, name: spiderName });
-        }
-
-        renderOrderedSpidersList();
-        quantityInput.value = 1;
-    }
-
-    function removeSpiderFromOrder(spiderId) {
-        const index = orderedSpiders.findIndex(s => s.spiderId === spiderId);
-        if (index > -1) {
-            orderedSpiders.splice(index, 1);
-        }
-        renderOrderedSpidersList();
-    }
-
-    function renderOrderedSpidersList() {
-        const listContainer = document.getElementById('orderedSpidersList');
-        listContainer.innerHTML = orderedSpiders.map(s => `
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    ${s.name} - Ilość: ${s.quantity}
-                    <button type="button" class="btn btn-sm btn-danger" onclick="removeSpiderFromOrder('${s.spiderId}')">Usuń</button>
-                </li>
-            `).join('');
-    }
-
-    async function createOrder(event) {
-        event.preventDefault();
-        const customerId = document.getElementById('orderCustomer').value;
-        if (!customerId || orderedSpiders.length === 0) {
-            alert('Wybierz klienta i dodaj pająki do zamówienia.');
-            return;
-        }
-
-        const order = {
+        const orderData = {
             customerId: customerId,
-            orderedSpiders: orderedSpiders.map(s => ({
-                spiderId: s.spiderId,
-                quantity: s.quantity
-            }))
+            orderedSpiders: [{
+                spiderId: spiderId,
+                quantity: quantity
+            }]
         };
 
         try {
-            const response = await fetch(`${API_URL}/orders`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(order)
-            });
-
-            if (response.ok) {
-                alert('Zamówienie utworzono pomyślnie!');
-                bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
-                loadOrders(currentPage.orders);
-            } else {
-                const errorText = await response.text();
-                alert('Błąd podczas tworzenia zamówienia: ' + errorText);
-            }
+            await axios.post(API.orders, orderData);
+            alert('Zamówienie utworzone pomyślnie!');
+            e.target.reset();
+            fetchAndPopulateOrders();
+            fetchAndPopulateSpiders(); // Odśwież listę pająków, aby pokazać zaktualizowaną ilość
         } catch (error) {
-            alert('Błąd połączenia z serwerem.');
-            console.error('Błąd:', error);
+            alert('Błąd podczas tworzenia zamówienia!');
+            console.error('Błąd:', error.response.data);
         }
-    }
+    });
 
-    async function deleteOrder(id) {
-        if (confirm('Czy na pewno chcesz usunąć to zamówienie?')) {
-            try {
-                const response = await fetch(`${API_URL}/orders/${id}`, {
-                    method: 'DELETE'
-                });
-                if (response.ok) {
-                    alert('Zamówienie usunięte pomyślnie.');
-                    loadOrders(currentPage.orders);
-                } else {
-                    alert('Nie udało się usunąć zamówienia.');
-                }
-            } catch (error) {
-                alert('Błąd połączenia z serwerem.');
-                console.error('Błąd:', error);
-            }
-        }
-    }
-
-    // --- PAGINATION LOGIC ---
-    function renderPagination(section, totalPages, currentPageNum) {
-        const paginationContainer = document.getElementById(`${section}Pagination`);
-        paginationContainer.innerHTML = '';
-
-        const createPageItem = (text, page, isActive = false, isDisabled = false) => {
-            const li = document.createElement('li');
-            li.className = `page-item ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`;
-            const a = document.createElement('a');
-            a.className = 'page-link';
-            a.href = '#';
-            a.textContent = text;
-            a.onclick = () => {
-                if (!isDisabled) {
-                    window[`load${section.charAt(0).toUpperCase() + section.slice(1)}`](page);
-                }
-            };
-            li.appendChild(a);
-            return li;
-        };
-
-        // Previous button
-        paginationContainer.appendChild(createPageItem('Poprzednia', currentPageNum - 1, false, currentPageNum === 0));
-
-        // Page numbers
-        for (let i = 0; i < totalPages; i++) {
-            paginationContainer.appendChild(createPageItem(i + 1, i, i === currentPageNum));
-        }
-
-        // Next button
-        paginationContainer.appendChild(createPageItem('Następna', currentPageNum + 1, false, currentPageNum === totalPages - 1));
-    }
-
+    // Inicjalizacja danych po załadowaniu strony
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchAndPopulateCustomers();
+        fetchAndPopulateSpiders();
+        fetchAndPopulateOrders();
+    });
 </script>
-
 </body>
 </html>

@@ -47,12 +47,12 @@ public class CustomerController {
     }
 
     @PutMapping
-    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<CustomerDTO> updateCustomer(@RequestBody CustomerDTO customerDTO) {
         try {
-            Customer updatedCustomer = customerService.updateCustomer(customer);
-            return ResponseEntity.ok(updatedCustomer);
+            Customer updatedCustomer = customerService.updateCustomer(CustomerMapper.toEntity(customerDTO));
+            return ResponseEntity.ok(CustomerMapper.toDTO(updatedCustomer));
         } catch (CustomerNotFoundException e) {
-            logger.error("Customer not found with id {}", customer.getId());
+            logger.error("Customer not found with id {}", customerDTO.getId());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (InvalidCustomerDataException e) {
             logger.error("Invalid customer data: {}", e.getMessage());

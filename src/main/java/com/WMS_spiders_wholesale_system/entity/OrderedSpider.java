@@ -1,9 +1,7 @@
 package com.WMS_spiders_wholesale_system.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -11,18 +9,15 @@ import java.util.UUID;
 public class OrderedSpider implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", columnDefinition = "VARCHAR(36)")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    @JsonBackReference
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "spider_id")
-    @JsonBackReference
     private Spider spider;
 
     private int quantity;
@@ -58,18 +53,5 @@ public class OrderedSpider implements Serializable {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderedSpider that = (OrderedSpider) o;
-        return quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(order, that.order) && Objects.equals(spider, that.spider);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, order, spider, quantity);
     }
 }

@@ -8,65 +8,62 @@ import com.WMS_spiders_wholesale_system.exception.SpiderNotFoundException;
 import com.WMS_spiders_wholesale_system.service.SpiderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Sort;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/spiders")
 public class SpiderController {
     private static final Logger logger = LoggerFactory.getLogger(SpiderController.class);
+
     private final SpiderService spiderService;
 
-    @Autowired
     public SpiderController(SpiderService spiderService) {
         this.spiderService = spiderService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SpiderDTO> getSpiderById(@PathVariable UUID id) {
-        try {
-            Spider spider = spiderService.getSpiderById(id);
-            return ResponseEntity.ok(SpiderMapper.toDTO(spider));
-        } catch (SpiderNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
     @PostMapping
-    public ResponseEntity<Spider> addSpider(@RequestBody Spider spider) {
+    public ResponseEntity<SpiderDTO> addSpider(@RequestBody SpiderDTO spiderDTO) {
         try {
-            Spider newSpider = spiderService.addSpider(spider);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newSpider);
+            Spider newSpider = spiderService.addSpider(SpiderMapper.toEntity(spiderDTO));
+            return ResponseEntity.status(HttpStatus.CREATED).body(SpiderMapper.toDTO(newSpider));
         } catch (InvalidSpiderDataException e) {
             logger.error("Invalid spider data: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
-            logger.error("An unexpected error occurred while adding spider: {}", e.getMessage());
+            logger.error("An unexpected error occurred while adding spider", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PutMapping
-    public ResponseEntity<Spider> updateSpider(@RequestBody Spider spider) {
+    public ResponseEntity<SpiderDTO> updateSpider(@RequestBody SpiderDTO spiderDTO) {
         try {
-            Spider updatedSpider = spiderService.updateSpider(spider);
-            return ResponseEntity.ok(updatedSpider);
-        } catch (Exception e) {
+            Spider updatedSpider = spiderService.updateSpider(SpiderMapper.toEntity(spiderDTO));
+            return ResponseEntity.ok(SpiderMapper.toDTO(updatedSpider));
+        } catch (SpiderNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InvalidSpiderDataException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (Exception e) {
+            logger.error("An unexpected error occurred while updating spider", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSpider(@PathVariable UUID id) {
         try {
-            spiderService.removeSpider(id);
+            spiderService.deleteSpider(id);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+        } catch (SpiderNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -76,11 +73,18 @@ public class SpiderController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "speciesName") String sortBy) {
+
+        var spidersPage = spiderService.getAllSpiders(page, size, Sort.by(sortBy));
+        return ResponseEntity.ok(SpiderMapper.toDTOPage(spidersPage));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SpiderDTO> getSpiderById(@PathVariable UUID id) {
         try {
-            var spiderSPage = spiderService.getAllSpiders(page, size, org.springframework.data.domain.Sort.by(sortBy));
-            return ResponseEntity.ok(SpiderMapper.toDTOPage(spiderSPage));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            Spider spider = spiderService.getSpiderById(id);
+            return ResponseEntity.ok(SpiderMapper.toDTO(spider));
+        } catch (SpiderNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

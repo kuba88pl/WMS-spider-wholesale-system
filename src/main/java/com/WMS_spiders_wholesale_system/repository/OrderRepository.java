@@ -18,23 +18,31 @@ import java.util.UUID;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID> {
+
+    // Metoda dostarczona przez JpaRepository (wcześniej findByOrderId).
+    // Użyj standardowej metody, która jest ulepszona przez @EntityGraph poniżej.
+    @Override
+    @EntityGraph(attributePaths = {"customer", "orderedSpiders"})
+    Optional<Order> findById(UUID id);
+
+    // Znajdź wszystkie zamówienia o danym statusie.
     List<Order> findByStatus(OrderStatus orderStatus);
 
-    Order findByOrderId(UUID orderId);
-
+    // Zaktualizuj status zamówienia na podstawie jego ID.
+    // Zmieniono 'o.orderId' na 'o.id'
     @Modifying
     @Transactional
-    @Query("UPDATE Order o SET o.status = :newStatus WHERE o.orderId = :orderId")
+    @Query("UPDATE Order o SET o.status = :newStatus WHERE o.id = :orderId")
     void updateOrderStatus(@Param("orderId") UUID orderId, @Param("newStatus") OrderStatus newStatus);
 
-    @Query("SELECT o FROM Order o JOIN FETCH o.customer LEFT JOIN FETCH o.orderedSpiders")
-    Page<Order> findAllWithDetails(Pageable pageable);
+    // Ta metoda jest zbędna, ponieważ nadpisana metoda findAll z @EntityGraph
+    // zapewnia już to samo zachowanie.
+    // @Query("SELECT o FROM Order o JOIN FETCH o.customer LEFT JOIN FETCH o.orderedSpiders")
+    // Page<Order> findAllWithDetails(Pageable pageable);
 
+    // Nadpisuje standardową metodę findAll, aby zoptymalizować zapytania.
+    // Ładuje powiązane encje (klienta i zamówione pająki) w jednym zapytaniu.
     @Override
     @EntityGraph(attributePaths = {"customer", "orderedSpiders"})
     Page<Order> findAll(Pageable pageable);
-
-    @Override
-    @EntityGraph(attributePaths = {"customer", "orderedSpiders"})
-    Optional<Order> findById(UUID uuid);
 }

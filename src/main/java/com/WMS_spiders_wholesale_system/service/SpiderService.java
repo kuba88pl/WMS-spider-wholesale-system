@@ -4,83 +4,65 @@ import com.WMS_spiders_wholesale_system.entity.Spider;
 import com.WMS_spiders_wholesale_system.exception.InvalidSpiderDataException;
 import com.WMS_spiders_wholesale_system.exception.SpiderNotFoundException;
 import com.WMS_spiders_wholesale_system.repository.SpiderRepository;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-
+import java.util.List;
 import java.util.UUID;
-
-import org.slf4j.Logger;
 
 @Service
 public class SpiderService {
 
     private final SpiderRepository spiderRepository;
-    private static final Logger logger = LoggerFactory.getLogger(SpiderService.class);
 
-    @Autowired
     public SpiderService(SpiderRepository spiderRepository) {
         this.spiderRepository = spiderRepository;
     }
 
-    public Spider addSpider(Spider spider) {
-        validateSpider(spider);
-        try{
-            logger.info("Adding spider:  " + spider.getSpeciesName() + " " + spider.getTypeName());
-            return spiderRepository.save(spider);
-        } catch (Exception e) {
-            logger.error("An error occured while saving the spider to the database.", e);
-            throw new RuntimeException("Failed to add spider to the database.", e);
+    public Spider addSpider(Spider spider) throws InvalidSpiderDataException {
+        if (spider == null || spider.getSpeciesName() == null || spider.getSpeciesName().trim().isEmpty()) {
+            throw new InvalidSpiderDataException("Spider species name cannot be null or empty.");
         }
+        if (spider.getId() != null && spiderRepository.existsById(spider.getId())) {
+            // Logika aktualizacji jest w metodzie updateSpider
+            throw new InvalidSpiderDataException("Spider with this ID already exists.");
+        }
+        return spiderRepository.save(spider);
     }
 
-    public Spider updateSpider(Spider spider) {
-        Spider existingSpider = spiderRepository.findById(spider.getId())
-                .orElseThrow(() -> new SpiderNotFoundException("Spider with id " + spider.getId() + " not found"));
-        existingSpider.setTypeName(spider.getTypeName());
-        existingSpider.setSpeciesName(spider.getSpeciesName());
-        existingSpider.setQuantity(spider.getQuantity());
-        existingSpider.setSize(spider.getSize());
-        existingSpider.setPrice(spider.getPrice());
-        logger.info("Updated spider " + existingSpider.getId());
-        return spiderRepository.save(existingSpider);
+    public Spider updateSpider(Spider spider) throws SpiderNotFoundException, InvalidSpiderDataException {
+        if (spider == null || spider.getId() == null) {
+            throw new InvalidSpiderDataException("Spider and its ID cannot be null for an update.");
+        }
+        if (!spiderRepository.existsById(spider.getId())) {
+            throw new SpiderNotFoundException("Spider with ID " + spider.getId() + " not found.");
+        }
+        return spiderRepository.save(spider);
     }
 
-    public Spider getSpiderById(UUID id) {
-        return spiderRepository.findById(id)
-                .orElseThrow(() -> new SpiderNotFoundException("Spider with id " + id + " not found"));
-    }
-
-    public void removeSpider(UUID id) {
+    public void deleteSpider(UUID id) throws SpiderNotFoundException {
         if (!spiderRepository.existsById(id)) {
-            throw new SpiderNotFoundException("Spider with ID " + id + " not found");
+            throw new SpiderNotFoundException("Spider with ID " + id + " not found.");
         }
         spiderRepository.deleteById(id);
     }
 
-    public Page<Spider> getAllSpiders(int page, int size, Sort sort) {
-        Pageable pageable = PaginationHelper.createPageable(page, size, sort, "speciesName");
-        return spiderRepository.findAll(pageable);
+    public Spider getSpiderById(UUID id) throws SpiderNotFoundException {
+        return spiderRepository.findById(id)
+                .orElseThrow(() -> new SpiderNotFoundException("Spider with ID " + id + " not found."));
     }
 
-    private void validateSpider(Spider spider) {
-        if (spider == null) {
-            throw new InvalidSpiderDataException("Spider cannot be null");
+    public List<Spider> getSpiderBySpeciesName(String speciesName) throws SpiderNotFoundException {
+        List<Spider> spiders = spiderRepository.findBySpeciesName(speciesName);
+        if (spiders.isEmpty()) {
+            throw new SpiderNotFoundException("No spiders found with species name: " + speciesName);
         }
-        if ((spider.getSpeciesName() == null) || spider.getSpeciesName().isEmpty()
-                || (spider.getTypeName() == null) || spider.getTypeName().isEmpty()) {
-            throw new InvalidSpiderDataException("Spider species name or type name cannot be null or empty");
-        }
-        if (spider.getSize() == null) {
-            throw new InvalidSpiderDataException("Spider size cannot be null");
-        }
-        if (spider.getQuantity() < 0) {
-            throw new InvalidSpiderDataException("Spider quantity cannot smaller than 0");
-        }
-        logger.info("Validating spider: " + spider.getId());
+        return spiders;
+    }
+
+    public Page<Spider> getAllSpiders(int page, int size, Sort sort) {
+        return spiderRepository.findAll(PageRequest.of(page, size, sort));
     }
 }

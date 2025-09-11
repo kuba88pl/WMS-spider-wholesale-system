@@ -1,64 +1,53 @@
 package com.WMS_spiders_wholesale_system.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "orders")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "orderId")
-public class Order {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Order implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "order_id", columnDefinition = "VARCHAR(36)")
-    private UUID orderId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
     @Column(name = "date")
     private LocalDate date;
-    @Column(name = "price", nullable = false)
+
+    @Column(name = "price")
     private double price;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private OrderStatus status;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "customer_id", columnDefinition = "VARCHAR(36)")
-    @JsonBackReference(value = "customer-order")
-    private Customer customer;
-    @OneToMany(mappedBy = "order", cascade =CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonManagedReference(value = "order-spider")
-    private List<OrderedSpider> orderedSpiders;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderedSpider> orderedSpiders = new ArrayList<>();
 
     public Order() {
+        this.date = LocalDate.now();
+        this.status = OrderStatus.PENDING;
     }
 
-    public Order(Customer customer, LocalDate date, OrderStatus status, double price, List<OrderedSpider> orderedSpiders) {
-        this.customer = customer;
-        this.date = date;
-        this.price = price;
-        this.orderedSpiders = orderedSpiders;
-        this.status = status;
-
+    // Getters and Setters
+    public UUID getId() {
+        return id;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public Customer getCustomer() {
@@ -69,12 +58,20 @@ public class Order {
         this.customer = customer;
     }
 
-    public UUID getOrderId() {
-        return orderId;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public OrderStatus getStatus() {
@@ -85,11 +82,29 @@ public class Order {
         this.status = status;
     }
 
+    public List<OrderedSpider> getOrderedSpiders() {
+        return orderedSpiders;
+    }
+
     public void setOrderedSpiders(List<OrderedSpider> orderedSpiders) {
         this.orderedSpiders = orderedSpiders;
     }
 
-    public List<OrderedSpider> getOrderedSpiders() {
-        return orderedSpiders;
+    public void addOrderedSpider(OrderedSpider spider) {
+        this.orderedSpiders.add(spider);
+        spider.setOrder(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Double.compare(price, order.price) == 0 && Objects.equals(id, order.id) && Objects.equals(customer, order.customer) && Objects.equals(date, order.date) && status == order.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, customer, date, price, status);
     }
 }

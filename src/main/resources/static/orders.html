@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>System Zamówień Pająków</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <h1 class="mb-4">📦 Zamówienia Pająków</h1>
+
+    <!-- Formularz tworzenia zamówienia -->
+    <div class="card mb-4">
+        <div class="card-header">Utwórz nowe zamówienie</div>
+        <div class="card-body">
+            <form id="orderForm">
+                <div class="mb-3">
+                    <label for="customerId" class="form-label">ID Klienta</label>
+                    <input type="text" class="form-control" id="customerId" required>
+                </div>
+                <div class="mb-3">
+                    <label for="spiderId" class="form-label">ID Pająka</label>
+                    <input type="text" class="form-control" id="spiderId" required>
+                </div>
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Ilość</label>
+                    <input type="number" class="form-control" id="quantity" required min="1">
+                </div>
+                <button type="submit" class="btn btn-primary">Utwórz zamówienie</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista zamówień -->
+    <div class="card">
+        <div class="card-header">Lista zamówień</div>
+        <div class="card-body">
+            <table class="table table-bordered" id="ordersTable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th>Cena</th>
+                    <th>Akcje</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = '/api/orders';
+
+    // Pobierz zamówienia
+    async function fetchOrders() {
+        const res = await fetch(`${API_URL}?page=0&size=10&sortBy=date`);
+        const data = await res.json();
+        const tbody = document.querySelector('#ordersTable tbody');
+        tbody.innerHTML = '';
+        data.content.forEach(order => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+          <td>${order.id}</td>
+          <td>${order.date}</td>
+          <td>${order.status}</td>
+          <td>${order.price.toFixed(2)} zł</td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="deleteOrder('${order.id}')">Usuń</button>
+          </td>
+        `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Usuń zamówienie
+    async function deleteOrder(id) {
+        if (!confirm('Czy na pewno chcesz usunąć to zamówienie?')) return;
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        fetchOrders();
+    }
+
+    // Obsługa formularza
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const customerId = document.getElementById('customerId').value;
+        const spiderId = document.getElementById('spiderId').value;
+        const quantity = parseInt(document.getElementById('quantity').value);
+
+        const orderDTO = {
+            customerId,
+            orderedSpiders: [{ spiderId, quantity }]
+        };
+
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderDTO)
+        });
+
+        if (res.ok) {
+            alert('Zamówienie utworzone!');
+            e.target.reset();
+            fetchOrders();
+        } else {
+            alert('Błąd podczas tworzenia zamówienia.');
+        }
+    });
+
+    // Inicjalizacja
+    fetchOrders();
+</script>
+</body>
+</html>
