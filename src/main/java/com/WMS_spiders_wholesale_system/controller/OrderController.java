@@ -2,7 +2,6 @@ package com.WMS_spiders_wholesale_system.controller;
 
 import com.WMS_spiders_wholesale_system.dto.OrderDTO;
 import com.WMS_spiders_wholesale_system.dto.OrderMapper;
-import com.WMS_spiders_wholesale_system.entity.OrderStatus;
 import com.WMS_spiders_wholesale_system.entity.Order;
 import com.WMS_spiders_wholesale_system.exception.OrderNotFoundException;
 import com.WMS_spiders_wholesale_system.service.OrderService;

@@ -11,7 +11,6 @@ public class SpiderDTO {
     private double price;
     private boolean isCites;
 
-    // Getters and Setters
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
     public String getTypeName() { return typeName; }

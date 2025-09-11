@@ -12,8 +12,6 @@ public class OrderedSpiderMapper {
 
     public static OrderedSpider toEntity(OrderedSpiderDTO dto) {
         OrderedSpider entity = new OrderedSpider();
-        // W tym przypadku nie ustawiamy obiektu Spider, ponieważ
-        // jest to robione w serwisie, na podstawie ID
         entity.setQuantity(dto.getQuantity());
         return entity;
     }

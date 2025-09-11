@@ -9,7 +9,6 @@ import java.util.UUID;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "orders")
@@ -41,7 +40,6 @@ public class Order implements Serializable {
         this.status = OrderStatus.NEW;
     }
 
-    // Getters and Setters
     public UUID getId() {
         return id;
     }

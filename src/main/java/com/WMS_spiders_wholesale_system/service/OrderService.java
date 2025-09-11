@@ -76,7 +76,6 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Order with id " + id + " not found."));
 
-        // Aktualizacja klienta, jeśli jest podany w DTO
         if (orderDTO.getCustomerId() != null && !orderDTO.getCustomerId().equals(existingOrder.getCustomer().getId())) {
             Customer customer = customerService.getCustomerById(orderDTO.getCustomerId());
             if (customer == null) {
@@ -85,14 +84,12 @@ public class OrderService {
             existingOrder.setCustomer(customer);
         }
 
-        // Aktualizacja statusu
         if (orderDTO.getStatus() != null) {
             existingOrder.setStatus(OrderStatus.valueOf(orderDTO.getStatus()));
         }
 
-        // Aktualizacja listy pająków w zamówieniu
         if (orderDTO.getOrderedSpiders() != null) {
-            existingOrder.getOrderedSpiders().clear(); // Usuwa stare powiązania
+            existingOrder.getOrderedSpiders().clear();
 
             List<OrderedSpider> updatedSpiders = orderDTO.getOrderedSpiders().stream()
                     .map(itemDTO -> {
@@ -107,16 +104,14 @@ public class OrderService {
                     })
                     .collect(Collectors.toList());
 
-            existingOrder.getOrderedSpiders().addAll(updatedSpiders); // Dodaje nowe powiązania
+            existingOrder.getOrderedSpiders().addAll(updatedSpiders);
         }
 
-        // Przeliczenie całkowitej ceny po zmianach
         double totalPrice = existingOrder.getOrderedSpiders().stream()
                 .mapToDouble(os -> os.getSpider().getPrice() * os.getQuantity())
                 .sum();
         existingOrder.setPrice(totalPrice);
 
-        // Zapisujemy zaktualizowaną encję.
         return orderRepository.save(existingOrder);
     }
 

@@ -18,7 +18,6 @@ public class OrderMapper {
         orderDTO.setId(order.getId());
         orderDTO.setDate(order.getDate().toString());
         orderDTO.setPrice(order.getPrice());
-        // Zmiana: jawna konwersja na String
         orderDTO.setStatus(order.getStatus().toString());
 
         if (order.getCustomer() != null) {

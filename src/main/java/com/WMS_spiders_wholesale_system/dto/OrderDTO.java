@@ -9,7 +9,7 @@ public class OrderDTO {
     private Double price;
     private String status;
     private UUID customerId;
-    private CustomerDTO customer; // Dodane pole
+    private CustomerDTO customer;
     private List<OrderedSpiderDTO> orderedSpiders;
 
     public OrderDTO() {

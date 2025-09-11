@@ -5,7 +5,7 @@ import java.util.UUID;
 public class OrderedSpiderDTO {
     private UUID spiderId;
     private int quantity;
-    private SpiderDTO spider; // Dodane pole
+    private SpiderDTO spider;
 
     public OrderedSpiderDTO() {
     }

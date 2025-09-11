@@ -32,10 +32,6 @@ public class Spider {
     @JoinColumn(name = "order_id", columnDefinition = "VARCHAR(36)")
     @JsonBackReference(value = "order-spider")
     private Order order;
-//    @ManyToOne
-//    @JoinColumn(name = "customer_id")
-//    @JsonBackReference(value = "customer-spider")
-//    private Customer customer;
 
     public Spider() {
     }
@@ -121,12 +117,4 @@ public class Spider {
     public void setCites(boolean cites) {
         isCites = cites;
     }
-
-//    public Customer getCustomer() {
-//        return customer;
-//    }
-//
-//    public void setCustomer(Customer customer) {
-//        this.customer = customer;
-//    }
 }

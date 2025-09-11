@@ -3,7 +3,6 @@ package com.WMS_spiders_wholesale_system.dto;
 import com.WMS_spiders_wholesale_system.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +17,6 @@ public class CustomerMapper {
         dto.setEmail(customer.getEmail());
         dto.setAddress(customer.getAddress());
         dto.setParcelLocker(customer.getParcelLocker());
-        // Uwaga: Tutaj NIE mapujemy relacji w celu uniknięcia pętli
         return dto;
     }
 

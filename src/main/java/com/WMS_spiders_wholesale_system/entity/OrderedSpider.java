@@ -22,7 +22,6 @@ public class OrderedSpider implements Serializable {
 
     private int quantity;
 
-    // Getters and Setters
     public UUID getId() {
         return id;
     }

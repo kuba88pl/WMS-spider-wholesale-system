@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -26,7 +27,6 @@ public class SpiderService {
             throw new InvalidSpiderDataException("Spider species name cannot be null or empty.");
         }
         if (spider.getId() != null && spiderRepository.existsById(spider.getId())) {
-            // Logika aktualizacji jest w metodzie updateSpider
             throw new InvalidSpiderDataException("Spider with this ID already exists.");
         }
         return spiderRepository.save(spider);
