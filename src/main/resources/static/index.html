@@ -254,16 +254,16 @@
             const row = document.createElement('tr');
             row.innerHTML = `<td>${s.typeName}</td><td>${s.speciesName}</td><td>${s.quantity}</td>
                     <td><input type="number" min="1" max="${s.quantity}" value="1" id="quantity_${s.id}" class="form-control form-control-sm"></td>
-                    <td><button class="btn btn-sm btn-success" onclick="selectSpider('${s.id}', '${s.typeName}', '${s.speciesName}', ${s.price})">Dodaj</button></td>`;
+                    <td><button class="btn btn-sm btn-success" onclick="selectSpider('${s.id}', '${s.typeName}', '${s.speciesName}', ${s.price}, ${s.quantity})">Dodaj</button></td>`;
             tableBody.appendChild(row);
         });
     }
 
-    function selectSpider(id, typeName, speciesName, price) {
+    function selectSpider(id, typeName, speciesName, price, maxQuantity) {
         const quantityInput = document.getElementById(`quantity_${id}`);
         const quantity = parseInt(quantityInput.value, 10);
 
-        if (quantity <= 0 || quantity > parseInt(quantityInput.max, 10)) {
+        if (quantity <= 0 || quantity > maxQuantity) {
             alert('Ilość jest nieprawidłowa lub przekracza stan magazynowy.');
             return;
         }
@@ -271,7 +271,7 @@
         const currentQuantity = selectedSpiders.has(id) ? selectedSpiders.get(id).quantity : 0;
         const newQuantity = currentQuantity + quantity;
 
-        if (newQuantity > parseInt(quantityInput.max, 10)) {
+        if (newQuantity > maxQuantity) {
             alert('Ilość przekracza stan magazynowy.');
             return;
         }

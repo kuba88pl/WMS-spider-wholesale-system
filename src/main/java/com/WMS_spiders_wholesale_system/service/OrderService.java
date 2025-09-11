@@ -44,10 +44,9 @@ public class OrderService {
         }
 
         Order newOrder = new Order();
-        newOrder.setId(UUID.randomUUID());
+        newOrder.setCustomer(customer);
         newOrder.setDate(LocalDate.now());
-        // Zmiana typu: z String na OrderStatus
-        newOrder.setStatus(OrderStatus.valueOf("NEW")); // Możesz też użyć OrderStatus.NEW
+        newOrder.setStatus(OrderStatus.PENDING); // Użycie stałej PENDING
 
         List<OrderedSpider> orderedSpiders = orderDTO.getOrderedSpiders().stream()
                 .map(itemDTO -> {
@@ -56,7 +55,7 @@ public class OrderService {
                     OrderedSpider orderedSpider = new OrderedSpider();
                     orderedSpider.setSpider(spider);
                     orderedSpider.setQuantity(itemDTO.getQuantity());
-                    orderedSpider.setOrder(newOrder);
+                    orderedSpider.setOrder(newOrder); // Ważne: ustawienie relacji
                     return orderedSpider;
                 }).collect(Collectors.toList());
 
@@ -67,9 +66,13 @@ public class OrderService {
                 .sum();
         newOrder.setPrice(totalPrice);
 
-        return orderRepository.save(newOrder);
+        // Zapis zamówienia z automatycznie generowanym ID przez Hibernate
+        Order savedOrder = orderRepository.save(newOrder);
+
+        return savedOrder;
     }
 
+    // ... pozostałe metody bez zmian
     public void deleteOrder(UUID id) {
         if (!orderRepository.existsById(id)) {
             throw new OrderNotFoundException("Order with id " + id + " not found.");
