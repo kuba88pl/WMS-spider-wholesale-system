@@ -6971,3 +6971,466 @@ Caused by: java.lang.ClassNotFoundException: com.WMS_spiders_wholesale_system.se
 2025-09-11 18:19:12 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
 2025-09-11 18:19:12 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.OrderDTO instances]
 2025-09-11 18:19:12 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:19:45 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders/a383da8c-fe60-4da9-8387-f19096a82cf5", parameters={}
+2025-09-11 18:19:45 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getOrderById(UUID)
+2025-09-11 18:19:45 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,o1_0.price,o1_0.status,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id where o1_0.id=?
+2025-09-11 18:19:45 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a383da8c-fe60-4da9-8387-f19096a82cf5]
+2025-09-11 18:19:45 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:19:45 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:19:45 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:19:45 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.WMS_spiders_wholesale_system.dto.OrderDTO@7dc5ed9d]
+2025-09-11 18:19:45 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:20:37 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - PUT "/api/orders/status", parameters={}
+2025-09-11 18:20:37 [http-nio-8080-exec-7] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PUT' is not supported]
+2025-09-11 18:20:37 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 405 METHOD_NOT_ALLOWED
+2025-09-11 18:20:37 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - "ERROR" dispatch for PUT "/error", parameters={}
+2025-09-11 18:20:37 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2025-09-11 18:20:37 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:20:37 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{timestamp=Thu Sep 11 18:20:37 CEST 2025, status=405, error=Method Not Allowed, trace=org.springfram (truncated)...]
+2025-09-11 18:20:37 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Exiting from "ERROR" dispatch, status 405
+2025-09-11 18:20:49 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/spiders?page=0&size=10&sortBy=speciesName", parameters={masked}
+2025-09-11 18:20:49 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.SpiderController#getAllSpiders(int, int, String)
+2025-09-11 18:20:49 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-11 18:20:49 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-11 18:20:49 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-11 18:20:49 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.id=?
+2025-09-11 18:20:49 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [9cc647ad-6c75-4c34-8a8e-f2f8d77dd86c]
+2025-09-11 18:20:49 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:20:49 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.SpiderDTO instances]
+2025-09-11 18:20:49 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:20:52 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/customers?page=0&size=10&sortBy=lastName", parameters={masked}
+2025-09-11 18:20:52 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.CustomerController#getAllCustomers(int, int, String)
+2025-09-11 18:20:52 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.last_name limit ?,?
+2025-09-11 18:20:52 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-11 18:20:52 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [10]
+2025-09-11 18:20:52 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:20:52 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.CustomerDTO instances]
+2025-09-11 18:20:52 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders?page=0&size=1000&sortBy=date", parameters={masked}
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getAllOrders(int, int, String)
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id,o1_0.price,o1_0.status from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id order by o1_0.date
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:20:54 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:20:54 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [8860589a-5436-4333-aec1-9d8fa6811527]
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:20:54 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [28fbf56b-ae4f-44ac-a5f1-ba9792c73bbe]
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:20:54 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a6c9b1dc-f94a-4358-90c1-932d84e2677b]
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:20:54 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [29415308-0a2f-4d95-86a6-0840dab12be3]
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.OrderDTO instances]
+2025-09-11 18:20:54 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:20:56 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders/a383da8c-fe60-4da9-8387-f19096a82cf5", parameters={}
+2025-09-11 18:20:56 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getOrderById(UUID)
+2025-09-11 18:20:56 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,o1_0.price,o1_0.status,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id where o1_0.id=?
+2025-09-11 18:20:56 [http-nio-8080-exec-4] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a383da8c-fe60-4da9-8387-f19096a82cf5]
+2025-09-11 18:20:56 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:20:56 [http-nio-8080-exec-4] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:20:56 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:20:56 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.WMS_spiders_wholesale_system.dto.OrderDTO@5d1e6ad1]
+2025-09-11 18:20:56 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:22:58 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 1 deletion, 0 modifications)
+2025-09-11 18:22:58 [Thread-5] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-11 18:22:58 [tomcat-shutdown] INFO  o.a.coyote.http11.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:22:58 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-11 18:22:58 [Thread-5] INFO  o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:22:58 [Thread-5] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-11 18:22:58 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-11 18:22:58 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-09-11 18:22:58 [restartedMain] INFO  c.W.CoolSpidersApplication - Starting CoolSpidersApplication using Java 24.0.1 with PID 65953 (/Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system/target/classes started by kuba in /Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system)
+2025-09-11 18:22:58 [restartedMain] INFO  c.W.CoolSpidersApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-11 18:22:58 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-11 18:22:58 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 6 ms. Found 3 JPA repository interfaces.
+2025-09-11 18:22:58 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-09-11 18:22:58 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:22:58 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-11 18:22:58 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-11 18:22:58 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-11 18:22:58 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 311 ms
+2025-09-11 18:22:58 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-11 18:22:58 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+2025-09-11 18:22:58 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6995f7db
+2025-09-11 18:22:58 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+2025-09-11 18:22:58 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-11 18:22:58 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-11 18:22:58 [restartedMain] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2025-09-11 18:22:58 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 17 mappings in 'requestMappingHandlerMapping'
+2025-09-11 18:22:58 [restartedMain] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-09-11 18:22:58 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-09-11 18:22:58 [restartedMain] WARN  o.s.b.a.t.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-09-11 18:22:58 [restartedMain] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-09-11 18:22:58 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-09-11 18:22:59 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:22:59 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-09-11 18:22:59 [restartedMain] INFO  c.W.CoolSpidersApplication - Started CoolSpidersApplication in 0.635 seconds (process running for 243.937)
+2025-09-11 18:22:59 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2025-09-11 18:23:00 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (1 addition, 0 deletions, 0 modifications)
+2025-09-11 18:23:00 [Thread-7] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-11 18:23:00 [tomcat-shutdown] INFO  o.a.coyote.http11.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:23:00 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-11 18:23:00 [Thread-7] INFO  o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:23:00 [Thread-7] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-11 18:23:00 [Thread-7] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown initiated...
+2025-09-11 18:23:00 [Thread-7] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown completed.
+2025-09-11 18:23:00 [restartedMain] INFO  c.W.CoolSpidersApplication - Starting CoolSpidersApplication using Java 24.0.1 with PID 65953 (/Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system/target/classes started by kuba in /Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system)
+2025-09-11 18:23:00 [restartedMain] INFO  c.W.CoolSpidersApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-11 18:23:00 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-11 18:23:00 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 9 ms. Found 3 JPA repository interfaces.
+2025-09-11 18:23:00 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-09-11 18:23:00 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:23:00 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-11 18:23:00 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-11 18:23:00 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-11 18:23:00 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 122 ms
+2025-09-11 18:23:00 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-11 18:23:00 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
+2025-09-11 18:23:00 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-3 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3158b18b
+2025-09-11 18:23:00 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
+2025-09-11 18:23:00 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-11 18:23:00 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-11 18:23:00 [restartedMain] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2025-09-11 18:23:00 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 17 mappings in 'requestMappingHandlerMapping'
+2025-09-11 18:23:00 [restartedMain] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-09-11 18:23:00 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-09-11 18:23:00 [restartedMain] WARN  o.s.b.a.t.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-09-11 18:23:00 [restartedMain] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-09-11 18:23:00 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-09-11 18:23:00 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:23:00 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-09-11 18:23:00 [restartedMain] INFO  c.W.CoolSpidersApplication - Started CoolSpidersApplication in 0.332 seconds (process running for 245.75)
+2025-09-11 18:23:00 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2025-09-11 18:24:16 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 1 deletion, 0 modifications)
+2025-09-11 18:24:16 [Thread-11] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-11 18:24:16 [tomcat-shutdown] INFO  o.a.coyote.http11.Http11NioProtocol - Pausing ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:24:16 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-11 18:24:16 [Thread-11] INFO  o.a.coyote.http11.Http11NioProtocol - Stopping ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:24:16 [Thread-11] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-11 18:24:16 [Thread-11] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown initiated...
+2025-09-11 18:24:16 [Thread-11] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown completed.
+2025-09-11 18:24:16 [restartedMain] INFO  c.W.CoolSpidersApplication - Starting CoolSpidersApplication using Java 24.0.1 with PID 65953 (/Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system/target/classes started by kuba in /Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system)
+2025-09-11 18:24:16 [restartedMain] INFO  c.W.CoolSpidersApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-11 18:24:16 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-11 18:24:16 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 69 ms. Found 3 JPA repository interfaces.
+2025-09-11 18:24:16 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-09-11 18:24:16 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:24:16 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-11 18:24:16 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-11 18:24:16 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-11 18:24:16 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 286 ms
+2025-09-11 18:24:16 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-11 18:24:16 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Starting...
+2025-09-11 18:24:16 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-4 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4d4bb037
+2025-09-11 18:24:16 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Start completed.
+2025-09-11 18:24:16 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-11 18:24:16 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-11 18:24:16 [restartedMain] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2025-09-11 18:24:16 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 13 mappings in 'requestMappingHandlerMapping'
+2025-09-11 18:24:16 [restartedMain] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-09-11 18:24:16 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-09-11 18:24:16 [restartedMain] WARN  o.s.b.a.t.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-09-11 18:24:16 [restartedMain] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-09-11 18:24:16 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-09-11 18:24:16 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:24:16 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-09-11 18:24:16 [restartedMain] INFO  c.W.CoolSpidersApplication - Started CoolSpidersApplication in 0.651 seconds (process running for 321.848)
+2025-09-11 18:24:16 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2025-09-11 18:26:00 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-11 18:26:00 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-11 18:26:00 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-11 18:26:00 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Shutdown initiated...
+2025-09-11 18:26:00 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Shutdown completed.
+2025-09-11 18:26:59 [restartedMain] INFO  c.W.CoolSpidersApplication - Starting CoolSpidersApplication using Java 24.0.1 with PID 66307 (/Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system/target/classes started by kuba in /Users/kuba/Documents/Dokumenty – MacBook Air (Kuba)/repo/WMS-spider-wholesale-system)
+2025-09-11 18:26:59 [restartedMain] INFO  c.W.CoolSpidersApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-11 18:26:59 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-09-11 18:26:59 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-09-11 18:26:59 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-11 18:26:59 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 24 ms. Found 3 JPA repository interfaces.
+2025-09-11 18:27:00 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-09-11 18:27:00 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:27:00 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-11 18:27:00 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-11 18:27:00 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-11 18:27:00 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 607 ms
+2025-09-11 18:27:00 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-11 18:27:00 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-09-11 18:27:00 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@39dfe4d9
+2025-09-11 18:27:00 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-09-11 18:27:01 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-11 18:27:01 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-09-11 18:27:01 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-11 18:27:01 [restartedMain] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2025-09-11 18:27:01 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 18 mappings in 'requestMappingHandlerMapping'
+2025-09-11 18:27:01 [restartedMain] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-09-11 18:27:01 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-09-11 18:27:01 [restartedMain] WARN  o.s.b.a.t.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-09-11 18:27:01 [restartedMain] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-09-11 18:27:01 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-09-11 18:27:01 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-09-11 18:27:01 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-09-11 18:27:01 [restartedMain] INFO  c.W.CoolSpidersApplication - Started CoolSpidersApplication in 2.715 seconds (process running for 3.113)
+2025-09-11 18:27:04 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-09-11 18:27:04 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-09-11 18:27:04 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-09-11 18:27:04 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-09-11 18:27:04 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-09-11 18:27:04 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@2fd11333
+2025-09-11 18:27:04 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@59b9b396
+2025-09-11 18:27:04 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-09-11 18:27:04 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-09-11 18:27:04 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/index.html", parameters={}
+2025-09-11 18:27:04 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-09-11 18:27:04 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:27:05 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders?page=0&size=1000&sortBy=date", parameters={masked}
+2025-09-11 18:27:05 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getAllOrders(int, int, String, String)
+2025-09-11 18:27:06 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id,o1_0.price,o1_0.status from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id order by o1_0.date desc
+2025-09-11 18:27:06 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:27:06 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:27:06 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:27:06 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [8860589a-5436-4333-aec1-9d8fa6811527]
+2025-09-11 18:27:06 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:27:06 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [28fbf56b-ae4f-44ac-a5f1-ba9792c73bbe]
+2025-09-11 18:27:06 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:27:06 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a6c9b1dc-f94a-4358-90c1-932d84e2677b]
+2025-09-11 18:27:06 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:27:06 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [29415308-0a2f-4d95-86a6-0840dab12be3]
+2025-09-11 18:27:06 [http-nio-8080-exec-5] WARN  o.s.d.w.c.SpringDataJacksonConfiguration$PageModule$WarningLoggingModifier - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-09-11 18:27:06 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:27:06 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.OrderDTO instances]
+2025-09-11 18:27:06 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:27:07 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders/a383da8c-fe60-4da9-8387-f19096a82cf5", parameters={}
+2025-09-11 18:27:07 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getOrderById(UUID)
+2025-09-11 18:27:07 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,o1_0.price,o1_0.status,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id where o1_0.id=?
+2025-09-11 18:27:07 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a383da8c-fe60-4da9-8387-f19096a82cf5]
+2025-09-11 18:27:07 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:27:07 [http-nio-8080-exec-2] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:27:07 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:27:07 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.WMS_spiders_wholesale_system.dto.OrderDTO@227bf36f]
+2025-09-11 18:27:07 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:27:13 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - PUT "/api/orders/status", parameters={}
+2025-09-11 18:27:13 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#updateOrder(UUID, OrderDTO)
+2025-09-11 18:27:13 [http-nio-8080-exec-7] DEBUG o.s.web.method.HandlerMethod - Could not resolve parameter [0] in public org.springframework.http.ResponseEntity<com.WMS_spiders_wholesale_system.dto.OrderDTO> com.WMS_spiders_wholesale_system.controller.OrderController.updateOrder(java.util.UUID,com.WMS_spiders_wholesale_system.dto.OrderDTO): Method parameter 'id': Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: status
+2025-09-11 18:27:13 [http-nio-8080-exec-7] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Method parameter 'id': Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: status]
+2025-09-11 18:27:13 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 400 BAD_REQUEST
+2025-09-11 18:27:13 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - "ERROR" dispatch for PUT "/error", parameters={}
+2025-09-11 18:27:13 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2025-09-11 18:27:13 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:27:13 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{timestamp=Thu Sep 11 18:27:13 CEST 2025, status=400, error=Bad Request, trace=org.springframework.w (truncated)...]
+2025-09-11 18:27:13 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Exiting from "ERROR" dispatch, status 400
+2025-09-11 18:27:26 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/.well-known/appspecific/com.chrome.devtools.json", parameters={}
+2025-09-11 18:27:26 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-09-11 18:27:26 [http-nio-8080-exec-8] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-09-11 18:27:26 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource .well-known/appspecific/com.chrome.devtools.json.]
+2025-09-11 18:27:26 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 404 NOT_FOUND
+2025-09-11 18:27:26 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - "ERROR" dispatch for GET "/error", parameters={}
+2025-09-11 18:27:26 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2025-09-11 18:27:26 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:27:26 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{timestamp=Thu Sep 11 18:27:26 CEST 2025, status=404, error=Not Found, trace=org.springframework.web (truncated)...]
+2025-09-11 18:27:26 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Exiting from "ERROR" dispatch, status 404
+2025-09-11 18:27:31 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - PUT "/api/orders/status", parameters={}
+2025-09-11 18:27:31 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#updateOrder(UUID, OrderDTO)
+2025-09-11 18:27:31 [http-nio-8080-exec-10] DEBUG o.s.web.method.HandlerMethod - Could not resolve parameter [0] in public org.springframework.http.ResponseEntity<com.WMS_spiders_wholesale_system.dto.OrderDTO> com.WMS_spiders_wholesale_system.controller.OrderController.updateOrder(java.util.UUID,com.WMS_spiders_wholesale_system.dto.OrderDTO): Method parameter 'id': Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: status
+2025-09-11 18:27:31 [http-nio-8080-exec-10] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Method parameter 'id': Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: status]
+2025-09-11 18:27:31 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 400 BAD_REQUEST
+2025-09-11 18:27:31 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - "ERROR" dispatch for PUT "/error", parameters={}
+2025-09-11 18:27:31 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2025-09-11 18:27:31 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:27:31 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{timestamp=Thu Sep 11 18:27:31 CEST 2025, status=400, error=Bad Request, trace=org.springframework.w (truncated)...]
+2025-09-11 18:27:31 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Exiting from "ERROR" dispatch, status 400
+2025-09-11 18:29:22 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/index.html", parameters={}
+2025-09-11 18:29:22 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-09-11 18:29:22 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:29:22 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/.well-known/appspecific/com.chrome.devtools.json", parameters={}
+2025-09-11 18:29:22 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-09-11 18:29:22 [http-nio-8080-exec-4] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-09-11 18:29:22 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource .well-known/appspecific/com.chrome.devtools.json.]
+2025-09-11 18:29:22 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 404 NOT_FOUND
+2025-09-11 18:29:22 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - "ERROR" dispatch for GET "/error", parameters={}
+2025-09-11 18:29:22 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2025-09-11 18:29:22 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:29:22 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{timestamp=Thu Sep 11 18:29:22 CEST 2025, status=404, error=Not Found, trace=org.springframework.web (truncated)...]
+2025-09-11 18:29:22 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Exiting from "ERROR" dispatch, status 404
+2025-09-11 18:29:22 [http-nio-8080-exec-3] INFO  o.a.coyote.http11.Http11Processor - Error parsing HTTP request header
+ Note: further occurrences of HTTP request parsing errors will be logged at DEBUG level.
+java.lang.IllegalArgumentException: Invalid character found in the request target [/api/orders?page=[object%20Event]&size=10&sort=date,DESC ]. The valid characters are defined in RFC 7230 and RFC 3986
+	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:478)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:271)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1769)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+2025-09-11 18:30:54 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/index.html", parameters={}
+2025-09-11 18:30:54 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-09-11 18:30:54 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders?page=0&size=1000&sortBy=date", parameters={masked}
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getAllOrders(int, int, String, String)
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id,o1_0.price,o1_0.status from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id order by o1_0.date desc
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:30:55 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:30:55 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [8860589a-5436-4333-aec1-9d8fa6811527]
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:30:55 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [28fbf56b-ae4f-44ac-a5f1-ba9792c73bbe]
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:30:55 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a6c9b1dc-f94a-4358-90c1-932d84e2677b]
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:30:55 [http-nio-8080-exec-6] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [29415308-0a2f-4d95-86a6-0840dab12be3]
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.OrderDTO instances]
+2025-09-11 18:30:55 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:30:59 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - PUT "/api/orders/a383da8c-fe60-4da9-8387-f19096a82cf5", parameters={}
+2025-09-11 18:30:59 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#updateOrder(UUID, OrderDTO)
+2025-09-11 18:31:00 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [com.WMS_spiders_wholesale_system.dto.OrderDTO@f35f1c9]
+2025-09-11 18:31:00 [http-nio-8080-exec-9] INFO  c.W.controller.OrderController - Received request to update order with ID: a383da8c-fe60-4da9-8387-f19096a82cf5
+2025-09-11 18:31:00 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,o1_0.price,o1_0.status,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id where o1_0.id=?
+2025-09-11 18:31:00 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a383da8c-fe60-4da9-8387-f19096a82cf5]
+2025-09-11 18:31:00 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:00 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:31:00 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - update orders set customer_id=?,date=?,price=?,status=? where id=?
+2025-09-11 18:31:00 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [eb0c7f59-7cd9-4553-b8a9-fd09e4a91ca8]
+2025-09-11 18:31:00 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:DATE) <- [2025-09-11]
+2025-09-11 18:31:00 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:DOUBLE) <- [500.0]
+2025-09-11 18:31:00 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:ENUM) <- [IN_PROGRESS]
+2025-09-11 18:31:00 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:VARCHAR) <- [a383da8c-fe60-4da9-8387-f19096a82cf5]
+2025-09-11 18:31:00 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:31:00 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.WMS_spiders_wholesale_system.dto.OrderDTO@2c12004c]
+2025-09-11 18:31:00 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders?page=0&size=1000&sortBy=date", parameters={masked}
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getAllOrders(int, int, String, String)
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id,o1_0.price,o1_0.status from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id order by o1_0.date desc
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:02 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:02 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [8860589a-5436-4333-aec1-9d8fa6811527]
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:02 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [28fbf56b-ae4f-44ac-a5f1-ba9792c73bbe]
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:02 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a6c9b1dc-f94a-4358-90c1-932d84e2677b]
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:02 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [29415308-0a2f-4d95-86a6-0840dab12be3]
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.OrderDTO instances]
+2025-09-11 18:31:02 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:31:04 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders/a383da8c-fe60-4da9-8387-f19096a82cf5", parameters={}
+2025-09-11 18:31:04 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getOrderById(UUID)
+2025-09-11 18:31:04 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,o1_0.price,o1_0.status,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id where o1_0.id=?
+2025-09-11 18:31:04 [http-nio-8080-exec-4] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a383da8c-fe60-4da9-8387-f19096a82cf5]
+2025-09-11 18:31:04 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:04 [http-nio-8080-exec-4] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:31:04 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:31:04 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.WMS_spiders_wholesale_system.dto.OrderDTO@5f1fe655]
+2025-09-11 18:31:04 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:31:08 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/spiders?page=0&size=1000&sortBy=speciesName", parameters={masked}
+2025-09-11 18:31:08 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/customers?page=0&size=1000&sortBy=lastName", parameters={masked}
+2025-09-11 18:31:08 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.SpiderController#getAllSpiders(int, int, String)
+2025-09-11 18:31:08 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.CustomerController#getAllCustomers(int, int, String)
+2025-09-11 18:31:08 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,s1_0.order_id,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 order by s1_0.species_name limit ?,?
+2025-09-11 18:31:08 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 order by c1_0.last_name limit ?,?
+2025-09-11 18:31:08 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-11 18:31:08 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:INTEGER) <- [0]
+2025-09-11 18:31:08 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [1000]
+2025-09-11 18:31:08 [http-nio-8080-exec-3] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [1000]
+2025-09-11 18:31:08 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status from orders o1_0 where o1_0.id=?
+2025-09-11 18:31:08 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [9cc647ad-6c75-4c34-8a8e-f2f8d77dd86c]
+2025-09-11 18:31:08 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:31:08 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.CustomerDTO instances]
+2025-09-11 18:31:08 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:31:08 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:31:08 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.SpiderDTO instances]
+2025-09-11 18:31:08 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:31:16 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/customers/8a311aec-8a68-4106-8bc0-6cd07670a197", parameters={}
+2025-09-11 18:31:16 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.CustomerController#getCustomerById(UUID)
+2025-09-11 18:31:16 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-11 18:31:16 [http-nio-8080-exec-8] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [8a311aec-8a68-4106-8bc0-6cd07670a197]
+2025-09-11 18:31:16 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:31:16 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.WMS_spiders_wholesale_system.dto.CustomerDTO@67ef721e]
+2025-09-11 18:31:16 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/orders", parameters={}
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#createOrder(OrderDTO)
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [com.WMS_spiders_wholesale_system.dto.OrderDTO@12b29bc3]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] INFO  c.W.controller.OrderController - Received request to create a new order.
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone from customers c1_0 where c1_0.id=?
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [8a311aec-8a68-4106-8bc0-6cd07670a197]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a6c9b1dc-f94a-4358-90c1-932d84e2677b]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [29415308-0a2f-4d95-86a6-0840dab12be3]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - insert into orders (customer_id,date,price,status,id) values (?,?,?,?,?)
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [8a311aec-8a68-4106-8bc0-6cd07670a197]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:DATE) <- [2025-09-11]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:DOUBLE) <- [1478.0]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:ENUM) <- [PENDING]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (5:VARCHAR) <- [4a26b43b-2be4-462d-98a2-0f167943ee43]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - insert into ordered_spiders (order_id,quantity,spider_id,id) values (?,?,?,?)
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [4a26b43b-2be4-462d-98a2-0f167943ee43]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [2]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:VARCHAR) <- [a6c9b1dc-f94a-4358-90c1-932d84e2677b]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:VARCHAR) <- [9a9a0ac4-47b8-4d54-85e4-03ad802d35dc]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - insert into ordered_spiders (order_id,quantity,spider_id,id) values (?,?,?,?)
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [4a26b43b-2be4-462d-98a2-0f167943ee43]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [2]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:VARCHAR) <- [29415308-0a2f-4d95-86a6-0840dab12be3]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:VARCHAR) <- [47208da3-fcc9-48a1-9faf-6cb0eed59ea3]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - insert into ordered_spiders (order_id,quantity,spider_id,id) values (?,?,?,?)
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [4a26b43b-2be4-462d-98a2-0f167943ee43]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (2:INTEGER) <- [2]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (3:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] TRACE org.hibernate.orm.jdbc.bind - binding parameter (4:VARCHAR) <- [ded83fee-b065-438d-98c4-140fe2fe970b]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.WMS_spiders_wholesale_system.dto.OrderDTO@39c439e4]
+2025-09-11 18:31:25 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders?page=0&size=1000&sortBy=date", parameters={masked}
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getAllOrders(int, int, String, String)
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id,o1_0.price,o1_0.status from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id order by o1_0.date desc
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:27 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:27 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a6c9b1dc-f94a-4358-90c1-932d84e2677b]
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:27 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [29415308-0a2f-4d95-86a6-0840dab12be3]
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:27 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [8860589a-5436-4333-aec1-9d8fa6811527]
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:27 [http-nio-8080-exec-10] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [28fbf56b-ae4f-44ac-a5f1-ba9792c73bbe]
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.OrderDTO instances]
+2025-09-11 18:31:27 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders?page=0&size=1000&sortBy=date", parameters={masked}
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getAllOrders(int, int, String, String)
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id,o1_0.price,o1_0.status from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id order by o1_0.date desc
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:27 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:27 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a6c9b1dc-f94a-4358-90c1-932d84e2677b]
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:27 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [29415308-0a2f-4d95-86a6-0840dab12be3]
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:27 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [8860589a-5436-4333-aec1-9d8fa6811527]
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:27 [http-nio-8080-exec-1] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [28fbf56b-ae4f-44ac-a5f1-ba9792c73bbe]
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [Page 1 of 1 containing com.WMS_spiders_wholesale_system.dto.OrderDTO instances]
+2025-09-11 18:31:27 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-09-11 18:31:29 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/orders/4a26b43b-2be4-462d-98a2-0f167943ee43", parameters={}
+2025-09-11 18:31:29 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.WMS_spiders_wholesale_system.controller.OrderController#getOrderById(UUID)
+2025-09-11 18:31:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select o1_0.id,c1_0.id,c1_0.address,c1_0.email,c1_0.first_name,c1_0.last_name,c1_0.parcel_locker,c1_0.telephone,o1_0.date,o1_0.price,o1_0.status,os1_0.order_id,os1_0.id,os1_0.quantity,os1_0.spider_id from orders o1_0 left join customers c1_0 on c1_0.id=o1_0.customer_id left join ordered_spiders os1_0 on o1_0.id=os1_0.order_id where o1_0.id=?
+2025-09-11 18:31:29 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [4a26b43b-2be4-462d-98a2-0f167943ee43]
+2025-09-11 18:31:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:29 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [29415308-0a2f-4d95-86a6-0840dab12be3]
+2025-09-11 18:31:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:29 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [a6c9b1dc-f94a-4358-90c1-932d84e2677b]
+2025-09-11 18:31:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - select s1_0.id,s1_0.is_cites,o1_0.id,o1_0.customer_id,o1_0.date,o1_0.price,o1_0.status,s1_0.price,s1_0.quantity,s1_0.size,s1_0.species_name,s1_0.type_name from spiders s1_0 left join orders o1_0 on o1_0.id=s1_0.order_id where s1_0.id=?
+2025-09-11 18:31:29 [http-nio-8080-exec-5] TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:VARCHAR) <- [37a1e55c-3c07-4909-8deb-76b62994767c]
+2025-09-11 18:31:29 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-09-11 18:31:29 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [com.WMS_spiders_wholesale_system.dto.OrderDTO@770eeb56]
+2025-09-11 18:31:29 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK

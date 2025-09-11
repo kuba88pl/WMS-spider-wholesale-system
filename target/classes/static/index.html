@@ -445,7 +445,32 @@
 
     async function deleteOrder(id) { if (!confirm('Czy na pewno chcesz usunąć to zamówienie?')) return; try { const response = await fetch(`${API_URL}/orders/${id}`, { method: 'DELETE' }); if (response.ok) { alert('Zamówienie usunięte pomyślnie!'); loadOrders(); } else { throw new Error('Błąd podczas usuwania zamówienia'); } } catch (error) { console.error('Błąd:', error); alert('Wystąpił błąd podczas usuwania zamówienia.'); } }
     async function openStatusModal(orderId, currentStatus) { const modal = new bootstrap.Modal(document.getElementById('orderStatusModal')); const form = document.getElementById('statusForm'); form.onsubmit = (e) => updateOrderStatus(e); document.getElementById('orderIdToUpdate').value = orderId; const select = document.getElementById('orderStatusSelect'); select.innerHTML = ''; ['PENDING', 'IN_PROGRESS', 'SHIPPED', 'COMPLETED', 'CANCELLED'].forEach(status => { const option = document.createElement('option'); option.value = status; option.text = status; if (status === currentStatus) option.selected = true; select.appendChild(option); }); modal.show(); }
-    async function updateOrderStatus(e) { e.preventDefault(); const orderId = document.getElementById('orderIdToUpdate').value; const newStatus = document.getElementById('orderStatusSelect').value; try { const response = await fetch(`${API_URL}/orders/status`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: orderId, status: newStatus }) }); if (response.ok) { alert('Status zamówienia został zaktualizowany!'); bootstrap.Modal.getInstance(document.getElementById('orderStatusModal')).hide(); loadOrders(); } else { throw new Error('Błąd podczas aktualizacji statusu'); } } catch (error) { console.error('Błąd:', error); alert('Wystąpił błąd podczas aktualizacji statusu zamówienia.'); } }
+
+    // ZMIENIONA FUNKCJA updateOrderStatus
+    async function updateOrderStatus(e) {
+        e.preventDefault();
+        const orderId = document.getElementById('orderIdToUpdate').value;
+        const newStatus = document.getElementById('orderStatusSelect').value;
+        try {
+            const response = await fetch(`${API_URL}/orders/${orderId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (response.ok) {
+                alert('Status zamówienia został zaktualizowany!');
+                bootstrap.Modal.getInstance(document.getElementById('orderStatusModal')).hide();
+                loadOrders();
+            } else {
+                const errorData = await response.json();
+                alert(`Błąd podczas aktualizacji statusu: ${errorData.message || response.statusText}`);
+            }
+        } catch (error) {
+            console.error('Błąd:', error);
+            alert('Wystąpił błąd podczas aktualizacji statusu zamówienia.');
+        }
+    }
+
     async function fetchSpiders(page = 0, size = 10, sortBy = 'speciesName') { const url = `${API_URL}/spiders?page=${page}&size=${size}&sortBy=${sortBy}`; const response = await fetch(url); return response.ok ? await response.json() : { content: [], totalPages: 0, number: 0 }; }
     function loadSpiders(page = 0) { fetchSpiders(page).then(data => { currentPage.spiders = data.number; totalPages.spiders = data.totalPages; renderSpidersTable(data.content); createPagination('spiders', data.totalPages, data.number, loadSpiders); }); }
     function renderSpidersTable(spiders) { const tableBody = document.getElementById('spidersTableBody'); tableBody.innerHTML = ''; if (spiders.length === 0) { tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Brak pająków do wyświetlenia.</td></tr>'; return; } spiders.forEach(s => { const row = document.createElement('tr'); row.innerHTML = `<td>${s.typeName}</td><td>${s.speciesName}</td><td>${s.quantity}</td><td>${s.size}</td><td>${s.price.toFixed(2)} zł</td><td>${s.isCites ? 'Tak' : 'Nie'}</td><td><button class="btn btn-sm btn-primary" onclick="openSpiderModal('${s.id}')">Edytuj</button> <button class="btn btn-sm btn-danger" onclick="deleteSpider('${s.id}')">Usuń</button></td>`; tableBody.appendChild(row); }); }

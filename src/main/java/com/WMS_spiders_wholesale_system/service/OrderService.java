@@ -46,7 +46,7 @@ public class OrderService {
         Order newOrder = new Order();
         newOrder.setCustomer(customer);
         newOrder.setDate(LocalDate.now());
-        newOrder.setStatus(OrderStatus.PENDING); // Użycie stałej PENDING
+        newOrder.setStatus(OrderStatus.PENDING);
 
         List<OrderedSpider> orderedSpiders = orderDTO.getOrderedSpiders().stream()
                 .map(itemDTO -> {
@@ -55,7 +55,7 @@ public class OrderService {
                     OrderedSpider orderedSpider = new OrderedSpider();
                     orderedSpider.setSpider(spider);
                     orderedSpider.setQuantity(itemDTO.getQuantity());
-                    orderedSpider.setOrder(newOrder); // Ważne: ustawienie relacji
+                    orderedSpider.setOrder(newOrder);
                     return orderedSpider;
                 }).collect(Collectors.toList());
 
@@ -66,13 +66,60 @@ public class OrderService {
                 .sum();
         newOrder.setPrice(totalPrice);
 
-        // Zapis zamówienia z automatycznie generowanym ID przez Hibernate
         Order savedOrder = orderRepository.save(newOrder);
 
         return savedOrder;
     }
 
-    // ... pozostałe metody bez zmian
+    @Transactional
+    public Order updateOrder(UUID id, OrderDTO orderDTO) {
+        Order existingOrder = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + id + " not found."));
+
+        // Aktualizacja klienta, jeśli jest podany w DTO
+        if (orderDTO.getCustomerId() != null && !orderDTO.getCustomerId().equals(existingOrder.getCustomer().getId())) {
+            Customer customer = customerService.getCustomerById(orderDTO.getCustomerId());
+            if (customer == null) {
+                throw new CustomerNotFoundException("Customer with id " + orderDTO.getCustomerId() + " not found.");
+            }
+            existingOrder.setCustomer(customer);
+        }
+
+        // Aktualizacja statusu
+        if (orderDTO.getStatus() != null) {
+            existingOrder.setStatus(OrderStatus.valueOf(orderDTO.getStatus()));
+        }
+
+        // Aktualizacja listy pająków w zamówieniu
+        if (orderDTO.getOrderedSpiders() != null) {
+            existingOrder.getOrderedSpiders().clear(); // Usuwa stare powiązania
+
+            List<OrderedSpider> updatedSpiders = orderDTO.getOrderedSpiders().stream()
+                    .map(itemDTO -> {
+                        Spider spider = spiderRepository.findById(itemDTO.getSpiderId())
+                                .orElseThrow(() -> new SpiderNotFoundException("Spider with id " + itemDTO.getSpiderId() + " not found."));
+
+                        OrderedSpider orderedSpider = new OrderedSpider();
+                        orderedSpider.setSpider(spider);
+                        orderedSpider.setQuantity(itemDTO.getQuantity());
+                        orderedSpider.setOrder(existingOrder);
+                        return orderedSpider;
+                    })
+                    .collect(Collectors.toList());
+
+            existingOrder.getOrderedSpiders().addAll(updatedSpiders); // Dodaje nowe powiązania
+        }
+
+        // Przeliczenie całkowitej ceny po zmianach
+        double totalPrice = existingOrder.getOrderedSpiders().stream()
+                .mapToDouble(os -> os.getSpider().getPrice() * os.getQuantity())
+                .sum();
+        existingOrder.setPrice(totalPrice);
+
+        // Zapisujemy zaktualizowaną encję.
+        return orderRepository.save(existingOrder);
+    }
+
     public void deleteOrder(UUID id) {
         if (!orderRepository.existsById(id)) {
             throw new OrderNotFoundException("Order with id " + id + " not found.");
