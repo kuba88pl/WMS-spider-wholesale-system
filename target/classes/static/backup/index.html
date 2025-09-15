@@ -295,6 +295,10 @@
                             <div class="d-flex justify-content-end align-items-center mt-3">
                                 <h5>Suma całkowita: <span id="order-total-price">0.00</span> PLN</h5>
                             </div>
+                            <div class="d-flex justify-content-end align-items-center mt-3">
+                                <label for="order-price" class="form-label me-2">Nowa cena zamówienia</label>
+                                <input type="number" class="form-control w-25" id="order-price" step="0.01" min="0">
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-4">
@@ -313,10 +317,6 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="order-shipmentNumber" class="form-label">Numer przesyłki</label>
-                                    <input type="text" class="form-control" id="order-shipmentNumber">
-                                </div>
-                                <div class="col-md-6 mb-3">
                                     <label for="order-courierCompany" class="form-label">Firma kurierska</label>
                                     <select class="form-select" id="order-courierCompany">
                                         <option value="DPD">DPD</option>
@@ -325,6 +325,10 @@
                                         <option value="UPS">UPS</option>
                                         <option value="GLS">GLS</option>
                                     </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="order-shipmentNumber" class="form-label">Numer przesyłki</label>
+                                    <input type="text" class="form-control" id="order-shipmentNumber">
                                 </div>
                                 <div class="col-md-6 mb-3 form-check d-flex align-items-center mt-4">
                                     <input type="checkbox" class="form-check-input" id="order-selfCollection">
@@ -643,11 +647,8 @@
                 throw new Error(errorText || 'Nie udało się anulować zamówienia.');
             }
 
-            // Poprawka: Usunięcie automatycznego wywoływania showOrderDetails
-            // const savedOrder = await response.json();
             bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
             await loadOrders();
-            // showOrderDetails(savedOrder.id);
         } catch (error) {
             console.error('Błąd podczas anulowania zamówienia:', error);
             alert('Wystąpił błąd podczas anulowania zamówienia: ' + error.message);
@@ -660,6 +661,9 @@
             return;
         }
 
+        const priceInput = document.getElementById('order-price').value;
+        const orderPrice = priceInput ? parseFloat(priceInput) : null;
+
         const orderDTO = {
             id: currentOrderId,
             customerId: selectedCustomerId,
@@ -671,6 +675,7 @@
             shipmentNumber: document.getElementById('order-shipmentNumber').value,
             courierCompany: document.getElementById('order-courierCompany').value,
             selfCollection: document.getElementById('order-selfCollection').checked,
+            price: orderPrice
         };
 
         try {
@@ -687,11 +692,8 @@
                 throw new Error(errorText || 'Nie udało się zapisać zamówienia.');
             }
 
-            // Poprawka: Usunięcie automatycznego wywoływania showOrderDetails
-            // const savedOrder = await response.json();
             bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
             await loadOrders();
-            // showOrderDetails(savedOrder.id);
         } catch (error) {
             console.error('Błąd podczas zapisywania zamówienia:', error);
             alert('Wystąpił błąd podczas zapisywania zamówienia: ' + error.message);
@@ -712,6 +714,7 @@
             document.getElementById('order-shipmentNumber').value = '';
             document.getElementById('order-courierCompany').value = 'DPD';
             document.getElementById('order-selfCollection').checked = false;
+            document.getElementById('order-price').value = '';
             loadCustomersForOrder();
             loadSpidersForOrder();
         } else if (mode === 'edit' && id) {
@@ -865,6 +868,7 @@
             tableBody.appendChild(row);
         });
         document.getElementById('order-total-price').textContent = currentOrderPrice.toFixed(2);
+        document.getElementById('order-price').value = currentOrderPrice.toFixed(2);
     }
 
     async function loadOrderDataForEdit(orderId) {
@@ -878,6 +882,7 @@
             document.getElementById('order-shipmentNumber').value = order.shipmentNumber;
             document.getElementById('order-courierCompany').value = order.courierCompany;
             document.getElementById('order-selfCollection').checked = order.selfCollection;
+            document.getElementById('order-price').value = order.price.toFixed(2);
 
             // Select customer
             selectedCustomerId = order.customer.id;
@@ -943,7 +948,7 @@
                 <p><strong>Imię i nazwisko:</strong> ${order.customer.firstName} ${order.customer.lastName}</p>
                 <p><strong>E-mail:</strong> ${order.customer.email}</p>
                 <p><strong>Adres:</strong> ${order.customer.address}</p>
-                <p><strong>Paczkomat:</strong> ${order.customer.parcelLocker ? order.customer.parcelLocker : 'N/A'}</p>
+                <p><strong>Paczkomat:</strong> ${order.parcelLocker ? order.parcelLocker : 'N/A'}</p>
                 <hr>
                 <h6>Dane przesyłki:</h6>
                 <p><strong>Firma kurierska:</strong> ${order.courierCompany}</p>
