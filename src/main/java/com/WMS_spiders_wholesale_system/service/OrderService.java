@@ -102,6 +102,19 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Order with id " + id + " not found."));
 
+        if (orderDTO.getStatus() != null) {
+            OrderStatus newStatus = OrderStatus.valueOf(orderDTO.getStatus());
+            if (existingOrder.getStatus() != OrderStatus.CANCELLED && newStatus == OrderStatus.CANCELLED) {
+                existingOrder.getOrderedSpiders().forEach(orderedSpider -> {
+                    Spider spider = spiderRepository.findById(orderedSpider.getSpider().getId())
+                            .orElseThrow(() -> new SpiderNotFoundException("Spider with id " + orderedSpider.getSpider().getId() + " not found."));
+                    spider.setQuantity(spider.getQuantity() + orderedSpider.getQuantity());
+                    spiderRepository.save(spider);
+                });
+            }
+            existingOrder.setStatus(newStatus);
+        }
+
         if (orderDTO.getCustomerId() != null && !orderDTO.getCustomerId().equals(existingOrder.getCustomer().getId())) {
             Customer customer = customerService.getCustomerById(orderDTO.getCustomerId());
             if (customer == null) {
