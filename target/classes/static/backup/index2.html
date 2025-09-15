@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMS - System zarządzania hurtownią pająków</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .container { max-width: 960px; }
+        .table th, .table td { vertical-align: middle; }
+        .table thead th { background-color: #343a30; color: white; }
+        .table-new-order { background-color: #d1e7dd; } /* Zielony */
+        .table-cancelled-order { background-color: #f8d7da; } /* Czerwony */
+        .table-shipped-order { background-color: #cfe2ff; } /* Niebieski */
+        .modal-xl { --bs-modal-width: 90%; }
+        .selectable-row:hover { background-color: #f2f2f2; cursor: pointer; }
+        .selected-row { background-color: #e2f2ff; font-weight: bold; } /* Podświetlenie wybranego wiersza */
+
+        /* Nowe, poprawione reguły CSS do drukowania */
+        @media print {
+            .navbar, .container, .modal-backdrop {
+                display: none !important;
+            }
+            #orderDetailsModal {
+                position: static !important;
+                display: block !important;
+                visibility: visible !important;
+                top: auto !important;
+                left: auto !important;
+                margin: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">WMS - Pająki</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#" onclick="showSection('customers-section')">Klienci</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('spiders-section')">Pająki</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showSection('orders-section')">Zamówienia</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <section id="customers-section" class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Zarządzanie klientami</h2>
+            <div class="d-flex">
+                <button class="btn btn-danger me-2" onclick="clearAllCustomers()">Usuń wszystkich klientów</button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerModal" onclick="prepareCustomerForm('add')">Dodaj klienta</button>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Adres e-mail</th>
+                <th>Adres</th>
+                <th>Akcje</th>
+            </tr>
+            </thead>
+            <tbody id="customers-table">
+            </tbody>
+        </table>
+    </section>
+
+    <section id="spiders-section" class="mb-5 d-none">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Zarządzanie pająkami</h2>
+            <div class="d-flex">
+                <button class="btn btn-danger me-2" onclick="clearAllSpiders()">Usuń wszystkie pająki</button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#spiderModal" onclick="prepareSpiderForm('add')">Dodaj pająka</button>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Nazwa gatunku</th>
+                <th>Ilość</th>
+                <th>Cena</th>
+                <th>CITES</th>
+                <th>Akcje</th>
+            </tr>
+            </thead>
+            <tbody id="spiders-table">
+            </tbody>
+        </table>
+    </section>
+
+    <section id="orders-section" class="mb-5 d-none">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Zarządzanie zamówieniami</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="prepareOrderForm('add')">Dodaj zamówienie</button>
+        </div>
+        <div class="d-flex mb-3">
+            <button class="btn btn-outline-dark me-2 active" onclick="filterOrders('all', event)">Wszystkie</button>
+            <button class="btn btn-outline-success me-2" onclick="filterOrders('NEW', event)">Nowe</button>
+            <button class="btn btn-outline-info me-2" onclick="filterOrders('SHIPPED', event)">Wysłane</button>
+            <button class="btn btn-outline-danger me-2" onclick="filterOrders('CANCELLED', event)">Anulowane</button>
+        </div>
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>Data</th>
+                <th>Cena</th>
+                <th>Status</th>
+                <th>Klient</th>
+                <th>Akcje</th>
+            </tr>
+            </thead>
+            <tbody id="orders-table">
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="customer-form" onsubmit="event.preventDefault(); saveCustomer();">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customerModalLabel">Klient</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="customer-id">
+                    <div class="mb-3">
+                        <label for="customer-firstName" class="form-label">Imię</label>
+                        <input type="text" class="form-control" id="customer-firstName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customer-lastName" class="form-label">Nazwisko</label>
+                        <input type="text" class="form-control" id="customer-lastName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customer-telephone" class="form-label">Telefon</label>
+                        <input type="tel" class="form-control" id="customer-telephone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="customer-email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="customer-email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="customer-address" class="form-label">Adres</label>
+                        <input type="text" class="form-control" id="customer-address">
+                    </div>
+                    <div class="mb-3">
+                        <label for="customer-parcelLocker" class="form-label">Paczkomat</label>
+                        <input type="text" class="form-control" id="customer-parcelLocker">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="submit" class="btn btn-primary">Zapisz</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="spiderModal" tabindex="-1" aria-labelledby="spiderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="spider-form" onsubmit="event.preventDefault(); saveSpider();">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="spiderModalLabel">Pająk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="spider-id">
+                    <div class="mb-3">
+                        <label for="spider-typeName" class="form-label">Typ</label>
+                        <input type="text" class="form-control" id="spider-typeName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="spider-speciesName" class="form-label">Gatunek</label>
+                        <input type="text" class="form-control" id="spider-speciesName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="spider-quantity" class="form-label">Ilość</label>
+                        <input type="number" class="form-control" id="spider-quantity" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="spider-size" class="form-label">Rozmiar</label>
+                        <input type="text" class="form-control" id="spider-size">
+                    </div>
+                    <div class="mb-3">
+                        <label for="spider-price" class="form-label">Cena</label>
+                        <input type="number" class="form-control" id="spider-price" step="0.01" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="spider-isCites">
+                        <label class="form-check-label" for="spider-isCites">CITES</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="submit" class="btn btn-primary">Zapisz</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form id="order-form" onsubmit="event.preventDefault(); saveOrder();">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderModalLabel">Zamówienie</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="order-id">
+                    <input type="hidden" id="order-customer-id">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="mt-4">Wybierz klienta</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Imię</th>
+                                        <th>Nazwisko</th>
+                                        <th>Akcje</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="customer-selection-table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="mt-4">Szczegóły klienta</h4>
+                            <div id="customer-details">
+                                <p>Wybierz klienta z tabeli po lewej, aby zobaczyć szczegóły.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h4 class="mt-4">Wybierz pająka do dodania</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Gatunek</th>
+                                        <th>Ilość dostępna</th>
+                                        <th>Cena</th>
+                                        <th>Akcje</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="spider-selection-table">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="mt-4">Pająki w zamówieniu</h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Gatunek</th>
+                                        <th>Ilość</th>
+                                        <th>Cena</th>
+                                        <th>Akcje</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="ordered-spiders-table">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-flex justify-content-end mt-3">
+                                <p class="h4"><strong>Łączna cena:</strong> <span id="order-total-price">0.00</span> PLN</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="order-date" class="form-label">Data zamówienia</label>
+                                <input type="date" class="form-control" id="order-date" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="order-status" class="form-label">Status</label>
+                                <select class="form-select" id="order-status">
+                                    <option value="NEW">NOWE</option>
+                                    <option value="PENDING">OCZEKUJĄCE</option>
+                                    <option value="IN_PROGRESS">W REALIZACJI</option>
+                                    <option value="SHIPPED">WYSŁANE</option>
+                                    <option value="COMPLETED">ZAKOŃCZONE</option>
+                                    <option value="CANCELLED">ANULOWANE</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="order-selfCollection">
+                                <label class="form-check-label" for="order-selfCollection">Odbiór osobisty</label>
+                            </div>
+                            <div id="shipment-options">
+                                <div class="mb-3">
+                                    <label for="order-courierCompany" class="form-label">Firma kurierska</label>
+                                    <select class="form-select" id="order-courierCompany">
+                                        <option value="">Wybierz kuriera</option>
+                                        <option value="DPD">DPD</option>
+                                        <option value="INPOST">INPOST</option>
+                                        <option value="POCZTEX">POCZTEX</option>
+                                        <option value="UPS">UPS</option>
+                                        <option value="GLS">GLS</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="order-shipmentNumber" class="form-label">Numer przesyłki</label>
+                                    <input type="text" class="form-control" id="order-shipmentNumber">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="submit" class="btn btn-primary">Zapisz zamówienie</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderDetailsModalLabel">Szczegóły zamówienia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>ID zamówienia:</strong> <span id="detail-order-id"></span></p>
+                <p><strong>Data zamówienia:</strong> <span id="detail-order-date"></span></p>
+                <p><strong>Status:</strong> <span id="detail-order-status"></span></p>
+                <hr>
+                <h4>Dane klienta</h4>
+                <p><strong>Klient:</strong> <span id="detail-customer-name"></span></p>
+                <p><strong>Adres:</strong> <span id="detail-customer-address"></span></p>
+                <p><strong>E-mail:</strong> <span id="detail-customer-email"></span></p>
+                <p><strong>Telefon:</strong> <span id="detail-customer-telephone"></span></p>
+                <p><strong>Paczkomat:</strong> <span id="detail-customer-parcelLocker"></span></p>
+                <hr>
+                <h4>Dane wysyłki</h4>
+                <p><strong>Rodzaj wysyłki:</strong> <span id="detail-shipment-type"></span></p>
+                <div id="shipment-details-container">
+                    <p><strong>Kurier:</strong> <span id="detail-courier-company"></span></p>
+                    <p><strong>Numer przesyłki:</strong> <span id="detail-shipment-number"></span></p>
+                </div>
+                <hr>
+                <h5>Pająki w zamówieniu:</h5>
+                <table class="table table-bordered mt-2">
+                    <thead>
+                    <tr>
+                        <th>Typ</th>
+                        <th>Gatunek</th>
+                        <th>Ilość</th>
+                        <th>Cena jednostkowa</th>
+                        <th>Cena całkowita</th>
+                        <th>CITES</th>
+                    </tr>
+                    </thead>
+                    <tbody id="detail-ordered-spiders">
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-end mt-3">
+                    <p class="h4"><strong>Łączna cena:</strong> <span id="detail-total-price"></span> PLN</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                <button type="button" class="btn btn-success" onclick="printOrderDetails()">Drukuj</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const API_URL = 'http://localhost:8080/api';
+
+    let currentSpiders = [];
+    let allCustomers = [];
+    let orderedSpiders = [];
+    let allOrders = [];
+
+    // Funkcje zarządzania widokiem
+    function showSection(sectionId) {
+        document.getElementById('customers-section').classList.add('d-none');
+        document.getElementById('spiders-section').classList.add('d-none');
+        document.getElementById('orders-section').classList.add('d-none');
+        document.getElementById(sectionId).classList.remove('d-none');
+    }
+
+    // --- Klienci ---
+    async function loadCustomers() {
+        try {
+            const response = await fetch(`${API_URL}/customers?size=100`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            allCustomers = data.content;
+            const customersTable = document.getElementById('customers-table');
+            customersTable.innerHTML = '';
+            allCustomers.forEach(customer => {
+                const row = `
+                        <tr>
+                            <td>${customer.firstName}</td>
+                            <td>${customer.lastName}</td>
+                            <td>${customer.email || 'Brak'}</td>
+                            <td>${customer.address || 'Brak'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#customerModal" onclick="prepareCustomerForm('edit', '${customer.id}')">Edytuj</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCustomer('${customer.id}')">Usuń</button>
+                            </td>
+                        </tr>
+                    `;
+                customersTable.insertAdjacentHTML('beforeend', row);
+            });
+        } catch (error) {
+            console.error('Błąd podczas ładowania klientów:', error);
+        }
+    }
+
+    function prepareCustomerForm(mode, customerId = null) {
+        const form = document.getElementById('customer-form');
+        form.reset();
+        document.getElementById('customer-id').value = '';
+        if (mode === 'edit' && customerId) {
+            const customer = allCustomers.find(c => c.id === customerId);
+            if (customer) {
+                document.getElementById('customer-id').value = customer.id;
+                document.getElementById('customer-firstName').value = customer.firstName;
+                document.getElementById('customer-lastName').value = customer.lastName;
+                document.getElementById('customer-telephone').value = customer.telephone;
+                document.getElementById('customer-email').value = customer.email;
+                document.getElementById('customer-address').value = customer.address;
+                document.getElementById('customer-parcelLocker').value = customer.parcelLocker;
+            }
+        }
+    }
+
+    async function saveCustomer() {
+        const id = document.getElementById('customer-id').value;
+        const customerData = {
+            firstName: document.getElementById('customer-firstName').value,
+            lastName: document.getElementById('customer-lastName').value,
+            telephone: document.getElementById('customer-telephone').value,
+            email: document.getElementById('customer-email').value,
+            address: document.getElementById('customer-address').value,
+            parcelLocker: document.getElementById('customer-parcelLocker').value
+        };
+
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API_URL}/customers/${id}` : `${API_URL}/customers`;
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(customerData)
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorText}`);
+            }
+            document.getElementById('customer-form').reset();
+            const customerModal = bootstrap.Modal.getInstance(document.getElementById('customerModal'));
+            customerModal.hide();
+            loadCustomers();
+        } catch (error) {
+            alert('Błąd zapisu klienta: ' + error.message);
+            console.error('Błąd:', error);
+        }
+    }
+
+    async function deleteCustomer(id) {
+        if (confirm('Czy na pewno chcesz usunąć tego klienta?')) {
+            try {
+                const response = await fetch(`${API_URL}/customers/${id}`, { method: 'DELETE' });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorText}`);
+                }
+                loadCustomers();
+            } catch (error) {
+                alert('Błąd usuwania klienta: ' + error.message);
+                console.error('Błąd:', error);
+            }
+        }
+    }
+
+    // --- Pająki ---
+    async function loadSpiders() {
+        try {
+            const response = await fetch(`${API_URL}/spiders?size=100`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            currentSpiders = data.content;
+            const spidersTable = document.getElementById('spiders-table');
+            spidersTable.innerHTML = '';
+            currentSpiders.forEach(spider => {
+                const row = `
+                        <tr>
+                            <td>${spider.speciesName}</td>
+                            <td>${spider.quantity}</td>
+                            <td>${spider.price.toFixed(2)} PLN</td>
+                            <td>${spider.isCites ? 'Tak' : 'Nie'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#spiderModal" onclick="prepareSpiderForm('edit', '${spider.id}')">Edytuj</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteSpider('${spider.id}')">Usuń</button>
+                            </td>
+                        </tr>
+                    `;
+                spidersTable.insertAdjacentHTML('beforeend', row);
+            });
+        } catch (error) {
+            console.error('Błąd podczas ładowania pająków:', error);
+        }
+    }
+
+    function prepareSpiderForm(mode, spiderId = null) {
+        const form = document.getElementById('spider-form');
+        form.reset();
+        document.getElementById('spider-id').value = '';
+        if (mode === 'edit' && spiderId) {
+            const spider = currentSpiders.find(s => s.id === spiderId);
+            if (spider) {
+                document.getElementById('spider-id').value = spider.id;
+                document.getElementById('spider-typeName').value = spider.typeName;
+                document.getElementById('spider-speciesName').value = spider.speciesName;
+                document.getElementById('spider-quantity').value = spider.quantity;
+                document.getElementById('spider-size').value = spider.size;
+                document.getElementById('spider-price').value = spider.price;
+                document.getElementById('spider-isCites').checked = spider.isCites;
+            }
+        }
+    }
+
+    async function saveSpider() {
+        const id = document.getElementById('spider-id').value;
+        const spiderData = {
+            typeName: document.getElementById('spider-typeName').value,
+            speciesName: document.getElementById('spider-speciesName').value,
+            quantity: document.getElementById('spider-quantity').value,
+            size: document.getElementById('spider-size').value,
+            price: document.getElementById('spider-price').value,
+            isCites: document.getElementById('spider-isCites').checked,
+            id: id || null
+        };
+
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API_URL}/spiders/${id}` : `${API_URL}/spiders`;
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(spiderData)
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorText}`);
+            }
+            document.getElementById('spider-form').reset();
+            const spiderModal = bootstrap.Modal.getInstance(document.getElementById('spiderModal'));
+            spiderModal.hide();
+            loadSpiders();
+        } catch (error) {
+            alert('Błąd zapisu pająka: ' + error.message);
+            console.error('Błąd:', error);
+        }
+    }
+
+    async function deleteSpider(id) {
+        if (confirm('Czy na pewno chcesz usunąć tego pająka?')) {
+            try {
+                const response = await fetch(`${API_URL}/spiders/${id}`, { method: 'DELETE' });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorText}`);
+                }
+                loadSpiders();
+            } catch (error) {
+                alert('Błąd usuwania pająka: ' + error.message);
+                console.error('Błąd:', error);
+            }
+        }
+    }
+
+    // --- Zamówienia ---
+    async function loadOrders() {
+        try {
+            const response = await fetch(`${API_URL}/orders?size=100`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            allOrders = data.content;
+            renderOrdersTable(allOrders);
+        } catch (error) {
+            console.error('Błąd podczas ładowania zamówień:', error);
+        }
+    }
+
+    function renderOrdersTable(ordersToDisplay) {
+        const ordersTable = document.getElementById('orders-table');
+        ordersTable.innerHTML = '';
+        ordersToDisplay.forEach(order => {
+            const rowClass = getOrderStatusClass(order.status);
+            const row = `
+                    <tr class="${rowClass}">
+                        <td>${order.date}</td>
+                        <td>${order.price.toFixed(2)} PLN</td>
+                        <td>${order.status}</td>
+                        <td>${order.customer.firstName} ${order.customer.lastName}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#orderDetailsModal" onclick="showOrderDetailsModal('${order.id}')">Szczegóły</button>
+                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="prepareOrderForm('edit', '${order.id}')">Edytuj</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteOrder('${order.id}')">Usuń</button>
+                        </td>
+                    </tr>
+                `;
+            ordersTable.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    function filterOrders(status, event) {
+        let filteredOrders;
+        if (status === 'all') {
+            filteredOrders = allOrders;
+        } else {
+            filteredOrders = allOrders.filter(order => order.status === status);
+        }
+        renderOrdersTable(filteredOrders);
+
+        document.querySelectorAll('#orders-section .btn-outline-dark, #orders-section .btn-outline-success, #orders-section .btn-outline-info, #orders-section .btn-outline-danger').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    }
+
+    function getOrderStatusClass(status) {
+        switch (status) {
+            case 'NEW':
+                return 'table-new-order';
+            case 'CANCELLED':
+                return 'table-cancelled-order';
+            case 'SHIPPED':
+                return 'table-shipped-order';
+            default:
+                return '';
+        }
+    }
+
+    async function prepareOrderForm(mode, orderId = null) {
+        const form = document.getElementById('order-form');
+        form.reset();
+        document.getElementById('order-id').value = '';
+        document.getElementById('order-customer-id').value = '';
+        orderedSpiders = [];
+        document.getElementById('ordered-spiders-table').innerHTML = '';
+        document.getElementById('order-date').valueAsDate = new Date();
+        document.getElementById('customer-details').innerHTML = '<p>Wybierz klienta z tabeli po lewej, aby zobaczyć szczegóły.</p>';
+        document.getElementById('order-total-price').textContent = '0.00';
+        toggleShipmentFields();
+
+        await loadCustomersForOrder();
+        await loadSpidersForOrder();
+
+        document.getElementById('order-selfCollection').addEventListener('change', toggleShipmentFields);
+
+        if (mode === 'edit' && orderId) {
+            try {
+                const response = await fetch(`${API_URL}/orders/${orderId}`);
+                if (!response.ok) throw new Error('Nie znaleziono zamówienia.');
+                const order = await response.json();
+                document.getElementById('order-id').value = order.id;
+                document.getElementById('order-date').value = order.date;
+                document.getElementById('order-status').value = order.status;
+
+                document.getElementById('order-customer-id').value = order.customer.id;
+                selectCustomer(order.customer.id);
+
+                document.getElementById('order-selfCollection').checked = order.selfCollection;
+                if(order.courierCompany) {
+                    document.getElementById('order-courierCompany').value = order.courierCompany;
+                } else {
+                    document.getElementById('order-courierCompany').value = '';
+                }
+                document.getElementById('order-shipmentNumber').value = order.shipmentNumber || '';
+                toggleShipmentFields();
+
+                orderedSpiders = order.orderedSpiders;
+                renderOrderedSpidersTable();
+            } catch (error) {
+                console.error('Błąd podczas ładowania zamówienia do edycji:', error);
+                alert('Nie udało się załadować zamówienia do edycji.');
+            }
+        }
+    }
+
+    function toggleShipmentFields() {
+        const selfCollectionCheckbox = document.getElementById('order-selfCollection');
+        const shipmentOptions = document.getElementById('shipment-options');
+        if (selfCollectionCheckbox.checked) {
+            shipmentOptions.style.display = 'none';
+            document.getElementById('order-courierCompany').value = '';
+            document.getElementById('order-shipmentNumber').value = '';
+        } else {
+            shipmentOptions.style.display = 'block';
+        }
+    }
+
+    async function loadCustomersForOrder() {
+        try {
+            const response = await fetch(`${API_URL}/customers?size=100`);
+            if (!response.ok) throw new Error('Nie udało się załadować klientów.');
+            const data = await response.json();
+            allCustomers = data.content;
+            const customersTable = document.getElementById('customer-selection-table');
+            customersTable.innerHTML = '';
+            allCustomers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.classList.add('selectable-row');
+                row.innerHTML = `
+                        <td>${customer.firstName}</td>
+                        <td>${customer.lastName}</td>
+                        <td>
+                             <button class="btn btn-sm btn-primary" type="button" onclick="selectCustomer('${customer.id}')">Wybierz</button>
+                        </td>
+                    `;
+                customersTable.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Błąd podczas ładowania klientów:', error);
+        }
+    }
+
+    async function loadSpidersForOrder() {
+        try {
+            const response = await fetch(`${API_URL}/spiders?size=100`);
+            if (!response.ok) throw new Error('Nie udało się załadować pająków.');
+            const data = await response.json();
+            currentSpiders = data.content;
+            const spidersTable = document.getElementById('spider-selection-table');
+            spidersTable.innerHTML = '';
+            currentSpiders.forEach(spider => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                        <td>${spider.speciesName}</td>
+                        <td>${spider.quantity}</td>
+                        <td>${spider.price.toFixed(2)} PLN</td>
+                        <td>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" value="1" min="1" max="${spider.quantity}" style="width: 60px;">
+                                <button class="btn btn-sm btn-primary" type="button" onclick="addSpiderToOrder('${spider.id}')">Dodaj</button>
+                            </div>
+                        </td>
+                    `;
+                spidersTable.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Błąd podczas ładowania pająków:', error);
+        }
+    }
+
+    function selectCustomer(customerId) {
+        document.getElementById('order-customer-id').value = customerId;
+        const customer = allCustomers.find(c => c.id === customerId);
+        const detailsHtml = `
+                <p><strong>Imię i nazwisko:</strong> ${customer.firstName} ${customer.lastName}</p>
+                <p><strong>E-mail:</strong> ${customer.email || 'Brak'}</p>
+                <p><strong>Telefon:</strong> ${customer.telephone || 'Brak'}</p>
+                <p><strong>Adres:</strong> ${customer.address || 'Brak'}</p>
+                <p><strong>Paczkomat:</strong> ${customer.parcelLocker || 'Brak'}</p>
+            `;
+        document.getElementById('customer-details').innerHTML = detailsHtml;
+
+        const customerTableRows = document.querySelectorAll('#customer-selection-table tr');
+        customerTableRows.forEach(row => row.classList.remove('selected-row'));
+        const selectedRow = document.querySelector(`#customer-selection-table button[onclick*="${customerId}"]`).closest('tr');
+        if (selectedRow) {
+            selectedRow.classList.add('selected-row');
+        }
+    }
+
+    function addSpiderToOrder(spiderId) {
+        const selectedRow = document.querySelector(`#spider-selection-table button[onclick*="${spiderId}"]`).closest('tr');
+        const quantityInput = selectedRow.querySelector('input[type="number"]');
+        const quantity = parseInt(quantityInput.value);
+
+        if (!spiderId || quantity <= 0) {
+            alert('Wybierz pająka i podaj poprawną ilość.');
+            return;
+        }
+
+        const spider = currentSpiders.find(s => s.id === spiderId);
+        if (!spider) {
+            alert('Wybrany pająk nie istnieje.');
+            return;
+        }
+
+        if (quantity > spider.quantity) {
+            alert('Nie ma wystarczającej ilości pająków na stanie.');
+            return;
+        }
+
+        const existingOrderedSpider = orderedSpiders.find(os => os.spider.id === spiderId);
+        if (existingOrderedSpider) {
+            if (existingOrderedSpider.quantity + quantity > spider.quantity) {
+                alert('Dodanie tej ilości przekroczy dostępny stan magazynowy.');
+                return;
+            }
+            existingOrderedSpider.quantity += quantity;
+        } else {
+            const orderedSpider = {
+                spiderId: spiderId,
+                quantity: quantity,
+                spider: spider
+            };
+            orderedSpiders.push(orderedSpider);
+        }
+
+        // update available quantity
+        spider.quantity -= quantity;
+        selectedRow.querySelector('td:nth-child(2)').textContent = spider.quantity;
+        quantityInput.value = 1;
+
+        renderOrderedSpidersTable();
+    }
+
+    function removeOrderedSpider(spiderId) {
+        const removedSpider = orderedSpiders.find(os => os.spider.id === spiderId);
+        if (removedSpider) {
+            // Restore spider quantity
+            const originalSpider = currentSpiders.find(s => s.id === spiderId);
+            if (originalSpider) {
+                originalSpider.quantity += removedSpider.quantity;
+                const spiderRow = document.querySelector(`#spider-selection-table button[onclick*="${spiderId}"]`).closest('tr');
+                if (spiderRow) {
+                    spiderRow.querySelector('td:nth-child(2)').textContent = originalSpider.quantity;
+                }
+            }
+        }
+
+        orderedSpiders = orderedSpiders.filter(os => os.spider.id !== spiderId);
+        renderOrderedSpidersTable();
+    }
+
+    function renderOrderedSpidersTable() {
+        const tableBody = document.getElementById('ordered-spiders-table');
+        tableBody.innerHTML = '';
+        let totalPrice = 0;
+        orderedSpiders.forEach(os => {
+            const itemTotalPrice = os.quantity * os.spider.price;
+            totalPrice += itemTotalPrice;
+            const row = `
+                    <tr>
+                        <td>${os.spider.speciesName}</td>
+                        <td>${os.quantity}</td>
+                        <td>${os.spider.price.toFixed(2)} PLN</td>
+                        <td><button class="btn btn-sm btn-danger" onclick="removeOrderedSpider('${os.spider.id}')">Usuń</button></td>
+                    </tr>
+                `;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
+        document.getElementById('order-total-price').textContent = totalPrice.toFixed(2);
+        document.getElementById('order-form').querySelector('button[type="submit"]').textContent = `Zapisz zamówienie (${totalPrice.toFixed(2)} PLN)`;
+    }
+
+    async function saveOrder() {
+        const id = document.getElementById('order-id').value;
+        const customerId = document.getElementById('order-customer-id').value;
+        const selfCollection = document.getElementById('order-selfCollection').checked;
+        const courierCompany = document.getElementById('order-courierCompany').value;
+        const shipmentNumber = document.getElementById('order-shipmentNumber').value;
+
+        if (!customerId) {
+            alert('Wybierz klienta z tabeli.');
+            return;
+        }
+
+        const orderData = {
+            id: id || null,
+            date: document.getElementById('order-date').value,
+            status: document.getElementById('order-status').value,
+            customerId: customerId,
+            orderedSpiders: orderedSpiders.map(os => ({ spiderId: os.spider.id, quantity: os.quantity })),
+            price: orderedSpiders.reduce((sum, os) => sum + os.quantity * os.spider.price, 0),
+            courierCompany: selfCollection ? null : courierCompany,
+            shipmentNumber: selfCollection ? null : shipmentNumber,
+            selfCollection: selfCollection
+        };
+
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API_URL}/orders/${id}` : `${API_URL}/orders`;
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorText}`);
+            }
+            const orderModal = bootstrap.Modal.getInstance(document.getElementById('orderModal'));
+            orderModal.hide();
+            loadOrders();
+        } catch (error) {
+            alert('Błąd zapisu zamówienia: ' + error.message);
+            console.error('Błąd:', error);
+        }
+    }
+
+    async function showOrderDetailsModal(orderId) {
+        try {
+            const response = await fetch(`${API_URL}/orders/${orderId}`);
+            if (!response.ok) throw new Error('Nie znaleziono zamówienia.');
+            const order = await response.json();
+
+            document.getElementById('detail-order-id').textContent = order.id;
+            document.getElementById('detail-order-date').textContent = order.date;
+            document.getElementById('detail-order-status').textContent = order.status;
+
+            document.getElementById('detail-customer-name').textContent = `${order.customer.firstName} ${order.customer.lastName}`;
+            document.getElementById('detail-customer-address').textContent = order.customer.address || 'Brak';
+            document.getElementById('detail-customer-email').textContent = order.customer.email || 'Brak';
+            document.getElementById('detail-customer-telephone').textContent = order.customer.telephone || 'Brak';
+            document.getElementById('detail-customer-parcelLocker').textContent = order.customer.parcelLocker || 'Brak';
+
+            document.getElementById('detail-shipment-type').textContent = order.selfCollection ? 'Odbiór osobisty' : 'Wysyłka kurierem';
+
+            const shipmentDetailsContainer = document.getElementById('shipment-details-container');
+            if (order.selfCollection) {
+                shipmentDetailsContainer.style.display = 'none';
+            } else {
+                shipmentDetailsContainer.style.display = 'block';
+                document.getElementById('detail-courier-company').textContent = order.courierCompany || 'Brak';
+                document.getElementById('detail-shipment-number').textContent = order.shipmentNumber || 'Brak';
+            }
+
+            const tableBody = document.getElementById('detail-ordered-spiders');
+            tableBody.innerHTML = '';
+            let totalPrice = 0;
+            order.orderedSpiders.forEach(os => {
+                const itemTotalPrice = os.quantity * os.spider.price;
+                totalPrice += itemTotalPrice;
+                const row = `
+                        <tr>
+                            <td>${os.spider.typeName}</td>
+                            <td>${os.spider.speciesName}</td>
+                            <td>${os.quantity}</td>
+                            <td>${os.spider.price.toFixed(2)} PLN</td>
+                            <td>${itemTotalPrice.toFixed(2)} PLN</td>
+                            <td>${os.spider.isCites ? 'Tak' : 'Nie'}</td>
+                        </tr>
+                    `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+            document.getElementById('detail-total-price').textContent = totalPrice.toFixed(2);
+        } catch (error) {
+            console.error('Błąd podczas ładowania szczegółów zamówienia:', error);
+            alert('Nie udało się załadować szczegółów zamówienia.');
+        }
+    }
+
+    function printOrderDetails() {
+        const modalBody = document.querySelector('#orderDetailsModal .modal-content').innerHTML;
+        const originalBody = document.body.innerHTML;
+        document.body.innerHTML = modalBody;
+        window.print();
+        document.body.innerHTML = originalBody;
+        location.reload();
+    }
+
+    async function deleteOrder(id) {
+        if (confirm('Czy na pewno chcesz usunąć to zamówienie?')) {
+            try {
+                const response = await fetch(`${API_URL}/orders/${id}`, { method: 'DELETE' });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! Status: ${response.status}. Message: ${errorText}`);
+                }
+                loadOrders();
+            } catch (error) {
+                alert('Błąd usuwania zamówienia: ' + error.message);
+                console.error('Błąd:', error);
+            }
+        }
+    }
+
+    async function clearAllCustomers() {
+        if (!confirm('Czy na pewno chcesz USUNĄĆ WSZYSTKICH KLIENTÓW? Upewnij się, że nie mają oni żadnych aktywnych zamówień.')) return;
+        try {
+            const response = await fetch(`${API_URL}/customers?size=100`);
+            const customers = (await response.json()).content;
+
+            for (const customer of customers) {
+                await fetch(`${API_URL}/customers/${customer.id}`, { method: 'DELETE' });
+            }
+
+            alert('Wszyscy klienci zostali pomyślnie usunięci!');
+            loadCustomers();
+        } catch (error) {
+            console.error('Błąd podczas usuwania klientów:', error);
+            alert('Wystąpił błąd podczas usuwania klientów. Upewnij się, że nie mają oni aktywnych zamówień.');
+        }
+    }
+
+    async function clearAllSpiders() {
+        if (!confirm('Czy na pewno chcesz USUNĄĆ WSZYSTKIE PAJĄKI?')) return;
+        try {
+            const response = await fetch(`${API_URL}/spiders?size=100`);
+            const spiders = (await response.json()).content;
+
+            for (const spider of spiders) {
+                await fetch(`${API_URL}/spiders/${spider.id}`, { method: 'DELETE' });
+            }
+
+            alert('Wszystkie pająki zostały pomyślnie usunięte!');
+            loadSpiders();
+        } catch (error) {
+            console.error('Błąd podczas usuwania pająków:', error);
+            alert('Wystąpił błąd podczas usuwania pająków.');
+        }
+    }
+
+    // Initial load
+    window.onload = function() {
+        loadCustomers();
+        loadSpiders();
+        loadOrders();
+    };
+</script>
+</body>
+</html>

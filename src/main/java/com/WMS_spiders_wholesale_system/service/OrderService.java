@@ -68,6 +68,18 @@ public class OrderService {
                     return orderedSpider;
                 }).collect(Collectors.toList());
 
+        orderedSpiders.forEach(orderedSpider -> {
+            Spider spider = orderedSpider.getSpider();
+            int orderedQuantity = orderedSpider.getQuantity();
+            int currentQuantity = spider.getQuantity();
+
+            if (currentQuantity < orderedQuantity) {
+                throw new RuntimeException("Not enough stock for spider: " + spider.getSpeciesName());
+            }
+            spider.setQuantity(currentQuantity - orderedQuantity);
+            spiderRepository.save(spider);
+        });
+
         newOrder.setOrderedSpiders(orderedSpiders);
 
         double totalPrice = orderedSpiders.stream()
