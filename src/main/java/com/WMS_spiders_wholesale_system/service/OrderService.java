@@ -1,11 +1,7 @@
 package com.WMS_spiders_wholesale_system.service;
 
 import com.WMS_spiders_wholesale_system.dto.OrderDTO;
-import com.WMS_spiders_wholesale_system.entity.Customer;
-import com.WMS_spiders_wholesale_system.entity.Order;
-import com.WMS_spiders_wholesale_system.entity.OrderedSpider;
-import com.WMS_spiders_wholesale_system.entity.OrderStatus;
-import com.WMS_spiders_wholesale_system.entity.Spider;
+import com.WMS_spiders_wholesale_system.entity.*;
 import com.WMS_spiders_wholesale_system.exception.CustomerNotFoundException;
 import com.WMS_spiders_wholesale_system.exception.OrderNotFoundException;
 import com.WMS_spiders_wholesale_system.exception.SpiderNotFoundException;
@@ -47,6 +43,19 @@ public class OrderService {
         newOrder.setCustomer(customer);
         newOrder.setDate(LocalDate.now());
         newOrder.setStatus(OrderStatus.NEW);
+        newOrder.setShipmentNumber(orderDTO.getShipmentNumber());
+        if (orderDTO.getCourierCompany() != null && !orderDTO.getCourierCompany().isBlank()) {
+            try {
+                newOrder.setCourierCompany(CourierCompany.valueOf(orderDTO.getCourierCompany().toUpperCase()));
+                newOrder.setSelfCollection(false);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid courierCompany: " + orderDTO.getCourierCompany());
+            }
+        } else {
+            newOrder.setCourierCompany(null);
+            newOrder.setSelfCollection(false);
+        }
+
 
         List<OrderedSpider> orderedSpiders = orderDTO.getOrderedSpiders().stream()
                 .map(itemDTO -> {
@@ -86,6 +95,26 @@ public class OrderService {
 
         if (orderDTO.getStatus() != null) {
             existingOrder.setStatus(OrderStatus.valueOf(orderDTO.getStatus()));
+        }
+
+        if(orderDTO.getCourierCompany() != null && !orderDTO.getCourierCompany().isBlank()) {
+            try{
+                existingOrder.setCourierCompany(CourierCompany.valueOf(orderDTO.getCourierCompany().toUpperCase()));
+                existingOrder.setSelfCollection(false);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid courierCompany: " + orderDTO.getCourierCompany());
+            }
+        } else {
+            existingOrder.setCourierCompany(null);
+            existingOrder.setSelfCollection(true);
+        }
+
+        if (orderDTO.getShipmentNumber() != null) {
+            existingOrder.setShipmentNumber(orderDTO.getShipmentNumber());
+        }
+
+        if (orderDTO.getSelfCollection() != null) {
+            existingOrder.setSelfCollection(orderDTO.getSelfCollection());
         }
 
         if (orderDTO.getOrderedSpiders() != null) {

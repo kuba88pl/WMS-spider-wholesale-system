@@ -1,5 +1,7 @@
 package com.WMS_spiders_wholesale_system.dto;
 
+import com.WMS_spiders_wholesale_system.entity.CourierCompany;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -8,6 +10,12 @@ public class OrderDTO {
     private String date;
     private Double price;
     private String status;
+    private String shipmentNumber;
+    private String courierCompany;
+    private Boolean selfCollection;
+
+
+
     private UUID customerId;
     private CustomerDTO customer;
     private List<OrderedSpiderDTO> orderedSpiders;
@@ -47,6 +55,29 @@ public class OrderDTO {
         this.status = status;
     }
 
+    public String getShipmentNumber() {
+        return shipmentNumber;
+    }
+
+    public void setShipmentNumber(String shipmentNumber) {
+        this.shipmentNumber = shipmentNumber;
+    }
+
+    public String  getCourierCompany() {
+        return courierCompany;
+    }
+
+    public void setCourierCompany(String courierCompany) {
+        this.courierCompany = courierCompany;
+    }
+
+    public Boolean getSelfCollection() {
+        return selfCollection;
+    }
+
+    public void setSelfCollection(Boolean selfCollection) {
+        this.selfCollection = selfCollection;
+    }
     public UUID getCustomerId() {
         return customerId;
     }

@@ -20,6 +20,15 @@ public class OrderMapper {
         orderDTO.setPrice(order.getPrice());
         orderDTO.setStatus(order.getStatus().toString());
 
+        if (order.getCourierCompany() != null) {
+            orderDTO.setCourierCompany(order.getCourierCompany().toString());
+        } else {
+            orderDTO.setCourierCompany(null);
+        }
+
+        orderDTO.setSelfCollection(order.getSelfCollection());
+        orderDTO.setShipmentNumber(order.getShipmentNumber());
+
         if (order.getCustomer() != null) {
             orderDTO.setCustomer(CustomerMapper.toDTO(order.getCustomer()));
         }

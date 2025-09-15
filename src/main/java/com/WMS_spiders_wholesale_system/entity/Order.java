@@ -32,6 +32,40 @@ public class Order implements Serializable {
     @Column(name = "status")
     private OrderStatus status;
 
+    @Column(name = "shipment_number")
+    private String shipmentNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "courier_company")
+    private CourierCompany courierCompany;
+
+    @Column(name = "self_collection")
+    private Boolean selfCollection = false;
+
+    public String getShipmentNumber() {
+        return shipmentNumber;
+    }
+
+    public void setShipmentNumber(String shipmentNumber) {
+        this.shipmentNumber = shipmentNumber;
+    }
+
+    public CourierCompany getCourierCompany() {
+        return courierCompany;
+    }
+
+    public void setCourierCompany(CourierCompany courierCompany) {
+        this.courierCompany = courierCompany;
+    }
+
+    public Boolean getSelfCollection() {
+        return selfCollection;
+    }
+
+    public void setSelfCollection(Boolean selfCollection) {
+        this.selfCollection = selfCollection;
+    }
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderedSpider> orderedSpiders = new ArrayList<>();
 
