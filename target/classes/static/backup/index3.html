@@ -111,10 +111,7 @@
         <div class="d-flex mb-3">
             <button class="btn btn-outline-dark me-2 active" onclick="filterOrders('all', event)">Wszystkie</button>
             <button class="btn btn-outline-success me-2" onclick="filterOrders('NEW', event)">Nowe</button>
-            <button class="btn btn-outline-warning me-2" onclick="filterOrders('PENDING', event)">Oczekujące</button>
-            <button class="btn btn-outline-info me-2" onclick="filterOrders('IN_PROGRESS', event)">W trakcie</button>
-            <button class="btn btn-outline-primary me-2" onclick="filterOrders('SHIPPED', event)">Wysłane</button>
-            <button class="btn btn-outline-secondary me-2" onclick="filterOrders('COMPLETED', event)">Zakończone</button>
+            <button class="btn btn-outline-info me-2" onclick="filterOrders('SHIPPED', event)">Wysłane</button>
             <button class="btn btn-outline-danger me-2" onclick="filterOrders('CANCELLED', event)">Anulowane</button>
         </div>
         <table class="table table-hover table-bordered">
@@ -304,10 +301,7 @@
                                     <label for="order-status" class="form-label">Status zamówienia</label>
                                     <select class="form-select" id="order-status">
                                         <option value="NEW">NOWE</option>
-                                        <option value="PENDING">OCZEKUJĄCE</option>
-                                        <option value="IN_PROGRESS">W TRAKCIE</option>
                                         <option value="SHIPPED">WYSŁANE</option>
-                                        <option value="COMPLETED">ZAKOŃCZONE</option>
                                         <option value="CANCELLED">ANULOWANE</option>
                                     </select>
                                 </div>
@@ -352,7 +346,6 @@
             <div class="modal-body">
                 <div id="orderDetails-content"></div>
                 <div class="d-flex justify-content-end mt-3">
-                    <button class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#orderModal" id="edit-button" >Edytuj</button>
                     <button class="btn btn-info me-2" onclick="printOrder()">Drukuj</button>
                 </div>
             </div>
@@ -369,7 +362,6 @@
     let currentOrderId = null;
     let selectedCustomerId = null;
     let currentOrderPrice = 0;
-    let allOrders = [];
 
     function showSection(sectionId) {
         document.querySelectorAll('section').forEach(section => {
@@ -567,86 +559,31 @@
             const response = await fetch(`${API_URL}/orders`);
             if (!response.ok) throw new Error('Nie udało się załadować zamówień.');
             const data = await response.json();
-            allOrders = data.content;
-            filterOrders('all');
+            const orders = data.content;
+            const tableBody = document.getElementById('orders-table');
+            tableBody.innerHTML = '';
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                let rowClass = '';
+                if (order.status === 'NEW') rowClass = 'table-new-order';
+                if (order.status === 'SHIPPED') rowClass = 'table-shipped-order';
+                if (order.status === 'CANCELLED') rowClass = 'table-cancelled-order';
+                row.className = rowClass;
+                row.innerHTML = `
+                    <td>${order.date}</td>
+                    <td>${order.price.toFixed(2)} PLN</td>
+                    <td>${order.status}</td>
+                    <td>${order.customer ? order.customer.firstName + ' ' + order.customer.lastName : 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info me-2" onclick="showOrderDetails('${order.id}')">Szczegóły</button>
+                        <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="prepareOrderForm('edit', '${order.id}')">Edytuj</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteOrder('${order.id}')">Usuń</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
         } catch (error) {
             console.error('Błąd podczas ładowania zamówień:', error);
-        }
-    }
-
-    function renderOrdersTable(ordersToDisplay) {
-        const tableBody = document.getElementById('orders-table');
-        tableBody.innerHTML = '';
-        ordersToDisplay.forEach(order => {
-            const row = document.createElement('tr');
-            let rowClass = '';
-            if (order.status === 'NEW') rowClass = 'table-new-order';
-            if (order.status === 'SHIPPED') rowClass = 'table-shipped-order';
-            if (order.status === 'CANCELLED') rowClass = 'table-cancelled-order';
-            row.className = rowClass;
-            row.innerHTML = `
-                <td>${order.date}</td>
-                <td>${order.price.toFixed(2)} PLN</td>
-                <td>${order.status}</td>
-                <td>${order.customer ? order.customer.firstName + ' ' + order.customer.lastName : 'N/A'}</td>
-                <td>
-                    <button class="btn btn-sm btn-info me-2" onclick="showOrderDetails('${order.id}')">Szczegóły</button>
-                    <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="prepareOrderForm('edit', '${order.id}')">Edytuj</button>
-                    ${order.status === 'NEW' ? `<button class="btn btn-sm btn-danger me-2" onclick="cancelOrder('${order.id}')">Anuluj</button>` : ''}
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
-
-    function filterOrders(status, event) {
-        if (event) {
-            document.querySelectorAll('.btn-outline-dark, .btn-outline-success, .btn-outline-warning, .btn-outline-info, .btn-outline-primary, .btn-outline-secondary, .btn-outline-danger').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-
-        let ordersToDisplay = [];
-        if (status === 'all') {
-            ordersToDisplay = allOrders;
-        } else {
-            ordersToDisplay = allOrders.filter(order => order.status === status);
-        }
-        renderOrdersTable(ordersToDisplay);
-    }
-
-    async function cancelOrder(id) {
-        if (!confirm('Czy na pewno chcesz anulować to zamówienie?')) return;
-
-        try {
-            const orderToCancel = allOrders.find(order => order.id === id);
-            if (!orderToCancel) {
-                throw new Error('Zamówienie nie znaleziono.');
-            }
-
-            const updatedOrder = {
-                ...orderToCancel,
-                status: 'CANCELLED'
-            };
-
-            const response = await fetch(`${API_URL}/orders/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedOrder)
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'Nie udało się anulować zamówienia.');
-            }
-
-            await loadOrders();
-            alert('Zamówienie zostało pomyślnie anulowane!');
-
-        } catch (error) {
-            console.error('Błąd podczas anulowania zamówienia:', error);
-            alert('Wystąpił błąd podczas anulowania zamówienia: ' + error.message);
         }
     }
 
@@ -683,11 +620,8 @@
                 throw new Error(errorText || 'Nie udało się zapisać zamówienia.');
             }
 
-            // Poprawka: Usunięcie automatycznego wywoływania showOrderDetails
-            // const savedOrder = await response.json();
-            bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
             await loadOrders();
-            // showOrderDetails(savedOrder.id);
+            bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
         } catch (error) {
             console.error('Błąd podczas zapisywania zamówienia:', error);
             alert('Wystąpił błąd podczas zapisywania zamówienia: ' + error.message);
@@ -923,10 +857,7 @@
             if (!response.ok) throw new Error('Nie udało się załadować szczegółów zamówienia.');
             const order = await response.json();
 
-            // Ustawienie onclick dla przycisku edycji
-            document.getElementById('edit-button').onclick = function() {
-                prepareOrderForm('edit', order.id);
-            };
+            // Poprawiona logika dla wyświetlania statusu odbioru osobistego
             const selfCollectionStatus = order.selfCollection ? 'Tak' : 'Nie';
 
             let detailsHtml = `
@@ -975,9 +906,6 @@
             detailsHtml += `
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-end mt-3">
-                    <h5>Całkowita cena produktów: <span id="details-order-total-price">${order.price.toFixed(2)}</span> PLN</h5>
-                </div>
             `;
 
             document.getElementById('orderDetails-content').innerHTML = detailsHtml;

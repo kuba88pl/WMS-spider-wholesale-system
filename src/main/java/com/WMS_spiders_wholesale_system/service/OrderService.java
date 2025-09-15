@@ -44,15 +44,20 @@ public class OrderService {
         newOrder.setDate(LocalDate.now());
         newOrder.setStatus(OrderStatus.NEW);
         newOrder.setShipmentNumber(orderDTO.getShipmentNumber());
-        if (orderDTO.getCourierCompany() != null && !orderDTO.getCourierCompany().isBlank()) {
-            try {
-                newOrder.setCourierCompany(CourierCompany.valueOf(orderDTO.getCourierCompany().toUpperCase()));
-                newOrder.setSelfCollection(false);
-            } catch (IllegalArgumentException e) {
-                throw new RuntimeException("Invalid courierCompany: " + orderDTO.getCourierCompany());
-            }
+        if (orderDTO.getSelfCollection() != null && orderDTO.getSelfCollection()) {
+            newOrder.setSelfCollection(true);
+            newOrder.setCourierCompany(CourierCompany.valueOf(orderDTO.getCourierCompany().toUpperCase()));
+            newOrder.setShipmentNumber("Brak danych");
         } else {
-            newOrder.setCourierCompany(null);
+//        if (orderDTO.getCourierCompany() != null && !orderDTO.getCourierCompany().isBlank()) {
+//            try {
+//                newOrder.setCourierCompany(CourierCompany.valueOf(orderDTO.getCourierCompany().toUpperCase()));
+//                newOrder.setSelfCollection(false);
+//            } catch (IllegalArgumentException e) {
+//                throw new RuntimeException("Invalid courierCompany: " + orderDTO.getCourierCompany());
+//            }
+//        } else {
+            newOrder.setCourierCompany(CourierCompany.DPD);
             newOrder.setSelfCollection(false);
         }
 
