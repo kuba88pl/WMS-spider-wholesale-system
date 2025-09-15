@@ -49,18 +49,9 @@ public class OrderService {
             newOrder.setCourierCompany(CourierCompany.valueOf(orderDTO.getCourierCompany().toUpperCase()));
             newOrder.setShipmentNumber("Brak danych");
         } else {
-//        if (orderDTO.getCourierCompany() != null && !orderDTO.getCourierCompany().isBlank()) {
-//            try {
-//                newOrder.setCourierCompany(CourierCompany.valueOf(orderDTO.getCourierCompany().toUpperCase()));
-//                newOrder.setSelfCollection(false);
-//            } catch (IllegalArgumentException e) {
-//                throw new RuntimeException("Invalid courierCompany: " + orderDTO.getCourierCompany());
-//            }
-//        } else {
             newOrder.setCourierCompany(CourierCompany.DPD);
             newOrder.setSelfCollection(false);
         }
-
 
         List<OrderedSpider> orderedSpiders = orderDTO.getOrderedSpiders().stream()
                 .map(itemDTO -> {
@@ -87,13 +78,17 @@ public class OrderService {
 
         newOrder.setOrderedSpiders(orderedSpiders);
 
-        double totalPrice = orderedSpiders.stream()
-                .mapToDouble(os -> os.getSpider().getPrice() * os.getQuantity())
-                .sum();
-        newOrder.setPrice(totalPrice);
+        // Dodano obsługę ceny z frontendu
+        if (orderDTO.getPrice() != null) {
+            newOrder.setPrice(orderDTO.getPrice());
+        } else {
+            double totalPrice = orderedSpiders.stream()
+                    .mapToDouble(os -> os.getSpider().getPrice() * os.getQuantity())
+                    .sum();
+            newOrder.setPrice(totalPrice);
+        }
 
         Order savedOrder = orderRepository.save(newOrder);
-
         return savedOrder;
     }
 
@@ -166,10 +161,15 @@ public class OrderService {
             existingOrder.getOrderedSpiders().addAll(updatedSpiders);
         }
 
-        double totalPrice = existingOrder.getOrderedSpiders().stream()
-                .mapToDouble(os -> os.getSpider().getPrice() * os.getQuantity())
-                .sum();
-        existingOrder.setPrice(totalPrice);
+        // Dodano obsługę ceny z frontendu
+        if (orderDTO.getPrice() != null) {
+            existingOrder.setPrice(orderDTO.getPrice());
+        } else {
+            double totalPrice = existingOrder.getOrderedSpiders().stream()
+                    .mapToDouble(os -> os.getSpider().getPrice() * os.getQuantity())
+                    .sum();
+            existingOrder.setPrice(totalPrice);
+        }
 
         return orderRepository.save(existingOrder);
     }

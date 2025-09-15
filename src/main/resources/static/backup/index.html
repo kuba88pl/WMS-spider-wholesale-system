@@ -91,6 +91,7 @@
         <table class="table table-striped table-bordered">
             <thead>
             <tr>
+                <th>Rodzaj</th>
                 <th>Nazwa gatunku</th>
                 <th>Ilość</th>
                 <th>Cena</th>
@@ -111,7 +112,10 @@
         <div class="d-flex mb-3">
             <button class="btn btn-outline-dark me-2 active" onclick="filterOrders('all', event)">Wszystkie</button>
             <button class="btn btn-outline-success me-2" onclick="filterOrders('NEW', event)">Nowe</button>
-            <button class="btn btn-outline-info me-2" onclick="filterOrders('SHIPPED', event)">Wysłane</button>
+            <button class="btn btn-outline-warning me-2" onclick="filterOrders('PENDING', event)">Oczekujące</button>
+            <button class="btn btn-outline-info me-2" onclick="filterOrders('IN_PROGRESS', event)">W trakcie</button>
+            <button class="btn btn-outline-primary me-2" onclick="filterOrders('SHIPPED', event)">Wysłane</button>
+            <button class="btn btn-outline-secondary me-2" onclick="filterOrders('COMPLETED', event)">Zakończone</button>
             <button class="btn btn-outline-danger me-2" onclick="filterOrders('CANCELLED', event)">Anulowane</button>
         </div>
         <table class="table table-hover table-bordered">
@@ -291,6 +295,10 @@
                             <div class="d-flex justify-content-end align-items-center mt-3">
                                 <h5>Suma całkowita: <span id="order-total-price">0.00</span> PLN</h5>
                             </div>
+                            <div class="d-flex justify-content-end align-items-center mt-3">
+                                <label for="order-price" class="form-label me-2">Nowa cena zamówienia</label>
+                                <input type="number" class="form-control w-25" id="order-price" step="0.01" min="0">
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-4">
@@ -301,13 +309,12 @@
                                     <label for="order-status" class="form-label">Status zamówienia</label>
                                     <select class="form-select" id="order-status">
                                         <option value="NEW">NOWE</option>
+                                        <option value="PENDING">OCZEKUJĄCE</option>
+                                        <option value="IN_PROGRESS">W TRAKCIE</option>
                                         <option value="SHIPPED">WYSŁANE</option>
+                                        <option value="COMPLETED">ZAKOŃCZONE</option>
                                         <option value="CANCELLED">ANULOWANE</option>
                                     </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="order-shipmentNumber" class="form-label">Numer przesyłki</label>
-                                    <input type="text" class="form-control" id="order-shipmentNumber">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="order-courierCompany" class="form-label">Firma kurierska</label>
@@ -318,6 +325,10 @@
                                         <option value="UPS">UPS</option>
                                         <option value="GLS">GLS</option>
                                     </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="order-shipmentNumber" class="form-label">Numer przesyłki</label>
+                                    <input type="text" class="form-control" id="order-shipmentNumber">
                                 </div>
                                 <div class="col-md-6 mb-3 form-check d-flex align-items-center mt-4">
                                     <input type="checkbox" class="form-check-input" id="order-selfCollection">
@@ -346,6 +357,7 @@
             <div class="modal-body">
                 <div id="orderDetails-content"></div>
                 <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#orderModal" id="edit-button" >Edytuj</button>
                     <button class="btn btn-info me-2" onclick="printOrder()">Drukuj</button>
                 </div>
             </div>
@@ -362,6 +374,7 @@
     let currentOrderId = null;
     let selectedCustomerId = null;
     let currentOrderPrice = 0;
+    let allOrders = [];
 
     function showSection(sectionId) {
         document.querySelectorAll('section').forEach(section => {
@@ -480,6 +493,7 @@
             spiders.forEach(spider => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
+                    <td>${spider.typeName}</td>
                     <td>${spider.speciesName}</td>
                     <td>${spider.quantity}</td>
                     <td>${spider.price.toFixed(2)} PLN</td>
@@ -559,31 +573,85 @@
             const response = await fetch(`${API_URL}/orders`);
             if (!response.ok) throw new Error('Nie udało się załadować zamówień.');
             const data = await response.json();
-            const orders = data.content;
-            const tableBody = document.getElementById('orders-table');
-            tableBody.innerHTML = '';
-            orders.forEach(order => {
-                const row = document.createElement('tr');
-                let rowClass = '';
-                if (order.status === 'NEW') rowClass = 'table-new-order';
-                if (order.status === 'SHIPPED') rowClass = 'table-shipped-order';
-                if (order.status === 'CANCELLED') rowClass = 'table-cancelled-order';
-                row.className = rowClass;
-                row.innerHTML = `
-                    <td>${order.date}</td>
-                    <td>${order.price.toFixed(2)} PLN</td>
-                    <td>${order.status}</td>
-                    <td>${order.customer ? order.customer.firstName + ' ' + order.customer.lastName : 'N/A'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-info me-2" onclick="showOrderDetails('${order.id}')">Szczegóły</button>
-                        <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="prepareOrderForm('edit', '${order.id}')">Edytuj</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteOrder('${order.id}')">Usuń</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
+            allOrders = data.content;
+            filterOrders('all');
         } catch (error) {
             console.error('Błąd podczas ładowania zamówień:', error);
+        }
+    }
+
+    function renderOrdersTable(ordersToDisplay) {
+        const tableBody = document.getElementById('orders-table');
+        tableBody.innerHTML = '';
+        ordersToDisplay.forEach(order => {
+            const row = document.createElement('tr');
+            let rowClass = '';
+            if (order.status === 'NEW') rowClass = 'table-new-order';
+            if (order.status === 'SHIPPED') rowClass = 'table-shipped-order';
+            if (order.status === 'CANCELLED') rowClass = 'table-cancelled-order';
+            row.className = rowClass;
+            row.innerHTML = `
+                <td>${order.date}</td>
+                <td>${order.price.toFixed(2)} PLN</td>
+                <td>${order.status}</td>
+                <td>${order.customer ? order.customer.firstName + ' ' + order.customer.lastName : 'N/A'}</td>
+                <td>
+                    <button class="btn btn-sm btn-info me-2" onclick="showOrderDetails('${order.id}')">Szczegóły</button>
+                    <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#orderModal" onclick="prepareOrderForm('edit', '${order.id}')">Edytuj</button>
+                    ${order.status === 'NEW' ? `<button class="btn btn-sm btn-danger me-2" onclick="cancelOrder('${order.id}')">Anuluj</button>` : ''}
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function filterOrders(status, event) {
+        if (event) {
+            document.querySelectorAll('.btn-outline-dark, .btn-outline-success, .btn-outline-warning, .btn-outline-info, .btn-outline-primary, .btn-outline-secondary, .btn-outline-danger').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        let ordersToDisplay = [];
+        if (status === 'all') {
+            ordersToDisplay = allOrders;
+        } else {
+            ordersToDisplay = allOrders.filter(order => order.status === status);
+        }
+        renderOrdersTable(ordersToDisplay);
+    }
+
+    async function cancelOrder(id) {
+        if (!confirm('Czy na pewno chcesz anulować to zamówienie?')) return;
+
+        try {
+            const orderToCancel = allOrders.find(order => order.id === id);
+            if (!orderToCancel) {
+                throw new Error('Zamówienie nie znaleziono.');
+            }
+
+            const updatedOrder = {
+                ...orderToCancel,
+                status: 'CANCELLED'
+            };
+
+            const response = await fetch(`${API_URL}/orders/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedOrder)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Nie udało się anulować zamówienia.');
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
+            await loadOrders();
+        } catch (error) {
+            console.error('Błąd podczas anulowania zamówienia:', error);
+            alert('Wystąpił błąd podczas anulowania zamówienia: ' + error.message);
         }
     }
 
@@ -592,6 +660,9 @@
             alert('Musisz wybrać klienta, aby utworzyć zamówienie.');
             return;
         }
+
+        const priceInput = document.getElementById('order-price').value;
+        const orderPrice = priceInput ? parseFloat(priceInput) : null;
 
         const orderDTO = {
             id: currentOrderId,
@@ -604,6 +675,7 @@
             shipmentNumber: document.getElementById('order-shipmentNumber').value,
             courierCompany: document.getElementById('order-courierCompany').value,
             selfCollection: document.getElementById('order-selfCollection').checked,
+            price: orderPrice
         };
 
         try {
@@ -620,8 +692,8 @@
                 throw new Error(errorText || 'Nie udało się zapisać zamówienia.');
             }
 
-            await loadOrders();
             bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
+            await loadOrders();
         } catch (error) {
             console.error('Błąd podczas zapisywania zamówienia:', error);
             alert('Wystąpił błąd podczas zapisywania zamówienia: ' + error.message);
@@ -642,6 +714,7 @@
             document.getElementById('order-shipmentNumber').value = '';
             document.getElementById('order-courierCompany').value = 'DPD';
             document.getElementById('order-selfCollection').checked = false;
+            document.getElementById('order-price').value = '';
             loadCustomersForOrder();
             loadSpidersForOrder();
         } else if (mode === 'edit' && id) {
@@ -795,6 +868,7 @@
             tableBody.appendChild(row);
         });
         document.getElementById('order-total-price').textContent = currentOrderPrice.toFixed(2);
+        document.getElementById('order-price').value = currentOrderPrice.toFixed(2);
     }
 
     async function loadOrderDataForEdit(orderId) {
@@ -808,6 +882,7 @@
             document.getElementById('order-shipmentNumber').value = order.shipmentNumber;
             document.getElementById('order-courierCompany').value = order.courierCompany;
             document.getElementById('order-selfCollection').checked = order.selfCollection;
+            document.getElementById('order-price').value = order.price.toFixed(2);
 
             // Select customer
             selectedCustomerId = order.customer.id;
@@ -857,7 +932,10 @@
             if (!response.ok) throw new Error('Nie udało się załadować szczegółów zamówienia.');
             const order = await response.json();
 
-            // Poprawiona logika dla wyświetlania statusu odbioru osobistego
+            // Ustawienie onclick dla przycisku edycji
+            document.getElementById('edit-button').onclick = function() {
+                prepareOrderForm('edit', order.id);
+            };
             const selfCollectionStatus = order.selfCollection ? 'Tak' : 'Nie';
 
             let detailsHtml = `
@@ -870,7 +948,7 @@
                 <p><strong>Imię i nazwisko:</strong> ${order.customer.firstName} ${order.customer.lastName}</p>
                 <p><strong>E-mail:</strong> ${order.customer.email}</p>
                 <p><strong>Adres:</strong> ${order.customer.address}</p>
-                <p><strong>Paczkomat:</strong> ${order.customer.parcelLocker ? order.customer.parcelLocker : 'N/A'}</p>
+                <p><strong>Paczkomat:</strong> ${order.parcelLocker ? order.parcelLocker : 'N/A'}</p>
                 <hr>
                 <h6>Dane przesyłki:</h6>
                 <p><strong>Firma kurierska:</strong> ${order.courierCompany}</p>
@@ -906,6 +984,9 @@
             detailsHtml += `
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-end mt-3">
+                    <h5>Całkowita cena produktów: <span id="details-order-total-price">${order.price.toFixed(2)}</span> PLN</h5>
+                </div>
             `;
 
             document.getElementById('orderDetails-content').innerHTML = detailsHtml;
