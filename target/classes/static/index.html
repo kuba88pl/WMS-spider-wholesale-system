@@ -30,6 +30,16 @@
                 left: auto !important;
                 margin: 0 !important;
             }
+            /* Nowe reguły do druku */
+            #orderDetailsModal .btn {
+                display: none !important;
+            }
+            #orderDetailsModal .modal-body,
+            #orderDetailsModal h5,
+            #orderDetailsModal p,
+            #orderDetailsModal table {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -112,6 +122,8 @@
             <tr>
                 <th>Rodzaj</th>
                 <th>Nazwa gatunku</th>
+                <th>Płeć</th>
+                <th>Rozmiar</th>
                 <th>Ilość</th>
                 <th>Cena</th>
                 <th>CITES</th>
@@ -216,6 +228,14 @@
                         <input type="text" class="form-control" id="spider-speciesName" required>
                     </div>
                     <div class="mb-3">
+                        <label for="spider-gender" class="form-label">Płeć</label>
+                        <select class="form-select" id="spider-gender">
+                            <option value="MALE">MALE</option>
+                            <option value="FEMALE">FEMALE</option>
+                            <option value="NS">NS</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="spider-quantity" class="form-label">Ilość</label>
                         <input type="number" class="form-control" id="spider-quantity" required>
                     </div>
@@ -277,16 +297,16 @@
                             <h4>Pająki dostępne do zamówienia</h4>
                             <div class="d-flex mb-3">
                                 <div class="me-2">
-                                    <label for="order-filter-type" class="form-label">Rodzaj</label>
-                                    <select class="form-select" id="order-filter-type" onchange="loadSpidersForOrder()"></select>
+                                    <label for="filter-type-order" class="form-label">Filtruj po rodzaju</label>
+                                    <select class="form-select" id="filter-type-order" onchange="filterSpidersForOrder()"></select>
                                 </div>
                                 <div class="me-2">
-                                    <label for="order-filter-species" class="form-label">Gatunek</label>
-                                    <select class="form-select" id="order-filter-species" onchange="loadSpidersForOrder()"></select>
+                                    <label for="filter-species-order" class="form-label">Filtruj po gatunku</label>
+                                    <select class="form-select" id="filter-species-order" onchange="filterSpidersForOrder()"></select>
                                 </div>
                                 <div class="me-2">
-                                    <label for="order-filter-gender" class="form-label">Płeć</label>
-                                    <select class="form-select" id="order-filter-gender" onchange="loadSpidersForOrder()">
+                                    <label for="filter-gender-order" class="form-label">Filtruj po płci</label>
+                                    <select class="form-select" id="filter-gender-order" onchange="filterSpidersForOrder()">
                                         <option value="">Wszystkie</option>
                                         <option value="MALE">MALE</option>
                                         <option value="FEMALE">FEMALE</option>
@@ -300,6 +320,8 @@
                                     <tr>
                                         <th>Rodzaj</th>
                                         <th>Gatunek</th>
+                                        <th>Płeć</th>
+                                        <th>Rozmiar</th>
                                         <th>Ilość dostępna</th>
                                         <th>Cena</th>
                                         <th>Akcje</th>
@@ -317,6 +339,8 @@
                                 <tr>
                                     <th>Rodzaj</th>
                                     <th>Gatunek</th>
+                                    <th>Płeć</th>
+                                    <th>Rozmiar</th>
                                     <th>Ilość</th>
                                     <th>Cena</th>
                                     <th>Suma</th>
@@ -403,8 +427,8 @@
 <script>
     const API_URL = 'http://localhost:8080/api';
     let customers = [];
-    let allSpiders = [];
-    let currentSpiders = [];
+    let allSpiders = []; // Zmieniono nazwę na allSpiders
+    let currentSpiders = []; // Spiders to display in the main table
     let orderedSpiders = [];
     let currentOrderId = null;
     let selectedCustomerId = null;
@@ -526,22 +550,50 @@
             const response = await fetch(`${API_URL}/spiders?size=100`);
             if (!response.ok) throw new Error('Nie udało się załadować pająków.');
             const data = await response.json();
-            allSpiders = data.content; // Zapisujemy wszystkie pająki
-            populateSpiderFilters('filter-species', 'filter-type'); // Uaktualniamy filtry
-            filterSpiders(); // Filtrujemy i renderujemy po załadowaniu
+            allSpiders = data.content;
+            populateSpiderFilters();
+            filterSpiders(); // Initial render with all spiders
         } catch (error) {
             console.error('Błąd podczas ładowania pająków:', error);
         }
     }
 
-    function renderSpidersTable(spidersToDisplay) {
+    function populateSpiderFilters() {
+        const types = [...new Set(allSpiders.map(spider => spider.typeName))];
+        const species = [...new Set(allSpiders.map(spider => spider.speciesName))];
+
+        const typeSelect = document.getElementById('filter-type');
+        const speciesSelect = document.getElementById('filter-species');
+
+        typeSelect.innerHTML = '<option value="">Wszystkie</option>' + types.map(type => `<option value="${type}">${type}</option>`).join('');
+        speciesSelect.innerHTML = '<option value="">Wszystkie</option>' + species.map(species => `<option value="${species}">${species}</option>`).join('');
+    }
+
+    function filterSpiders() {
+        const selectedType = document.getElementById('filter-type').value;
+        const selectedSpecies = document.getElementById('filter-species').value;
+        const selectedGender = document.getElementById('filter-gender').value;
+
+        currentSpiders = allSpiders.filter(spider => {
+            const matchesType = !selectedType || spider.typeName === selectedType;
+            const matchesSpecies = !selectedSpecies || spider.speciesName === selectedSpecies;
+            const matchesGender = !selectedGender || spider.gender === selectedGender;
+            return matchesType && matchesSpecies && matchesGender;
+        });
+
+        renderSpidersTable(currentSpiders);
+    }
+
+    function renderSpidersTable(spidersToRender) {
         const tableBody = document.getElementById('spiders-table');
         tableBody.innerHTML = '';
-        spidersToDisplay.forEach(spider => {
+        spidersToRender.forEach(spider => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${spider.typeName}</td>
                 <td>${spider.speciesName}</td>
+                <td>${spider.gender}</td>
+                <td>${spider.size}</td>
                 <td>${spider.quantity}</td>
                 <td>${spider.price.toFixed(2)} PLN</td>
                 <td>${spider.cites ? 'Tak' : 'Nie'}</td>
@@ -554,64 +606,23 @@
         });
     }
 
-    function populateSpiderFilters(speciesFilterId, typeFilterId) {
-        const speciesSelect = document.getElementById(speciesFilterId);
-        const typeSelect = document.getElementById(typeFilterId);
-
-        // Wyczyszczenie istniejących opcji
-        speciesSelect.innerHTML = '<option value="">Wszystkie</option>';
-        typeSelect.innerHTML = '<option value="">Wszystkie</option>';
-
-        // Zbieranie unikalnych wartości
-        const uniqueSpecies = [...new Set(allSpiders.map(s => s.speciesName))].sort();
-        const uniqueTypes = [...new Set(allSpiders.map(s => s.typeName))].sort();
-
-        // Dodawanie opcji do list
-        uniqueSpecies.forEach(species => {
-            const option = document.createElement('option');
-            option.value = species;
-            option.textContent = species;
-            speciesSelect.appendChild(option);
-        });
-
-        uniqueTypes.forEach(type => {
-            const option = document.createElement('option');
-            option.value = type;
-            option.textContent = type;
-            typeSelect.appendChild(option);
-        });
-    }
-
-    function filterSpiders() {
-        const speciesFilter = document.getElementById('filter-species').value.toLowerCase();
-        const typeFilter = document.getElementById('filter-type').value.toLowerCase();
-        const genderFilter = document.getElementById('filter-gender').value.toLowerCase();
-
-        const filtered = allSpiders.filter(spider => {
-            const matchesSpecies = speciesFilter === '' || spider.speciesName.toLowerCase() === speciesFilter;
-            const matchesType = typeFilter === '' || spider.typeName.toLowerCase() === typeFilter;
-            const matchesGender = genderFilter === '' || (spider.gender && spider.gender.toLowerCase() === genderFilter);
-            return matchesSpecies && matchesType && matchesGender;
-        });
-
-        currentSpiders = [...filtered];
-        renderSpidersTable(currentSpiders);
-    }
-
     async function saveSpider() {
         const id = document.getElementById('spider-id').value;
         const spider = {
             id: id,
             typeName: document.getElementById('spider-typeName').value,
             speciesName: document.getElementById('spider-speciesName').value,
+            gender: document.getElementById('spider-gender').value,
             quantity: parseInt(document.getElementById('spider-quantity').value),
             size: document.getElementById('spider-size').value,
             price: parseFloat(document.getElementById('spider-price').value),
         };
 
         try {
-            const response = await fetch(`${API_URL}/spiders`, {
-                method: 'POST',
+            const url = id ? `${API_URL}/spiders/${id}` : `${API_URL}/spiders`;
+            const method = id ? 'PUT' : 'POST';
+            const response = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(spider)
             });
@@ -633,6 +644,7 @@
                 document.getElementById('spider-id').value = spider.id;
                 document.getElementById('spider-typeName').value = spider.typeName;
                 document.getElementById('spider-speciesName').value = spider.speciesName;
+                document.getElementById('spider-gender').value = spider.gender;
                 document.getElementById('spider-quantity').value = spider.quantity;
                 document.getElementById('spider-size').value = spider.size;
                 document.getElementById('spider-price').value = spider.price;
@@ -859,43 +871,64 @@
             const response = await fetch(`${API_URL}/spiders?size=100`);
             if (!response.ok) throw new Error('Nie udało się załadować pająków.');
             const data = await response.json();
-            allSpiders = data.content; // Zapisujemy wszystkie pająki
+            // Resetuj allSpiders i orderedSpiders, aby mieć świeże dane
+            allSpiders = data.content;
+            orderedSpiders = [];
 
-            // Uaktualniamy filtry w modalnym oknie
-            populateSpiderFilters('order-filter-species', 'order-filter-type');
+            // Populate filters
+            populateOrderSpiderFilters();
 
-            const speciesFilter = document.getElementById('order-filter-species').value.toLowerCase();
-            const typeFilter = document.getElementById('order-filter-type').value.toLowerCase();
-            const genderFilter = document.getElementById('order-filter-gender').value.toLowerCase();
+            // Render the initial table
+            filterSpidersForOrder();
 
-            const filteredSpiders = allSpiders.filter(spider => {
-                const matchesSpecies = speciesFilter === '' || spider.speciesName.toLowerCase() === speciesFilter;
-                const matchesType = typeFilter === '' || spider.typeName.toLowerCase() === typeFilter;
-                const matchesGender = genderFilter === '' || (spider.gender && spider.gender.toLowerCase() === genderFilter);
-                return matchesSpecies && matchesType && matchesGender;
-            });
-
-            const spidersTable = document.getElementById('spider-selection-table');
-            spidersTable.innerHTML = '';
-            filteredSpiders.forEach(spider => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                        <td>${spider.typeName}</td>
-                        <td>${spider.speciesName}</td>
-                        <td>${spider.quantity}</td>
-                        <td>${spider.price.toFixed(2)} PLN</td>
-                        <td>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control" value="1" style="width: 60px;">
-                                <button class="btn btn-sm btn-primary" type="button" onclick="addSpiderToOrder('${spider.id}')">Dodaj</button>
-                            </div>
-                        </td>
-                    `;
-                spidersTable.appendChild(row);
-            });
         } catch (error) {
             console.error('Błąd podczas ładowania pająków:', error);
         }
+    }
+
+    function populateOrderSpiderFilters() {
+        const types = [...new Set(allSpiders.map(spider => spider.typeName))];
+        const species = [...new Set(allSpiders.map(spider => spider.speciesName))];
+
+        const typeSelect = document.getElementById('filter-type-order');
+        const speciesSelect = document.getElementById('filter-species-order');
+
+        typeSelect.innerHTML = '<option value="">Wszystkie</option>' + types.map(type => `<option value="${type}">${type}</option>`).join('');
+        speciesSelect.innerHTML = '<option value="">Wszystkie</option>' + species.map(species => `<option value="${species}">${species}</option>`).join('');
+    }
+
+    function filterSpidersForOrder() {
+        const selectedType = document.getElementById('filter-type-order').value;
+        const selectedSpecies = document.getElementById('filter-species-order').value;
+        const selectedGender = document.getElementById('filter-gender-order').value;
+
+        const spidersToDisplay = allSpiders.filter(spider => {
+            const matchesType = !selectedType || spider.typeName === selectedType;
+            const matchesSpecies = !selectedSpecies || spider.speciesName === selectedSpecies;
+            const matchesGender = !selectedGender || spider.gender === selectedGender;
+            return matchesType && matchesSpecies && matchesGender;
+        });
+
+        const spidersTable = document.getElementById('spider-selection-table');
+        spidersTable.innerHTML = '';
+        spidersToDisplay.forEach(spider => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${spider.typeName}</td>
+                <td>${spider.speciesName}</td>
+                <td>${spider.gender}</td>
+                <td>${spider.size}</td>
+                <td>${spider.quantity}</td>
+                <td>${spider.price.toFixed(2)} PLN</td>
+                <td>
+                    <div class="input-group input-group-sm">
+                        <input type="number" class="form-control" value="1" style="width: 60px;">
+                        <button class="btn btn-sm btn-primary" type="button" onclick="addSpiderToOrder('${spider.id}')">Dodaj</button>
+                    </div>
+                </td>
+            `;
+            spidersTable.appendChild(row);
+        });
     }
 
     function addSpiderToOrder(spiderId) {
@@ -924,7 +957,7 @@
 
         // update available quantity
         spider.quantity -= quantity;
-        selectedRow.querySelector('td:nth-child(3)').textContent = spider.quantity;
+        selectedRow.querySelector('td:nth-child(5)').textContent = spider.quantity;
         quantityInput.value = 1;
 
         renderOrderedSpidersTable();
@@ -939,9 +972,10 @@
             const originalSpider = allSpiders.find(s => s.id === spiderId);
             if (originalSpider) {
                 originalSpider.quantity += removedSpider.quantity;
+                // Update the quantity in the add table
                 const spiderRow = document.querySelector(`#spider-selection-table button[onclick*="${spiderId}"]`).closest('tr');
                 if (spiderRow) {
-                    spiderRow.querySelector('td:nth-child(3)').textContent = originalSpider.quantity;
+                    spiderRow.querySelector('td:nth-child(5)').textContent = originalSpider.quantity;
                 }
             }
             renderOrderedSpidersTable();
@@ -959,6 +993,8 @@
             row.innerHTML = `
                 <td>${os.spider.typeName}</td>
                 <td>${os.spider.speciesName}</td>
+                <td>${os.spider.gender}</td>
+                <td>${os.spider.size}</td>
                 <td>${os.quantity}</td>
                 <td>${os.spider.price.toFixed(2)} PLN</td>
                 <td>${totalItemPrice.toFixed(2)} PLN</td>
@@ -978,6 +1014,12 @@
             if (!response.ok) throw new Error('Nie udało się załadować danych zamówienia.');
             const order = await response.json();
 
+            // Ustawienie onclick dla przycisku edycji
+            document.getElementById('edit-button').onclick = function() {
+                prepareOrderForm('edit', order.id);
+            };
+            const selfCollectionStatus = order.selfCollection ? 'Tak' : 'Nie';
+
             // Set order details
             document.getElementById('order-status').value = order.status;
             document.getElementById('order-shipmentNumber').value = order.shipmentNumber;
@@ -989,15 +1031,18 @@
             selectedCustomerId = order.customer.id;
             selectCustomer(null, selectedCustomerId);
 
+            // Fetch all spiders to get a fresh list
+            const spidersResponse = await fetch(`${API_URL}/spiders?size=100`);
+            if (!spidersResponse.ok) throw new Error('Nie udało się załadować danych pająków.');
+            allSpiders = (await spidersResponse.json()).content;
+
             // Load ordered spiders and update available quantities
             orderedSpiders = order.orderedSpiders.map(os => {
                 const spider = allSpiders.find(s => s.id === os.spiderId);
                 if (spider) {
-                    const availableSpider = { ...spider };
-                    availableSpider.quantity -= os.quantity;
-                    const spiderRow = document.querySelector(`#spider-selection-table button[onclick*="${spider.id}"]`).closest('tr');
-                    if (spiderRow) {
-                        spiderRow.querySelector('td:nth-child(3)').textContent = availableSpider.quantity;
+                    const availableSpider = allSpiders.find(s => s.id === os.spiderId);
+                    if (availableSpider) {
+                        availableSpider.quantity -= os.quantity;
                     }
                 }
                 return {
@@ -1007,6 +1052,9 @@
                 };
             });
 
+            // Populate filters and render tables
+            populateOrderSpiderFilters();
+            filterSpidersForOrder();
             renderOrderedSpidersTable();
 
         } catch (error) {
@@ -1062,6 +1110,8 @@
                         <tr>
                             <th>Rodzaj</th>
                             <th>Gatunek</th>
+                            <th>Płeć</th>
+                            <th>Rozmiar</th>
                             <th>Ilość</th>
                             <th>Cena jednostkowa</th>
                             <th>Suma</th>
@@ -1075,6 +1125,8 @@
                     <tr>
                         <td>${os.spider.typeName}</td>
                         <td>${os.spider.speciesName}</td>
+                        <td>${os.spider.gender}</td>
+                        <td>${os.spider.size}</td>
                         <td>${os.quantity}</td>
                         <td>${os.spider.price.toFixed(2)} PLN</td>
                         <td>${(os.quantity * os.spider.price).toFixed(2)} PLN</td>
