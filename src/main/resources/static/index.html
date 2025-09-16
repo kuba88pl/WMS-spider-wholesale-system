@@ -89,6 +89,9 @@
             <tbody id="customers-table">
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination justify-content-center" id="customers-pagination"></ul>
+        </nav>
     </section>
 
     <section id="spiders-section" class="mb-5 d-none">
@@ -97,25 +100,6 @@
             <div class="d-flex">
                 <button class="btn btn-danger me-2" onclick="clearAllSpiders()">Usuń wszystkie pająki</button>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#spiderModal" onclick="prepareSpiderForm('add')">Dodaj pająka</button>
-            </div>
-        </div>
-        <div class="d-flex mb-3">
-            <div class="me-2">
-                <label for="filter-type" class="form-label">Filtruj po rodzaju</label>
-                <select class="form-select" id="filter-type" onchange="filterSpiders()"></select>
-            </div>
-            <div class="me-2">
-                <label for="filter-species" class="form-label">Filtruj po gatunku</label>
-                <select class="form-select" id="filter-species" onchange="filterSpiders()"></select>
-            </div>
-            <div class="me-2">
-                <label for="filter-gender" class="form-label">Filtruj po płci</label>
-                <select class="form-select" id="filter-gender" onchange="filterSpiders()">
-                    <option value="">Wszystkie</option>
-                    <option value="MALE">MALE</option>
-                    <option value="FEMALE">FEMALE</option>
-                    <option value="NS">NS</option>
-                </select>
             </div>
         </div>
         <table class="table table-striped table-bordered">
@@ -130,10 +114,40 @@
                 <th>CITES</th>
                 <th>Akcje</th>
             </tr>
+            <tr>
+                <th>
+                    <select class="form-select form-select-sm" id="filter-type" onchange="filterSpiders()"></select>
+                </th>
+                <th>
+                    <select class="form-select form-select-sm" id="filter-species" onchange="filterSpiders()"></select>
+                </th>
+                <th>
+                    <select class="form-select form-select-sm" id="filter-gender" onchange="filterSpiders()">
+                        <option value="">Wszystkie</option>
+                        <option value="MALE">MALE</option>
+                        <option value="FEMALE">FEMALE</option>
+                        <option value="NS">NS</option>
+                    </select>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>
+                    <select class="form-select form-select-sm" id="filter-cites" onchange="filterSpiders()">
+                        <option value="">Wszystkie</option>
+                        <option value="Tak">Tak</option>
+                        <option value="Nie">Nie</option>
+                    </select>
+                </th>
+                <th></th>
+            </tr>
             </thead>
             <tbody id="spiders-table">
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination justify-content-center" id="spiders-pagination"></ul>
+        </nav>
     </section>
 
     <section id="orders-section" class="mb-5 d-none">
@@ -163,6 +177,9 @@
             <tbody id="orders-table">
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination justify-content-center" id="orders-pagination"></ul>
+        </nav>
     </section>
 </div>
 
@@ -436,6 +453,12 @@
     let currentOrderPrice = 0;
     let allOrders = [];
 
+    // Global pagination variables
+    let currentPageCustomers = 0;
+    let currentPageSpiders = 0;
+    let currentPageOrders = 0;
+    const pageSize = 10;
+
     function showSection(sectionId) {
         document.querySelectorAll('section').forEach(section => {
             section.classList.add('d-none');
@@ -446,26 +469,62 @@
         });
         document.querySelector(`a[onclick*="${sectionId}"]`).classList.add('active');
         if (sectionId === 'orders-section') {
-            loadOrders();
+            loadOrders(currentPageOrders);
         }
         if (sectionId === 'customers-section') {
-            loadCustomers();
+            loadCustomers(currentPageCustomers);
         }
         if (sectionId === 'spiders-section') {
-            loadSpiders();
+            loadSpiders(currentPageSpiders);
         }
     }
 
+    // Helper function for rendering pagination
+    function renderPagination(totalElements, totalPages, currentPage, elementId, loadFunction) {
+        const paginationContainer = document.getElementById(elementId);
+        paginationContainer.innerHTML = '';
+
+        if (totalPages <= 1) {
+            return;
+        }
+
+        // Previous button
+        const prevLi = document.createElement('li');
+        prevLi.className = `page-item ${currentPage === 0 ? 'disabled' : ''}`;
+        prevLi.innerHTML = `<a class="page-link" href="#" onclick="${loadFunction}(${currentPage - 1})">Poprzednia</a>`;
+        paginationContainer.appendChild(prevLi);
+
+        // Page number buttons
+        const maxPagesToShow = 5;
+        let startPage = Math.max(0, currentPage - Math.floor(maxPagesToShow / 2));
+        let endPage = Math.min(totalPages - 1, startPage + maxPagesToShow - 1);
+
+        if (endPage - startPage < maxPagesToShow - 1) {
+            startPage = Math.max(0, endPage - maxPagesToShow + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            const pageLi = document.createElement('li');
+            pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            pageLi.innerHTML = `<a class="page-link" href="#" onclick="${loadFunction}(${i})">${i + 1}</a>`;
+            paginationContainer.appendChild(pageLi);
+        }
+
+        // Next button
+        const nextLi = document.createElement('li');
+        nextLi.className = `page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`;
+        nextLi.innerHTML = `<a class="page-link" href="#" onclick="${loadFunction}(${currentPage + 1})">Następna</a>`;
+        paginationContainer.appendChild(nextLi);
+    }
+
     // Customer functions
-    async function loadCustomers() {
+    async function loadCustomers(page = 0) {
+        currentPageCustomers = page;
         try {
-            const response = await fetch(`${API_URL}/customers?size=100`);
+            const response = await fetch(`${API_URL}/customers?page=${page}&size=${pageSize}&sortBy=lastName`);
             if (!response.ok) throw new Error('Nie udało się załadować klientów.');
             const data = await response.json();
             customers = data.content;
-
-            // Sortowanie klientów alfabetycznie po nazwisku
-            customers.sort((a, b) => a.lastName.localeCompare(b.lastName));
 
             const tableBody = document.getElementById('customers-table');
             tableBody.innerHTML = '';
@@ -485,6 +544,7 @@
                 `;
                 tableBody.appendChild(row);
             });
+            renderPagination(data.totalElements, data.totalPages, data.number, 'customers-pagination', 'loadCustomers');
         } catch (error) {
             console.error('Błąd podczas ładowania klientów:', error);
         }
@@ -510,7 +570,7 @@
                 body: JSON.stringify(customer)
             });
             if (!response.ok) throw new Error('Nie udało się zapisać klienta.');
-            await loadCustomers();
+            await loadCustomers(currentPageCustomers);
             bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
         } catch (error) {
             console.error('Błąd podczas zapisywania klienta:', error);
@@ -540,7 +600,7 @@
         try {
             const response = await fetch(`${API_URL}/customers/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Nie udało się usunąć klienta.');
-            await loadCustomers();
+            await loadCustomers(currentPageCustomers);
         } catch (error) {
             console.error('Błąd podczas usuwania klienta:', error);
             alert('Wystąpił błąd podczas usuwania klienta. Upewnij się, że nie ma on aktywnych zamówień.');
@@ -548,14 +608,17 @@
     }
 
     // Spider functions
-    async function loadSpiders() {
+    async function loadSpiders(page = 0) {
+        currentPageSpiders = page;
         try {
-            const response = await fetch(`${API_URL}/spiders?size=100`);
+            const response = await fetch(`${API_URL}/spiders?page=${page}&size=${pageSize}&sortBy=typeName`);
             if (!response.ok) throw new Error('Nie udało się załadować pająków.');
             const data = await response.json();
             allSpiders = data.content;
+
             populateSpiderFilters();
-            filterSpiders(); // Initial render with all spiders
+            filterSpiders();
+            renderPagination(data.totalElements, data.totalPages, data.number, 'spiders-pagination', 'loadSpiders');
         } catch (error) {
             console.error('Błąd podczas ładowania pająków:', error);
         }
@@ -576,12 +639,14 @@
         const selectedType = document.getElementById('filter-type').value;
         const selectedSpecies = document.getElementById('filter-species').value;
         const selectedGender = document.getElementById('filter-gender').value;
+        const selectedCites = document.getElementById('filter-cites').value;
 
         currentSpiders = allSpiders.filter(spider => {
             const matchesType = !selectedType || spider.typeName === selectedType;
             const matchesSpecies = !selectedSpecies || spider.speciesName === selectedSpecies;
             const matchesGender = !selectedGender || spider.gender === selectedGender;
-            return matchesType && matchesSpecies && matchesGender;
+            const matchesCites = !selectedCites || (selectedCites === 'Tak' && spider.cites) || (selectedCites === 'Nie' && !spider.cites);
+            return matchesType && matchesSpecies && matchesGender && matchesCites;
         });
 
         renderSpidersTable(currentSpiders);
@@ -630,7 +695,7 @@
                 body: JSON.stringify(spider)
             });
             if (!response.ok) throw new Error('Nie udało się zapisać pająka.');
-            await loadSpiders();
+            await loadSpiders(currentPageSpiders);
             bootstrap.Modal.getInstance(document.getElementById('spiderModal')).hide();
         } catch (error) {
             console.error('Błąd podczas zapisywania pająka:', error);
@@ -660,7 +725,7 @@
         try {
             const response = await fetch(`${API_URL}/spiders/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Nie udało się usunąć pająka.');
-            await loadSpiders();
+            await loadSpiders(currentPageSpiders);
         } catch (error) {
             console.error('Błąd podczas usuwania pająka:', error);
             alert('Wystąpił błąd podczas usuwania pająka.');
@@ -668,13 +733,20 @@
     }
 
     // Order functions
-    async function loadOrders() {
+    async function loadOrders(page = 0, status = 'all') {
+        currentPageOrders = page;
         try {
-            const response = await fetch(`${API_URL}/orders`);
+            const url = status === 'all'
+                ? `${API_URL}/orders?page=${page}&size=${pageSize}`
+                : `${API_URL}/orders/status/${status}?page=${page}&size=${pageSize}`;
+
+            const response = await fetch(url);
             if (!response.ok) throw new Error('Nie udało się załadować zamówień.');
             const data = await response.json();
             allOrders = data.content;
-            filterOrders('all');
+
+            renderOrdersTable(allOrders);
+            renderPagination(data.totalElements, data.totalPages, data.number, 'orders-pagination', 'loadOrders');
         } catch (error) {
             console.error('Błąd podczas ładowania zamówień:', error);
         }
@@ -712,14 +784,7 @@
             });
             event.target.classList.add('active');
         }
-
-        let ordersToDisplay = [];
-        if (status === 'all') {
-            ordersToDisplay = allOrders;
-        } else {
-            ordersToDisplay = allOrders.filter(order => order.status === status);
-        }
-        renderOrdersTable(ordersToDisplay);
+        loadOrders(0, status);
     }
 
     async function cancelOrder(id) {
@@ -748,7 +813,7 @@
             }
 
             bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
-            await loadOrders();
+            await loadOrders(currentPageOrders);
         } catch (error) {
             console.error('Błąd podczas anulowania zamówienia:', error);
             alert('Wystąpił błąd podczas anulowania zamówienia: ' + error.message);
@@ -793,7 +858,7 @@
             }
 
             bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
-            await loadOrders();
+            await loadOrders(currentPageOrders);
         } catch (error) {
             console.error('Błąd podczas zapisywania zamówienia:', error);
             alert('Wystąpił błąd podczas zapisywania zamówienia: ' + error.message);
@@ -871,17 +936,13 @@
 
     async function loadSpidersForOrder() {
         try {
-            const response = await fetch(`${API_URL}/spiders?size=100`);
+            const response = await fetch(`${API_URL}/spiders?size=100&sortBy=typeName`);
             if (!response.ok) throw new Error('Nie udało się załadować pająków.');
             const data = await response.json();
-            // Resetuj allSpiders i orderedSpiders, aby mieć świeże dane
             allSpiders = data.content;
             orderedSpiders = [];
 
-            // Populate filters
             populateOrderSpiderFilters();
-
-            // Render the initial table
             filterSpidersForOrder();
 
         } catch (error) {
@@ -1035,7 +1096,7 @@
             selectCustomer(null, selectedCustomerId);
 
             // Fetch all spiders to get a fresh list
-            const spidersResponse = await fetch(`${API_URL}/spiders?size=100`);
+            const spidersResponse = await fetch(`${API_URL}/spiders?size=100&sortBy=typeName`);
             if (!spidersResponse.ok) throw new Error('Nie udało się załadować danych pająków.');
             allSpiders = (await spidersResponse.json()).content;
 
@@ -1071,7 +1132,7 @@
         try {
             const response = await fetch(`${API_URL}/orders/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Nie udało się usunąć zamówienia.');
-            await loadOrders();
+            await loadOrders(currentPageOrders);
         } catch (error) {
             console.error('Błąd podczas usuwania zamówienia:', error);
             alert('Wystąpił błąd podczas usuwania zamówienia.');
@@ -1161,15 +1222,15 @@
     async function clearAllCustomers() {
         if (!confirm('Czy na pewno chcesz USUNĄĆ WSZYSTKICH KLIENTÓW?')) return;
         try {
-            const response = await fetch(`${API_URL}/customers?size=100`);
-            const customers = (await response.json()).content;
+            const response = await fetch(`${API_URL}/customers?size=1000&page=0`);
+            const data = (await response.json()).content;
 
-            for (const customer of customers) {
+            for (const customer of data) {
                 await fetch(`${API_URL}/customers/${customer.id}`, { method: 'DELETE' });
             }
 
             alert('Wszyscy klienci zostali pomyślnie usunięci!');
-            loadCustomers();
+            loadCustomers(0);
         } catch (error) {
             console.error('Błąd podczas usuwania klientów:', error);
             alert('Wystąpił błąd podczas usuwania klientów. Upewnij się, że nie mają oni aktywnych zamówień.');
@@ -1179,15 +1240,15 @@
     async function clearAllSpiders() {
         if (!confirm('Czy na pewno chcesz USUNĄĆ WSZYSTKIE PAJĄKI?')) return;
         try {
-            const response = await fetch(`${API_URL}/spiders?size=100`);
-            const spiders = (await response.json()).content;
+            const response = await fetch(`${API_URL}/spiders?size=1000&page=0`);
+            const data = (await response.json()).content;
 
-            for (const spider of spiders) {
+            for (const spider of data) {
                 await fetch(`${API_URL}/spiders/${spider.id}`, { method: 'DELETE' });
             }
 
             alert('Wszystkie pająki zostały pomyślnie usunięte!');
-            loadSpiders();
+            loadSpiders(0);
         } catch (error) {
             console.error('Błąd podczas usuwania pająków:', error);
             alert('Wystąpił błąd podczas usuwania pająków.');
