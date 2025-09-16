@@ -208,10 +208,6 @@
                         <label for="spider-price" class="form-label">Cena</label>
                         <input type="number" class="form-control" id="spider-price" step="0.01" required>
                     </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="spider-isCites">
-                        <label class="form-check-label" for="spider-isCites">CITES</label>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
@@ -519,7 +515,6 @@
             quantity: parseInt(document.getElementById('spider-quantity').value),
             size: document.getElementById('spider-size').value,
             price: parseFloat(document.getElementById('spider-price').value),
-            isCites: document.getElementById('spider-isCites').checked,
         };
 
         try {
@@ -549,7 +544,6 @@
                 document.getElementById('spider-quantity').value = spider.quantity;
                 document.getElementById('spider-size').value = spider.size;
                 document.getElementById('spider-price').value = spider.price;
-                document.getElementById('spider-isCites').checked = spider.isCites;
             }
         }
     }
