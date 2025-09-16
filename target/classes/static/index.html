@@ -475,7 +475,7 @@
             loadCustomers(currentPageCustomers);
         }
         if (sectionId === 'spiders-section') {
-            loadSpiders(currentPageSpiders);
+            loadSpiders(); // Zmieniono wywołanie, aby ładować wszystkie pająki
         }
     }
 
@@ -608,51 +608,32 @@
     }
 
     // Spider functions
-    async function loadSpiders(page = 0) {
-        currentPageSpiders = page;
+    // Zaktualizowana funkcja loadSpiders, która pobiera wszystkie pająki naraz
+    async function loadSpiders() {
         try {
-            const response = await fetch(`${API_URL}/spiders?page=${page}&size=${pageSize}&sortBy=typeName`);
+            // Ustawiono duży rozmiar strony, aby pobrać wszystkie pająki za jednym razem
+            const response = await fetch(`${API_URL}/spiders?size=1000&sortBy=typeName`);
             if (!response.ok) throw new Error('Nie udało się załadować pająków.');
             const data = await response.json();
             allSpiders = data.content;
 
             populateSpiderFilters();
-            filterSpiders();
-            renderPagination(data.totalElements, data.totalPages, data.number, 'spiders-pagination', 'loadSpiders');
+            filterSpiders(); // Po załadowaniu wszystkich pająków, filtruj i renderuj
         } catch (error) {
             console.error('Błąd podczas ładowania pająków:', error);
         }
     }
 
-    function populateSpiderFilters() {
-        const types = [...new Set(allSpiders.map(spider => spider.typeName))];
-        const species = [...new Set(allSpiders.map(spider => spider.speciesName))];
+    // Nowa funkcja do renderowania pająków z paginacją
+    function renderSpidersWithPagination(page = 0) {
+        currentPageSpiders = page;
+        const totalElements = currentFilteredSpiders.length;
+        const totalPages = Math.ceil(totalElements / pageSize);
 
-        const typeSelect = document.getElementById('filter-type');
-        const speciesSelect = document.getElementById('filter-species');
+        const startIndex = page * pageSize;
+        const endIndex = startIndex + pageSize;
+        const spidersToRender = currentFilteredSpiders.slice(startIndex, endIndex);
 
-        typeSelect.innerHTML = '<option value="">Wszystkie</option>' + types.map(type => `<option value="${type}">${type}</option>`).join('');
-        speciesSelect.innerHTML = '<option value="">Wszystkie</option>' + species.map(species => `<option value="${species}">${species}</option>`).join('');
-    }
-
-    function filterSpiders() {
-        const selectedType = document.getElementById('filter-type').value;
-        const selectedSpecies = document.getElementById('filter-species').value;
-        const selectedGender = document.getElementById('filter-gender').value;
-        const selectedCites = document.getElementById('filter-cites').value;
-
-        currentSpiders = allSpiders.filter(spider => {
-            const matchesType = !selectedType || spider.typeName === selectedType;
-            const matchesSpecies = !selectedSpecies || spider.speciesName === selectedSpecies;
-            const matchesGender = !selectedGender || spider.gender === selectedGender;
-            const matchesCites = !selectedCites || (selectedCites === 'Tak' && spider.cites) || (selectedCites === 'Nie' && !spider.cites);
-            return matchesType && matchesSpecies && matchesGender && matchesCites;
-        });
-
-        renderSpidersTable(currentSpiders);
-    }
-
-    function renderSpidersTable(spidersToRender) {
         const tableBody = document.getElementById('spiders-table');
         tableBody.innerHTML = '';
         spidersToRender.forEach(spider => {
@@ -672,7 +653,38 @@
             `;
             tableBody.appendChild(row);
         });
+        renderPagination(totalElements, totalPages, currentPageSpiders, 'spiders-pagination', 'renderSpidersWithPagination');
     }
+
+    function populateSpiderFilters() {
+        const types = [...new Set(allSpiders.map(spider => spider.typeName))];
+        const species = [...new Set(allSpiders.map(spider => spider.speciesName))];
+
+        const typeSelect = document.getElementById('filter-type');
+        const speciesSelect = document.getElementById('filter-species');
+
+        typeSelect.innerHTML = '<option value="">Wszystkie</option>' + types.map(type => `<option value="${type}">${type}</option>`).join('');
+        speciesSelect.innerHTML = '<option value="">Wszystkie</option>' + species.map(species => `<option value="${species}">${species}</option>`).join('');
+    }
+
+    // Zaktualizowana funkcja filterSpiders, która filtruje całą listę
+    function filterSpiders() {
+        const selectedType = document.getElementById('filter-type').value;
+        const selectedSpecies = document.getElementById('filter-species').value;
+        const selectedGender = document.getElementById('filter-gender').value;
+        const selectedCites = document.getElementById('filter-cites').value;
+
+        currentFilteredSpiders = allSpiders.filter(spider => {
+            const matchesType = !selectedType || spider.typeName === selectedType;
+            const matchesSpecies = !selectedSpecies || spider.speciesName === selectedSpecies;
+            const matchesGender = !selectedGender || spider.gender === selectedGender;
+            const matchesCites = !selectedCites || (selectedCites === 'Tak' && spider.cites) || (selectedCites === 'Nie' && !spider.cites);
+            return matchesType && matchesSpecies && matchesGender && matchesCites;
+        });
+
+        renderSpidersWithPagination(0); // Zawsze zaczynaj od pierwszej strony po filtracji
+    }
+
 
     async function saveSpider() {
         const id = document.getElementById('spider-id').value;
@@ -695,7 +707,7 @@
                 body: JSON.stringify(spider)
             });
             if (!response.ok) throw new Error('Nie udało się zapisać pająka.');
-            await loadSpiders(currentPageSpiders);
+            await loadSpiders(); // Po zapisie załaduj wszystkie pająki od nowa, aby odświeżyć tabelę
             bootstrap.Modal.getInstance(document.getElementById('spiderModal')).hide();
         } catch (error) {
             console.error('Błąd podczas zapisywania pająka:', error);
@@ -725,7 +737,7 @@
         try {
             const response = await fetch(`${API_URL}/spiders/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Nie udało się usunąć pająka.');
-            await loadSpiders(currentPageSpiders);
+            await loadSpiders(); // Po usunięciu załaduj wszystkie pająki od nowa
         } catch (error) {
             console.error('Błąd podczas usuwania pająka:', error);
             alert('Wystąpił błąd podczas usuwania pająka.');
@@ -1248,7 +1260,7 @@
             }
 
             alert('Wszystkie pająki zostały pomyślnie usunięte!');
-            loadSpiders(0);
+            loadSpiders(); // Po usunięciu załaduj pająki od nowa
         } catch (error) {
             console.error('Błąd podczas usuwania pająków:', error);
             alert('Wystąpił błąd podczas usuwania pająków.');
