@@ -1,5 +1,7 @@
 package com.WMS_spiders_wholesale_system.dto;
 
+import com.WMS_spiders_wholesale_system.entity.SpiderGender;
+
 import java.util.UUID;
 
 public class SpiderDTO {
@@ -9,6 +11,7 @@ public class SpiderDTO {
     private int quantity;
     private String size;
     private double price;
+    private SpiderGender gender;
     private boolean isCites;
 
     public UUID getId() {
@@ -72,5 +75,13 @@ public class SpiderDTO {
 
     public void setCites(boolean cites) {
         isCites = cites;
+    }
+
+    public SpiderGender getGender() {
+        return gender;
+    }
+
+    public void setGender(SpiderGender gender) {
+        this.gender = gender;
     }
 }

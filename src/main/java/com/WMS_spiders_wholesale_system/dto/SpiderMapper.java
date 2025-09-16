@@ -14,6 +14,7 @@ public class SpiderMapper {
         entity.setSize(dto.getSize());
         entity.setPrice(dto.getPrice());
         entity.setCites(dto.isCites());
+        entity.setGender(dto.getGender());
         return entity;
     }
 
@@ -26,6 +27,7 @@ public class SpiderMapper {
         dto.setSize(spider.getSize());
         dto.setPrice(spider.getPrice());
         dto.setCites(spider.isCites());
+        dto.setGender(spider.getGender());
         return dto;
     }
 

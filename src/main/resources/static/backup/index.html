@@ -208,10 +208,6 @@
                         <label for="spider-price" class="form-label">Cena</label>
                         <input type="number" class="form-control" id="spider-price" step="0.01" required>
                     </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="spider-isCites">
-                        <label class="form-check-label" for="spider-isCites">CITES</label>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
@@ -296,7 +292,7 @@
                                 <h5>Suma całkowita: <span id="order-total-price">0.00</span> PLN</h5>
                             </div>
                             <div class="d-flex justify-content-end align-items-center mt-3">
-                                <label for="order-price" class="form-label me-2">Nowa cena zamówienia</label>
+                                <label for="order-price" class="form-label me-2">Ręczna cena zamówienia</label>
                                 <input type="number" class="form-control w-25" id="order-price" step="0.01" min="0">
                             </div>
                         </div>
@@ -487,10 +483,10 @@
             const response = await fetch(`${API_URL}/spiders?size=100`);
             if (!response.ok) throw new Error('Nie udało się załadować pająków.');
             const data = await response.json();
-            const spiders = data.content;
+            currentSpiders = data.content;
             const tableBody = document.getElementById('spiders-table');
             tableBody.innerHTML = '';
-            spiders.forEach(spider => {
+            currentSpiders.forEach(spider => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${spider.typeName}</td>
@@ -513,19 +509,17 @@
     async function saveSpider() {
         const id = document.getElementById('spider-id').value;
         const spider = {
+            id: id,
             typeName: document.getElementById('spider-typeName').value,
             speciesName: document.getElementById('spider-speciesName').value,
             quantity: parseInt(document.getElementById('spider-quantity').value),
             size: document.getElementById('spider-size').value,
             price: parseFloat(document.getElementById('spider-price').value),
-            isCites: document.getElementById('spider-isCites').checked,
         };
 
         try {
-            const url = id ? `${API_URL}/spiders/${id}` : `${API_URL}/spiders`;
-            const method = id ? 'PUT' : 'POST';
-            const response = await fetch(url, {
-                method: method,
+            const response = await fetch(`${API_URL}/spiders`, { // ZMIANA
+                method: 'POST', // ZMIANA
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(spider)
             });
@@ -550,7 +544,6 @@
                 document.getElementById('spider-quantity').value = spider.quantity;
                 document.getElementById('spider-size').value = spider.size;
                 document.getElementById('spider-price').value = spider.price;
-                document.getElementById('spider-isCites').checked = spider.isCites;
             }
         }
     }

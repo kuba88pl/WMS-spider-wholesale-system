@@ -93,9 +93,10 @@
             <tr>
                 <th>Rodzaj</th>
                 <th>Nazwa gatunku</th>
+                <th>Płeć</th>
+                <th>CITES</th>
                 <th>Ilość</th>
                 <th>Cena</th>
-                <th>CITES</th>
                 <th>Akcje</th>
             </tr>
             </thead>
@@ -195,6 +196,14 @@
                     <div class="mb-3">
                         <label for="spider-speciesName" class="form-label">Gatunek</label>
                         <input type="text" class="form-control" id="spider-speciesName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="spider-gender" class="form-label">Płeć</label>
+                        <select class="form-select" id="spider-gender">
+                            <option value="FEMALE">FEMALE</option>
+                            <option value="MALE">MALE</option>
+                            <option value="NS">NS</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="spider-quantity" class="form-label">Ilość</label>
@@ -491,9 +500,10 @@
                 row.innerHTML = `
                     <td>${spider.typeName}</td>
                     <td>${spider.speciesName}</td>
+                    <td>${spider.gender}</td>
+                    <td>${spider.cites ? 'Tak' : 'Nie'}</td>
                     <td>${spider.quantity}</td>
                     <td>${spider.price.toFixed(2)} PLN</td>
-                    <td>${spider.cites ? 'Tak' : 'Nie'}</td>
                     <td>
                         <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#spiderModal" onclick="prepareSpiderForm('edit', '${spider.id}')">Edytuj</button>
                         <button class="btn btn-sm btn-danger" onclick="deleteSpider('${spider.id}')">Usuń</button>
@@ -515,11 +525,14 @@
             quantity: parseInt(document.getElementById('spider-quantity').value),
             size: document.getElementById('spider-size').value,
             price: parseFloat(document.getElementById('spider-price').value),
+            gender: document.getElementById('spider-gender').value,
         };
 
         try {
-            const response = await fetch(`${API_URL}/spiders`, { // ZMIANA
-                method: 'POST', // ZMIANA
+            const url = id ? `${API_URL}/spiders/${id}` : `${API_URL}/spiders`;
+            const method = id ? 'PUT' : 'POST';
+            const response = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(spider)
             });
@@ -544,6 +557,7 @@
                 document.getElementById('spider-quantity').value = spider.quantity;
                 document.getElementById('spider-size').value = spider.size;
                 document.getElementById('spider-price').value = spider.price;
+                document.getElementById('spider-gender').value = spider.gender;
             }
         }
     }

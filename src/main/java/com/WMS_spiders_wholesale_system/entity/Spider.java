@@ -26,6 +26,8 @@ public class Spider {
     private String size;
     @Column(name = "price")
     private double price;
+    @Column(name = "gender")
+    private SpiderGender gender;
     @Column(name = "is_cites")
     private boolean isCites;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -36,12 +38,13 @@ public class Spider {
     public Spider() {
     }
 
-    public Spider(String typeName, String speciesName, int quantity, String size, double price, boolean isCites) {
+    public Spider(String typeName, String speciesName, int quantity, String size, double price, SpiderGender gender, boolean isCites) {
         this.typeName = typeName;
         this.speciesName = speciesName;
         this.quantity = quantity;
         this.size = size;
         this.price = price;
+        this.gender = gender;
         this.isCites = isCites;
     }
 
@@ -59,14 +62,6 @@ public class Spider {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
-        String[] typeNames = {"Brachypelma", "Tliltocatl", "Poecilotheria"};
-        this.isCites = false;
-        for (String type : typeNames) {
-            if (typeName.equalsIgnoreCase(type)) {
-                this.isCites = true;
-                break;
-            }
-        }
     }
 
     public String getSpeciesName() {
@@ -101,6 +96,13 @@ public class Spider {
         this.price = price;
     }
 
+    public SpiderGender getGender() {
+        return gender;
+    }
+
+    public void setGender(SpiderGender gender) {
+        this.gender = gender;
+    }
 
     public UUID getId() {
         return id;
