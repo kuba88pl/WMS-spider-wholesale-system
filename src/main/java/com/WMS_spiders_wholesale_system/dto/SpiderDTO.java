@@ -11,18 +11,66 @@ public class SpiderDTO {
     private double price;
     private boolean isCites;
 
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-    public String getTypeName() { return typeName; }
-    public void setTypeName(String typeName) { this.typeName = typeName; }
-    public String getSpeciesName() { return speciesName; }
-    public void setSpeciesName(String speciesName) { this.speciesName = speciesName; }
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-    public String getSize() { return size; }
-    public void setSize(String size) { this.size = size; }
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-    public boolean isCites() { return isCites; }
-    public void setCites(boolean cites) { isCites = cites; }
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+        String[] citesTypenames = {"Brachypelma", "Poecilotheria", "Tliltocatl"};
+        for (String type : citesTypenames) {
+            if (typeName.equalsIgnoreCase(type)) {
+                isCites = true;
+            }
+        }
+
+    }
+
+    public String getSpeciesName() {
+        return speciesName;
+    }
+
+    public void setSpeciesName(String speciesName) {
+        this.speciesName = speciesName;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public boolean isCites() {
+        return isCites;
+    }
+
+    public void setCites(boolean cites) {
+        isCites = cites;
+    }
 }
