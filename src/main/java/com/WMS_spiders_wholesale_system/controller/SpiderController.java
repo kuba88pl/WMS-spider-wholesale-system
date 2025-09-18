@@ -60,6 +60,7 @@ public class SpiderController {
         }
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSpider(@PathVariable UUID id) {
         try {

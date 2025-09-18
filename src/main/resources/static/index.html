@@ -458,6 +458,8 @@
     let currentPageSpiders = 0;
     let currentPageOrders = 0;
     const pageSize = 10;
+    let allFetchedOrders = []; // Nowa zmienna do przechowywania wszystkich pobranych zamówień
+    let filteredOrders = []; // Nowa zmienna do przechowywania przefiltrowanych zamówień
 
     function showSection(sectionId) {
         document.querySelectorAll('section').forEach(section => {
@@ -745,29 +747,47 @@
     }
 
     // Order functions
-    async function loadOrders(page = 0, status = 'all') {
-        currentPageOrders = page;
+    async function loadOrders() {
         try {
-            const url = status === 'all'
-                ? `${API_URL}/orders?page=${page}&size=${pageSize}`
-                : `${API_URL}/orders/status/${status}?page=${page}&size=${pageSize}`;
-
-            const response = await fetch(url);
+            const response = await fetch(`${API_URL}/orders?size=1000`);
             if (!response.ok) throw new Error('Nie udało się załadować zamówień.');
             const data = await response.json();
-            allOrders = data.content;
-
-            renderOrdersTable(allOrders);
-            renderPagination(data.totalElements, data.totalPages, data.number, 'orders-pagination', 'loadOrders');
+            allFetchedOrders = data.content; // Zapisz wszystkie pobrane zamówienia
+            filterOrders('all', null); // Filtruj i wyświetlaj domyślnie "Wszystkie"
         } catch (error) {
             console.error('Błąd podczas ładowania zamówień:', error);
         }
     }
 
-    function renderOrdersTable(ordersToDisplay) {
+    function filterOrders(status, event) {
+        if (event) {
+            document.querySelectorAll('.btn-outline-dark, .btn-outline-success, .btn-outline-warning, .btn-outline-info, .btn-outline-primary, .btn-outline-secondary, .btn-outline-danger').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        if (status === 'all') {
+            filteredOrders = [...allFetchedOrders];
+        } else {
+            filteredOrders = allFetchedOrders.filter(order => order.status === status);
+        }
+
+        renderOrdersWithPagination(0); // Zawsze zaczynamy od pierwszej strony po filtracji
+    }
+
+    function renderOrdersWithPagination(page = 0) {
+        currentPageOrders = page;
+        const totalElements = filteredOrders.length;
+        const totalPages = Math.ceil(totalElements / pageSize);
+
+        const startIndex = page * pageSize;
+        const endIndex = startIndex + pageSize;
+        const ordersToRender = filteredOrders.slice(startIndex, endIndex);
+
         const tableBody = document.getElementById('orders-table');
         tableBody.innerHTML = '';
-        ordersToDisplay.forEach(order => {
+        ordersToRender.forEach(order => {
             const row = document.createElement('tr');
             let rowClass = '';
             if (order.status === 'NEW') rowClass = 'table-new-order';
@@ -787,16 +807,8 @@
             `;
             tableBody.appendChild(row);
         });
-    }
 
-    function filterOrders(status, event) {
-        if (event) {
-            document.querySelectorAll('.btn-outline-dark, .btn-outline-success, .btn-outline-warning, .btn-outline-info, .btn-outline-primary, .btn-outline-secondary, .btn-outline-danger').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-        loadOrders(0, status);
+        renderPagination(totalElements, totalPages, currentPageOrders, 'orders-pagination', `renderOrdersWithPagination`);
     }
 
     async function cancelOrder(id) {
