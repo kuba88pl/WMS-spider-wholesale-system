@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,13 +47,14 @@ public class CustomerController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<CustomerDTO> updateCustomer(@RequestBody CustomerDTO customerDTO) {
+    @Transactional
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable UUID id, @RequestBody CustomerDTO customerDTO) {
         try {
-            Customer updatedCustomer = customerService.updateCustomer(CustomerMapper.toEntity(customerDTO));
+            Customer updatedCustomer = customerService.updateCustomer(id, customerDTO);
             return ResponseEntity.ok(CustomerMapper.toDTO(updatedCustomer));
         } catch (CustomerNotFoundException e) {
-            logger.error("Customer not found with id {}", customerDTO.getId());
+            logger.error("Customer not found with id {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (InvalidCustomerDataException e) {
             logger.error("Invalid customer data: {}", e.getMessage());

@@ -1,5 +1,6 @@
 package com.WMS_spiders_wholesale_system.service;
 
+import com.WMS_spiders_wholesale_system.dto.CustomerDTO;
 import com.WMS_spiders_wholesale_system.entity.Customer;
 import com.WMS_spiders_wholesale_system.exception.CustomerAlreadyExistsException;
 import com.WMS_spiders_wholesale_system.exception.CustomerNotFoundException;
@@ -35,18 +36,29 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    public Customer updateCustomer(Customer customer) {
-        if (!customerRepository.existsById(customer.getId())) {
-            throw new CustomerNotFoundException("Customer with id " + customer.getId() + " not found");
+    public Customer updateCustomer(UUID id, CustomerDTO customerDTO) throws CustomerNotFoundException {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer with id " + id + " not found"));
+
+        if (customerDTO.getFirstName() != null) {
+            customer.setFirstName(customerDTO.getFirstName());
         }
-        validateCustomerForUpdate(customer);
-        Customer existingCustomer = customerRepository.findById(customer.getId()).orElseThrow();
-        if (customer.getEmail() != null && !customer.getEmail().isBlank() && !customer.getEmail().equals(existingCustomer.getEmail())) {
-            if (customerRepository.existsByEmail(customer.getEmail())) {
-                throw new CustomerAlreadyExistsException("Customer with email " + customer.getEmail() + " already exists.");
-            }
+        if (customerDTO.getLastName() != null) {
+            customer.setLastName(customerDTO.getLastName());
         }
-        logger.info("Updated customer with ID: " + customer.getId());
+        if (customerDTO.getTelephone() != null) {
+            customer.setTelephone(customerDTO.getTelephone());
+        }
+        if (customerDTO.getEmail() != null) {
+            customer.setEmail(customerDTO.getEmail());
+        }
+        if (customerDTO.getAddress() != null) {
+            customer.setAddress(customerDTO.getAddress());
+        }
+        if (customerDTO.getParcelLocker() != null) {
+            customer.setParcelLocker(customerDTO.getParcelLocker());
+        }
+
         return customerRepository.save(customer);
     }
 

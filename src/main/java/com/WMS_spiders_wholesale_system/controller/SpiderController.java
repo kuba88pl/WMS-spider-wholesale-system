@@ -45,8 +45,8 @@ public class SpiderController {
     }
 
     @Transactional
-    @PutMapping
-    public ResponseEntity<SpiderDTO> updateSpider(@RequestBody SpiderDTO spiderDTO) {
+    @PutMapping("/{id}")
+    public ResponseEntity<SpiderDTO> updateSpider(@PathVariable UUID id, @RequestBody SpiderDTO spiderDTO) {
         try {
             Spider updatedSpider = spiderService.updateSpider(SpiderMapper.toEntity(spiderDTO));
             return ResponseEntity.ok(SpiderMapper.toDTO(updatedSpider));
