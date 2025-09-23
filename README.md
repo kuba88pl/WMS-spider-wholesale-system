@@ -9,7 +9,7 @@ Order management application written in Spring Boot. Application allows to add c
 - [Licence](#licence)
 - [Contact](#contact)
 
-## Funkcjonalności
+## Functionality
 
 - **Add Customer:** Add a new customer, with a name, last name, unique ID and contact infromations like an addrress,
  parcel locker, telephone number and email .
