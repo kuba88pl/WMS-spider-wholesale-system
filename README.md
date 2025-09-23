@@ -27,28 +27,31 @@ Order management application written in Spring Boot. Application allows to add c
 ## Getting Started
 
 1.  Clone the repository:
-    ```bash
-    git clone [[https://github.com/YourUsername/user-manager-cli.git] (https://github.com/kuba88pl/WMS-spider-wholesale-system.git)
-    ```
+```bash
+git clone [[https://github.com/YourUsername/user-manager-cli.git] (https://github.com/kuba88pl/WMS-spider-wholesale-system.git)
+```
 2. Crewate EMPTY database. For example:
 
-    ```bash
+```bash
    CREATE database wms_spiders_wholesale_system;
-    ```
-CREATE database wms_spiders_wholesale_system;
 ```
+
 The application connects to a MySQL database. The connection parameters are defined in the src/main/resources/application.properties file. You may need to adjust these values to fit your local environment or a different server.
-   ```bash
+```bash
 spring.datasource.url=jdbc:mysql://database_url
 spring.datasource.username=database_user
 spring.datasource.password=database_password
 ```
 3. Navigate to the project directory.
-4. Compile the project:
-   ```bash
-    javac com/YourUsername/UserManagerApp.java
-    ```
+```bash
+  cd WMS-spider-wholesale-system
+```
+4. Build the project:
+Use Maven to build the project and create a runnable .jar dile.
+```bash
+    mvn clean package
+```
 5. Run the application
      ```bash
-    java com.YourUsername.UserManagerApp
+    java -jar target/spiders-wholesale-system-0.0.1-SNAPSHOT.jar
     ```
