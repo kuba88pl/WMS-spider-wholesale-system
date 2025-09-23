@@ -33,7 +33,7 @@ git clone [[https://github.com/YourUsername/user-manager-cli.git] (https://githu
 2. Crewate EMPTY database. For example:
 
 ```bash
-   CREATE database wms_spiders_wholesale_system;
+CREATE database wms_spiders_wholesale_system;
 ```
 
 The application connects to a MySQL database. The connection parameters are defined in the src/main/resources/application.properties file. You may need to adjust these values to fit your local environment or a different server.
@@ -44,14 +44,14 @@ spring.datasource.password=database_password
 ```
 3. Navigate to the project directory.
 ```bash
-  cd WMS-spider-wholesale-system
+cd WMS-spider-wholesale-system
 ```
 4. Build the project:
 Use Maven to build the project and create a runnable .jar dile.
 ```bash
-    mvn clean package
+mvn clean package
 ```
 5. Run the application
-     ```bash
-    java -jar target/spiders-wholesale-system-0.0.1-SNAPSHOT.jar
-    ```
+```bash
+java -jar target/spiders-wholesale-system-0.0.1-SNAPSHOT.jar
+```
