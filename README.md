@@ -31,13 +31,14 @@ Order management application written in Spring Boot. Application allows to add c
     git clone [[https://github.com/YourUsername/user-manager-cli.git] (https://github.com/kuba88pl/WMS-spider-wholesale-system.git)
     ```
 2. Crewate EMPTY database. For example:
-   ```sql
-CREATE database wms_spiders_wholesale_system;
-  ```
-  
-The application connects to a MySQL database. The connection parameters are defined in the src/main/resources/application.properties file. You may need to adjust these values to fit your local environment or a different server.
 
-```properties
+    ```bash
+   CREATE database wms_spiders_wholesale_system;
+    ```
+CREATE database wms_spiders_wholesale_system;
+```
+The application connects to a MySQL database. The connection parameters are defined in the src/main/resources/application.properties file. You may need to adjust these values to fit your local environment or a different server.
+   ```bash
 spring.datasource.url=jdbc:mysql://database_url
 spring.datasource.username=database_user
 spring.datasource.password=database_password
