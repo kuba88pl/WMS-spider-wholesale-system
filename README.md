@@ -55,3 +55,8 @@ mvn clean package
 ```bash
 java -jar target/spiders-wholesale-system-0.0.1-SNAPSHOT.jar
 ```
+After this steps application is running. Open your internet browswer and type url: 
+```bash
+http://localhost:8080/index.html
+```
+
