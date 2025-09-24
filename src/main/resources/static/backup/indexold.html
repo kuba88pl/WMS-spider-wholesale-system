@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8f9fa; }
-        .container { max-width: 960px; }
         .table th, .table td { vertical-align: middle; }
         .table thead th { background-color: #343a30; color: white; }
         .table-new-order { background-color: #d1e7dd; } /* Zielony */
@@ -29,6 +28,16 @@
                 top: auto !important;
                 left: auto !important;
                 margin: 0 !important;
+            }
+            /* Nowe reguły do druku */
+            #orderDetailsModal .btn {
+                display: none !important;
+            }
+            #orderDetailsModal .modal-body,
+            #orderDetailsModal h5,
+            #orderDetailsModal p,
+            #orderDetailsModal table {
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -70,14 +79,19 @@
             <tr>
                 <th>Imię</th>
                 <th>Nazwisko</th>
+                <th>Adres wysyłki</th>
+                <th>Paczkomat</th>
+                <th>Numer telefonu</th>
                 <th>Adres e-mail</th>
-                <th>Adres</th>
                 <th>Akcje</th>
             </tr>
             </thead>
             <tbody id="customers-table">
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination justify-content-center" id="customers-pagination"></ul>
+        </nav>
     </section>
 
     <section id="spiders-section" class="mb-5 d-none">
@@ -93,15 +107,47 @@
             <tr>
                 <th>Rodzaj</th>
                 <th>Nazwa gatunku</th>
+                <th>Płeć</th>
+                <th>Rozmiar</th>
                 <th>Ilość</th>
                 <th>Cena</th>
                 <th>CITES</th>
                 <th>Akcje</th>
             </tr>
+            <tr>
+                <th>
+                    <select class="form-select form-select-sm" id="filter-type" onchange="filterSpiders()"></select>
+                </th>
+                <th>
+                    <select class="form-select form-select-sm" id="filter-species" onchange="filterSpiders()"></select>
+                </th>
+                <th>
+                    <select class="form-select form-select-sm" id="filter-gender" onchange="filterSpiders()">
+                        <option value="">Wszystkie</option>
+                        <option value="MALE">MALE</option>
+                        <option value="FEMALE">FEMALE</option>
+                        <option value="NS">NS</option>
+                    </select>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>
+                    <select class="form-select form-select-sm" id="filter-cites" onchange="filterSpiders()">
+                        <option value="">Wszystkie</option>
+                        <option value="Tak">Tak</option>
+                        <option value="Nie">Nie</option>
+                    </select>
+                </th>
+                <th></th>
+            </tr>
             </thead>
             <tbody id="spiders-table">
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination justify-content-center" id="spiders-pagination"></ul>
+        </nav>
     </section>
 
     <section id="orders-section" class="mb-5 d-none">
@@ -131,6 +177,9 @@
             <tbody id="orders-table">
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination justify-content-center" id="orders-pagination"></ul>
+        </nav>
     </section>
 </div>
 
@@ -197,6 +246,14 @@
                         <input type="text" class="form-control" id="spider-speciesName" required>
                     </div>
                     <div class="mb-3">
+                        <label for="spider-gender" class="form-label">Płeć</label>
+                        <select class="form-select" id="spider-gender">
+                            <option value="MALE">MALE</option>
+                            <option value="FEMALE">FEMALE</option>
+                            <option value="NS">NS</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="spider-quantity" class="form-label">Ilość</label>
                         <input type="number" class="form-control" id="spider-quantity" required>
                     </div>
@@ -256,12 +313,33 @@
                     <div class="row mt-4">
                         <div class="col-md-6">
                             <h4>Pająki dostępne do zamówienia</h4>
+                            <div class="d-flex mb-3">
+                                <div class="me-2">
+                                    <label for="filter-type-order" class="form-label">Filtruj po rodzaju</label>
+                                    <select class="form-select" id="filter-type-order" onchange="filterSpidersForOrder()"></select>
+                                </div>
+                                <div class="me-2">
+                                    <label for="filter-species-order" class="form-label">Filtruj po gatunku</label>
+                                    <select class="form-select" id="filter-species-order" onchange="filterSpidersForOrder()"></select>
+                                </div>
+                                <div class="me-2">
+                                    <label for="filter-gender-order" class="form-label">Filtruj po płci</label>
+                                    <select class="form-select" id="filter-gender-order" onchange="filterSpidersForOrder()">
+                                        <option value="">Wszystkie</option>
+                                        <option value="MALE">MALE</option>
+                                        <option value="FEMALE">FEMALE</option>
+                                        <option value="NS">NS</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered">
                                     <thead>
                                     <tr>
                                         <th>Rodzaj</th>
                                         <th>Gatunek</th>
+                                        <th>Płeć</th>
+                                        <th>Rozmiar</th>
                                         <th>Ilość dostępna</th>
                                         <th>Cena</th>
                                         <th>Akcje</th>
@@ -279,6 +357,8 @@
                                 <tr>
                                     <th>Rodzaj</th>
                                     <th>Gatunek</th>
+                                    <th>Płeć</th>
+                                    <th>Rozmiar</th>
                                     <th>Ilość</th>
                                     <th>Cena</th>
                                     <th>Suma</th>
@@ -365,12 +445,21 @@
 <script>
     const API_URL = 'http://localhost:8080/api';
     let customers = [];
-    let currentSpiders = [];
+    let allSpiders = []; // Zmieniono nazwę na allSpiders
+    let currentSpiders = []; // Spiders to display in the main table
     let orderedSpiders = [];
     let currentOrderId = null;
     let selectedCustomerId = null;
     let currentOrderPrice = 0;
     let allOrders = [];
+
+    // Global pagination variables
+    let currentPageCustomers = 0;
+    let currentPageSpiders = 0;
+    let currentPageOrders = 0;
+    const pageSize = 10;
+    let allFetchedOrders = []; // Nowa zmienna do przechowywania wszystkich pobranych zamówień
+    let filteredOrders = []; // Nowa zmienna do przechowywania przefiltrowanych zamówień
 
     function showSection(sectionId) {
         document.querySelectorAll('section').forEach(section => {
@@ -382,23 +471,63 @@
         });
         document.querySelector(`a[onclick*="${sectionId}"]`).classList.add('active');
         if (sectionId === 'orders-section') {
-            loadOrders();
+            loadOrders(currentPageOrders);
         }
         if (sectionId === 'customers-section') {
-            loadCustomers();
+            loadCustomers(currentPageCustomers);
         }
         if (sectionId === 'spiders-section') {
-            loadSpiders();
+            loadSpiders(); // Zmieniono wywołanie, aby ładować wszystkie pająki
         }
     }
 
+    // Helper function for rendering pagination
+    function renderPagination(totalElements, totalPages, currentPage, elementId, loadFunction) {
+        const paginationContainer = document.getElementById(elementId);
+        paginationContainer.innerHTML = '';
+
+        if (totalPages <= 1) {
+            return;
+        }
+
+        // Previous button
+        const prevLi = document.createElement('li');
+        prevLi.className = `page-item ${currentPage === 0 ? 'disabled' : ''}`;
+        prevLi.innerHTML = `<a class="page-link" href="#" onclick="${loadFunction}(${currentPage - 1})">Poprzednia</a>`;
+        paginationContainer.appendChild(prevLi);
+
+        // Page number buttons
+        const maxPagesToShow = 5;
+        let startPage = Math.max(0, currentPage - Math.floor(maxPagesToShow / 2));
+        let endPage = Math.min(totalPages - 1, startPage + maxPagesToShow - 1);
+
+        if (endPage - startPage < maxPagesToShow - 1) {
+            startPage = Math.max(0, endPage - maxPagesToShow + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            const pageLi = document.createElement('li');
+            pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            pageLi.innerHTML = `<a class="page-link" href="#" onclick="${loadFunction}(${i})">${i + 1}</a>`;
+            paginationContainer.appendChild(pageLi);
+        }
+
+        // Next button
+        const nextLi = document.createElement('li');
+        nextLi.className = `page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`;
+        nextLi.innerHTML = `<a class="page-link" href="#" onclick="${loadFunction}(${currentPage + 1})">Następna</a>`;
+        paginationContainer.appendChild(nextLi);
+    }
+
     // Customer functions
-    async function loadCustomers() {
+    async function loadCustomers(page = 0) {
+        currentPageCustomers = page;
         try {
-            const response = await fetch(`${API_URL}/customers`);
+            const response = await fetch(`${API_URL}/customers?page=${page}&size=${pageSize}&sortBy=lastName`);
             if (!response.ok) throw new Error('Nie udało się załadować klientów.');
             const data = await response.json();
             customers = data.content;
+
             const tableBody = document.getElementById('customers-table');
             tableBody.innerHTML = '';
             customers.forEach(customer => {
@@ -406,8 +535,10 @@
                 row.innerHTML = `
                     <td>${customer.firstName}</td>
                     <td>${customer.lastName}</td>
-                    <td>${customer.email}</td>
                     <td>${customer.address}</td>
+                    <td>${customer.parcelLocker}</td>
+                    <td>${customer.telephone}</td>
+                    <td>${customer.email}</td>
                     <td>
                         <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#customerModal" onclick="prepareCustomerForm('edit', '${customer.id}')">Edytuj</button>
                         <button class="btn btn-sm btn-danger" onclick="deleteCustomer('${customer.id}')">Usuń</button>
@@ -415,6 +546,7 @@
                 `;
                 tableBody.appendChild(row);
             });
+            renderPagination(data.totalElements, data.totalPages, data.number, 'customers-pagination', 'loadCustomers');
         } catch (error) {
             console.error('Błąd podczas ładowania klientów:', error);
         }
@@ -440,7 +572,7 @@
                 body: JSON.stringify(customer)
             });
             if (!response.ok) throw new Error('Nie udało się zapisać klienta.');
-            await loadCustomers();
+            await loadCustomers(currentPageCustomers);
             bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
         } catch (error) {
             console.error('Błąd podczas zapisywania klienta:', error);
@@ -470,7 +602,7 @@
         try {
             const response = await fetch(`${API_URL}/customers/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Nie udało się usunąć klienta.');
-            await loadCustomers();
+            await loadCustomers(currentPageCustomers);
         } catch (error) {
             console.error('Błąd podczas usuwania klienta:', error);
             alert('Wystąpił błąd podczas usuwania klienta. Upewnij się, że nie ma on aktywnych zamówień.');
@@ -478,33 +610,83 @@
     }
 
     // Spider functions
+    // Zaktualizowana funkcja loadSpiders, która pobiera wszystkie pająki naraz
     async function loadSpiders() {
         try {
-            const response = await fetch(`${API_URL}/spiders?size=100`);
+            // Ustawiono duży rozmiar strony, aby pobrać wszystkie pająki za jednym razem
+            const response = await fetch(`${API_URL}/spiders?size=1000&sortBy=typeName`);
             if (!response.ok) throw new Error('Nie udało się załadować pająków.');
             const data = await response.json();
-            currentSpiders = data.content;
-            const tableBody = document.getElementById('spiders-table');
-            tableBody.innerHTML = '';
-            currentSpiders.forEach(spider => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${spider.typeName}</td>
-                    <td>${spider.speciesName}</td>
-                    <td>${spider.quantity}</td>
-                    <td>${spider.price.toFixed(2)} PLN</td>
-                    <td>${spider.cites ? 'Tak' : 'Nie'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#spiderModal" onclick="prepareSpiderForm('edit', '${spider.id}')">Edytuj</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteSpider('${spider.id}')">Usuń</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
+            allSpiders = data.content;
+
+            populateSpiderFilters();
+            filterSpiders(); // Po załadowaniu wszystkich pająków, filtruj i renderuj
         } catch (error) {
             console.error('Błąd podczas ładowania pająków:', error);
         }
     }
+
+    // Nowa funkcja do renderowania pająków z paginacją
+    function renderSpidersWithPagination(page = 0) {
+        currentPageSpiders = page;
+        const totalElements = currentFilteredSpiders.length;
+        const totalPages = Math.ceil(totalElements / pageSize);
+
+        const startIndex = page * pageSize;
+        const endIndex = startIndex + pageSize;
+        const spidersToRender = currentFilteredSpiders.slice(startIndex, endIndex);
+
+        const tableBody = document.getElementById('spiders-table');
+        tableBody.innerHTML = '';
+        spidersToRender.forEach(spider => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${spider.typeName}</td>
+                <td>${spider.speciesName}</td>
+                <td>${spider.gender}</td>
+                <td>${spider.size}</td>
+                <td>${spider.quantity}</td>
+                <td>${spider.price.toFixed(2)} PLN</td>
+                <td>${spider.cites ? 'Tak' : 'Nie'}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning me-2" data-bs-toggle="modal" data-bs-target="#spiderModal" onclick="prepareSpiderForm('edit', '${spider.id}')">Edytuj</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteSpider('${spider.id}')">Usuń</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+        renderPagination(totalElements, totalPages, currentPageSpiders, 'spiders-pagination', 'renderSpidersWithPagination');
+    }
+
+    function populateSpiderFilters() {
+        const types = [...new Set(allSpiders.map(spider => spider.typeName))];
+        const species = [...new Set(allSpiders.map(spider => spider.speciesName))];
+
+        const typeSelect = document.getElementById('filter-type');
+        const speciesSelect = document.getElementById('filter-species');
+
+        typeSelect.innerHTML = '<option value="">Wszystkie</option>' + types.map(type => `<option value="${type}">${type}</option>`).join('');
+        speciesSelect.innerHTML = '<option value="">Wszystkie</option>' + species.map(species => `<option value="${species}">${species}</option>`).join('');
+    }
+
+    // Zaktualizowana funkcja filterSpiders, która filtruje całą listę
+    function filterSpiders() {
+        const selectedType = document.getElementById('filter-type').value;
+        const selectedSpecies = document.getElementById('filter-species').value;
+        const selectedGender = document.getElementById('filter-gender').value;
+        const selectedCites = document.getElementById('filter-cites').value;
+
+        currentFilteredSpiders = allSpiders.filter(spider => {
+            const matchesType = !selectedType || spider.typeName === selectedType;
+            const matchesSpecies = !selectedSpecies || spider.speciesName === selectedSpecies;
+            const matchesGender = !selectedGender || spider.gender === selectedGender;
+            const matchesCites = !selectedCites || (selectedCites === 'Tak' && spider.cites) || (selectedCites === 'Nie' && !spider.cites);
+            return matchesType && matchesSpecies && matchesGender && matchesCites;
+        });
+
+        renderSpidersWithPagination(0); // Zawsze zaczynaj od pierwszej strony po filtracji
+    }
+
 
     async function saveSpider() {
         const id = document.getElementById('spider-id').value;
@@ -512,19 +694,22 @@
             id: id,
             typeName: document.getElementById('spider-typeName').value,
             speciesName: document.getElementById('spider-speciesName').value,
+            gender: document.getElementById('spider-gender').value,
             quantity: parseInt(document.getElementById('spider-quantity').value),
             size: document.getElementById('spider-size').value,
             price: parseFloat(document.getElementById('spider-price').value),
         };
 
         try {
-            const response = await fetch(`${API_URL}/spiders`, { // ZMIANA
-                method: 'POST', // ZMIANA
+            const url = id ? `${API_URL}/spiders/${id}` : `${API_URL}/spiders`;
+            const method = id ? 'PUT' : 'POST';
+            const response = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(spider)
             });
             if (!response.ok) throw new Error('Nie udało się zapisać pająka.');
-            await loadSpiders();
+            await loadSpiders(); // Po zapisie załaduj wszystkie pająki od nowa, aby odświeżyć tabelę
             bootstrap.Modal.getInstance(document.getElementById('spiderModal')).hide();
         } catch (error) {
             console.error('Błąd podczas zapisywania pająka:', error);
@@ -536,11 +721,12 @@
         document.getElementById('spider-form').reset();
         document.getElementById('spider-id').value = '';
         if (mode === 'edit' && id) {
-            const spider = currentSpiders.find(s => s.id === id);
+            const spider = allSpiders.find(s => s.id === id);
             if (spider) {
                 document.getElementById('spider-id').value = spider.id;
                 document.getElementById('spider-typeName').value = spider.typeName;
                 document.getElementById('spider-speciesName').value = spider.speciesName;
+                document.getElementById('spider-gender').value = spider.gender;
                 document.getElementById('spider-quantity').value = spider.quantity;
                 document.getElementById('spider-size').value = spider.size;
                 document.getElementById('spider-price').value = spider.price;
@@ -553,7 +739,7 @@
         try {
             const response = await fetch(`${API_URL}/spiders/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Nie udało się usunąć pająka.');
-            await loadSpiders();
+            await loadSpiders(); // Po usunięciu załaduj wszystkie pająki od nowa
         } catch (error) {
             console.error('Błąd podczas usuwania pająka:', error);
             alert('Wystąpił błąd podczas usuwania pająka.');
@@ -563,20 +749,45 @@
     // Order functions
     async function loadOrders() {
         try {
-            const response = await fetch(`${API_URL}/orders`);
+            const response = await fetch(`${API_URL}/orders?size=1000`);
             if (!response.ok) throw new Error('Nie udało się załadować zamówień.');
             const data = await response.json();
-            allOrders = data.content;
-            filterOrders('all');
+            allFetchedOrders = data.content; // Zapisz wszystkie pobrane zamówienia
+            filterOrders('all', null); // Filtruj i wyświetlaj domyślnie "Wszystkie"
         } catch (error) {
             console.error('Błąd podczas ładowania zamówień:', error);
         }
     }
 
-    function renderOrdersTable(ordersToDisplay) {
+    function filterOrders(status, event) {
+        if (event) {
+            document.querySelectorAll('.btn-outline-dark, .btn-outline-success, .btn-outline-warning, .btn-outline-info, .btn-outline-primary, .btn-outline-secondary, .btn-outline-danger').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        if (status === 'all') {
+            filteredOrders = [...allFetchedOrders];
+        } else {
+            filteredOrders = allFetchedOrders.filter(order => order.status === status);
+        }
+
+        renderOrdersWithPagination(0); // Zawsze zaczynamy od pierwszej strony po filtracji
+    }
+
+    function renderOrdersWithPagination(page = 0) {
+        currentPageOrders = page;
+        const totalElements = filteredOrders.length;
+        const totalPages = Math.ceil(totalElements / pageSize);
+
+        const startIndex = page * pageSize;
+        const endIndex = startIndex + pageSize;
+        const ordersToRender = filteredOrders.slice(startIndex, endIndex);
+
         const tableBody = document.getElementById('orders-table');
         tableBody.innerHTML = '';
-        ordersToDisplay.forEach(order => {
+        ordersToRender.forEach(order => {
             const row = document.createElement('tr');
             let rowClass = '';
             if (order.status === 'NEW') rowClass = 'table-new-order';
@@ -596,23 +807,8 @@
             `;
             tableBody.appendChild(row);
         });
-    }
 
-    function filterOrders(status, event) {
-        if (event) {
-            document.querySelectorAll('.btn-outline-dark, .btn-outline-success, .btn-outline-warning, .btn-outline-info, .btn-outline-primary, .btn-outline-secondary, .btn-outline-danger').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-
-        let ordersToDisplay = [];
-        if (status === 'all') {
-            ordersToDisplay = allOrders;
-        } else {
-            ordersToDisplay = allOrders.filter(order => order.status === status);
-        }
-        renderOrdersTable(ordersToDisplay);
+        renderPagination(totalElements, totalPages, currentPageOrders, 'orders-pagination', `renderOrdersWithPagination`);
     }
 
     async function cancelOrder(id) {
@@ -641,7 +837,7 @@
             }
 
             bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
-            await loadOrders();
+            await loadOrders(currentPageOrders);
         } catch (error) {
             console.error('Błąd podczas anulowania zamówienia:', error);
             alert('Wystąpił błąd podczas anulowania zamówienia: ' + error.message);
@@ -686,7 +882,7 @@
             }
 
             bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
-            await loadOrders();
+            await loadOrders(currentPageOrders);
         } catch (error) {
             console.error('Błąd podczas zapisywania zamówienia:', error);
             alert('Wystąpił błąd podczas zapisywania zamówienia: ' + error.message);
@@ -723,6 +919,7 @@
             const response = await fetch(`${API_URL}/customers?size=100`);
             const data = await response.json();
             customers = data.content;
+            customers.sort((a, b) => a.lastName.localeCompare(b.lastName)); // sortowanie
             const tableBody = document.getElementById('customer-selection-table');
             tableBody.innerHTML = '';
             customers.forEach(customer => {
@@ -763,31 +960,63 @@
 
     async function loadSpidersForOrder() {
         try {
-            const response = await fetch(`${API_URL}/spiders?size=100`);
+            const response = await fetch(`${API_URL}/spiders?size=100&sortBy=typeName`);
             if (!response.ok) throw new Error('Nie udało się załadować pająków.');
             const data = await response.json();
-            currentSpiders = data.content;
-            const spidersTable = document.getElementById('spider-selection-table');
-            spidersTable.innerHTML = '';
-            currentSpiders.forEach(spider => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                        <td>${spider.typeName}</td>
-                        <td>${spider.speciesName}</td>
-                        <td>${spider.quantity}</td>
-                        <td>${spider.price.toFixed(2)} PLN</td>
-                        <td>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control" value="1" style="width: 60px;">
-                                <button class="btn btn-sm btn-primary" type="button" onclick="addSpiderToOrder('${spider.id}')">Dodaj</button>
-                            </div>
-                        </td>
-                    `;
-                spidersTable.appendChild(row);
-            });
+            allSpiders = data.content;
+            orderedSpiders = [];
+
+            populateOrderSpiderFilters();
+            filterSpidersForOrder();
+
         } catch (error) {
             console.error('Błąd podczas ładowania pająków:', error);
         }
+    }
+
+    function populateOrderSpiderFilters() {
+        const types = [...new Set(allSpiders.map(spider => spider.typeName))];
+        const species = [...new Set(allSpiders.map(spider => spider.speciesName))];
+
+        const typeSelect = document.getElementById('filter-type-order');
+        const speciesSelect = document.getElementById('filter-species-order');
+
+        typeSelect.innerHTML = '<option value="">Wszystkie</option>' + types.map(type => `<option value="${type}">${type}</option>`).join('');
+        speciesSelect.innerHTML = '<option value="">Wszystkie</option>' + species.map(species => `<option value="${species}">${species}</option>`).join('');
+    }
+
+    function filterSpidersForOrder() {
+        const selectedType = document.getElementById('filter-type-order').value;
+        const selectedSpecies = document.getElementById('filter-species-order').value;
+        const selectedGender = document.getElementById('filter-gender-order').value;
+
+        const spidersToDisplay = allSpiders.filter(spider => {
+            const matchesType = !selectedType || spider.typeName === selectedType;
+            const matchesSpecies = !selectedSpecies || spider.speciesName === selectedSpecies;
+            const matchesGender = !selectedGender || spider.gender === selectedGender;
+            return matchesType && matchesSpecies && matchesGender;
+        });
+
+        const spidersTable = document.getElementById('spider-selection-table');
+        spidersTable.innerHTML = '';
+        spidersToDisplay.forEach(spider => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${spider.typeName}</td>
+                <td>${spider.speciesName}</td>
+                <td>${spider.gender}</td>
+                <td>${spider.size}</td>
+                <td>${spider.quantity}</td>
+                <td>${spider.price.toFixed(2)} PLN</td>
+                <td>
+                    <div class="input-group input-group-sm">
+                        <input type="number" class="form-control" value="1" style="width: 60px;">
+                        <button class="btn btn-sm btn-primary" type="button" onclick="addSpiderToOrder('${spider.id}')">Dodaj</button>
+                    </div>
+                </td>
+            `;
+            spidersTable.appendChild(row);
+        });
     }
 
     function addSpiderToOrder(spiderId) {
@@ -795,7 +1024,7 @@
         const quantityInput = selectedRow.querySelector('input[type="number"]');
         const quantity = parseInt(quantityInput.value);
 
-        const spider = currentSpiders.find(s => s.id === spiderId);
+        const spider = allSpiders.find(s => s.id === spiderId);
 
         if (!spider || quantity <= 0 || spider.quantity < quantity) {
             alert('Nie można dodać tylu pająków. Sprawdź ilość na stanie i upewnij się, że podajesz poprawną wartość.');
@@ -816,7 +1045,7 @@
 
         // update available quantity
         spider.quantity -= quantity;
-        selectedRow.querySelector('td:nth-child(3)').textContent = spider.quantity;
+        selectedRow.querySelector('td:nth-child(5)').textContent = spider.quantity;
         quantityInput.value = 1;
 
         renderOrderedSpidersTable();
@@ -828,12 +1057,13 @@
             const removedSpider = orderedSpiders[orderedSpiderIndex];
             orderedSpiders.splice(orderedSpiderIndex, 1);
 
-            const originalSpider = currentSpiders.find(s => s.id === spiderId);
+            const originalSpider = allSpiders.find(s => s.id === spiderId);
             if (originalSpider) {
                 originalSpider.quantity += removedSpider.quantity;
+                // Update the quantity in the add table
                 const spiderRow = document.querySelector(`#spider-selection-table button[onclick*="${spiderId}"]`).closest('tr');
                 if (spiderRow) {
-                    spiderRow.querySelector('td:nth-child(3)').textContent = originalSpider.quantity;
+                    spiderRow.querySelector('td:nth-child(5)').textContent = originalSpider.quantity;
                 }
             }
             renderOrderedSpidersTable();
@@ -851,6 +1081,8 @@
             row.innerHTML = `
                 <td>${os.spider.typeName}</td>
                 <td>${os.spider.speciesName}</td>
+                <td>${os.spider.gender}</td>
+                <td>${os.spider.size}</td>
                 <td>${os.quantity}</td>
                 <td>${os.spider.price.toFixed(2)} PLN</td>
                 <td>${totalItemPrice.toFixed(2)} PLN</td>
@@ -870,6 +1102,12 @@
             if (!response.ok) throw new Error('Nie udało się załadować danych zamówienia.');
             const order = await response.json();
 
+            // Ustawienie onclick dla przycisku edycji
+            document.getElementById('edit-button').onclick = function() {
+                prepareOrderForm('edit', order.id);
+            };
+            const selfCollectionStatus = order.selfCollection ? 'Tak' : 'Nie';
+
             // Set order details
             document.getElementById('order-status').value = order.status;
             document.getElementById('order-shipmentNumber').value = order.shipmentNumber;
@@ -881,15 +1119,18 @@
             selectedCustomerId = order.customer.id;
             selectCustomer(null, selectedCustomerId);
 
+            // Fetch all spiders to get a fresh list
+            const spidersResponse = await fetch(`${API_URL}/spiders?size=100&sortBy=typeName`);
+            if (!spidersResponse.ok) throw new Error('Nie udało się załadować danych pająków.');
+            allSpiders = (await spidersResponse.json()).content;
+
             // Load ordered spiders and update available quantities
             orderedSpiders = order.orderedSpiders.map(os => {
-                const spider = currentSpiders.find(s => s.id === os.spiderId);
+                const spider = allSpiders.find(s => s.id === os.spiderId);
                 if (spider) {
-                    const availableSpider = { ...spider };
-                    availableSpider.quantity -= os.quantity;
-                    const spiderRow = document.querySelector(`#spider-selection-table button[onclick*="${spider.id}"]`).closest('tr');
-                    if (spiderRow) {
-                        spiderRow.querySelector('td:nth-child(3)').textContent = availableSpider.quantity;
+                    const availableSpider = allSpiders.find(s => s.id === os.spiderId);
+                    if (availableSpider) {
+                        availableSpider.quantity -= os.quantity;
                     }
                 }
                 return {
@@ -899,6 +1140,9 @@
                 };
             });
 
+            // Populate filters and render tables
+            populateOrderSpiderFilters();
+            filterSpidersForOrder();
             renderOrderedSpidersTable();
 
         } catch (error) {
@@ -912,7 +1156,7 @@
         try {
             const response = await fetch(`${API_URL}/orders/${id}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Nie udało się usunąć zamówienia.');
-            await loadOrders();
+            await loadOrders(currentPageOrders);
         } catch (error) {
             console.error('Błąd podczas usuwania zamówienia:', error);
             alert('Wystąpił błąd podczas usuwania zamówienia.');
@@ -940,6 +1184,7 @@
                 <h6>Dane Klienta:</h6>
                 <p><strong>Imię i nazwisko:</strong> ${order.customer.firstName} ${order.customer.lastName}</p>
                 <p><strong>E-mail:</strong> ${order.customer.email}</p>
+                <p><strong>Numer telefonu:</strong> ${order.customer.telephone}</p>
                 <p><strong>Adres:</strong> ${order.customer.address}</p>
                 <p><strong>Paczkomat:</strong> ${order.parcelLocker ? order.parcelLocker : 'N/A'}</p>
                 <hr>
@@ -954,6 +1199,8 @@
                         <tr>
                             <th>Rodzaj</th>
                             <th>Gatunek</th>
+                            <th>Płeć</th>
+                            <th>Rozmiar</th>
                             <th>Ilość</th>
                             <th>Cena jednostkowa</th>
                             <th>Suma</th>
@@ -967,6 +1214,8 @@
                     <tr>
                         <td>${os.spider.typeName}</td>
                         <td>${os.spider.speciesName}</td>
+                        <td>${os.spider.gender}</td>
+                        <td>${os.spider.size}</td>
                         <td>${os.quantity}</td>
                         <td>${os.spider.price.toFixed(2)} PLN</td>
                         <td>${(os.quantity * os.spider.price).toFixed(2)} PLN</td>
@@ -998,15 +1247,15 @@
     async function clearAllCustomers() {
         if (!confirm('Czy na pewno chcesz USUNĄĆ WSZYSTKICH KLIENTÓW?')) return;
         try {
-            const response = await fetch(`${API_URL}/customers?size=100`);
-            const customers = (await response.json()).content;
+            const response = await fetch(`${API_URL}/customers?size=1000&page=0`);
+            const data = (await response.json()).content;
 
-            for (const customer of customers) {
+            for (const customer of data) {
                 await fetch(`${API_URL}/customers/${customer.id}`, { method: 'DELETE' });
             }
 
             alert('Wszyscy klienci zostali pomyślnie usunięci!');
-            loadCustomers();
+            loadCustomers(0);
         } catch (error) {
             console.error('Błąd podczas usuwania klientów:', error);
             alert('Wystąpił błąd podczas usuwania klientów. Upewnij się, że nie mają oni aktywnych zamówień.');
@@ -1016,15 +1265,15 @@
     async function clearAllSpiders() {
         if (!confirm('Czy na pewno chcesz USUNĄĆ WSZYSTKIE PAJĄKI?')) return;
         try {
-            const response = await fetch(`${API_URL}/spiders?size=100`);
-            const spiders = (await response.json()).content;
+            const response = await fetch(`${API_URL}/spiders?size=1000&page=0`);
+            const data = (await response.json()).content;
 
-            for (const spider of spiders) {
+            for (const spider of data) {
                 await fetch(`${API_URL}/spiders/${spider.id}`, { method: 'DELETE' });
             }
 
             alert('Wszystkie pająki zostały pomyślnie usunięte!');
-            loadSpiders();
+            loadSpiders(); // Po usunięciu załaduj pająki od nowa
         } catch (error) {
             console.error('Błąd podczas usuwania pająków:', error);
             alert('Wystąpił błąd podczas usuwania pająków.');

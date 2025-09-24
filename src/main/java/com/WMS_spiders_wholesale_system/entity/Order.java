@@ -1,12 +1,14 @@
 package com.WMS_spiders_wholesale_system.entity;
 
 import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -28,6 +30,9 @@ public class Order implements Serializable {
     @Column(name = "price")
     private double price;
 
+//    @Column(name = "new_price")
+//    private double newPrice;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private OrderStatus status;
@@ -41,33 +46,6 @@ public class Order implements Serializable {
 
     @Column(name = "self_collection")
     private Boolean selfCollection = false;
-
-    public String getShipmentNumber() {
-        return shipmentNumber;
-    }
-
-    public void setShipmentNumber(String shipmentNumber) {
-        this.shipmentNumber = shipmentNumber;
-    }
-
-    public CourierCompany getCourierCompany() {
-        return courierCompany;
-    }
-
-    public void setCourierCompany(CourierCompany courierCompany) {
-        this.courierCompany = courierCompany;
-    }
-
-    public Boolean getSelfCollection() {
-        return selfCollection;
-    }
-
-    public void setSelfCollection(Boolean selfCollection) {
-        this.selfCollection = selfCollection;
-    }
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderedSpider> orderedSpiders = new ArrayList<>();
 
     public Order() {
         this.date = LocalDate.now();
@@ -106,6 +84,7 @@ public class Order implements Serializable {
         this.price = price;
     }
 
+
     public OrderStatus getStatus() {
         return status;
     }
@@ -126,6 +105,34 @@ public class Order implements Serializable {
         this.orderedSpiders.add(spider);
         spider.setOrder(this);
     }
+
+    public String getShipmentNumber() {
+        return shipmentNumber;
+    }
+
+    public void setShipmentNumber(String shipmentNumber) {
+        this.shipmentNumber = shipmentNumber;
+    }
+
+    public CourierCompany getCourierCompany() {
+        return courierCompany;
+    }
+
+    public void setCourierCompany(CourierCompany courierCompany) {
+        this.courierCompany = courierCompany;
+    }
+
+    public Boolean getSelfCollection() {
+        return selfCollection;
+    }
+
+    public void setSelfCollection(Boolean selfCollection) {
+        this.selfCollection = selfCollection;
+    }
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderedSpider> orderedSpiders = new ArrayList<>();
+
 
     @Override
     public boolean equals(Object o) {
